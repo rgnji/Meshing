@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import math
 
 #========== create initial mesh of o-grid ==========
 def initial_o(quadrant, ro, ri, arc_number, radius_number):
@@ -140,3 +141,46 @@ def initial_square(ri, arc_number):
     y[1:-1, 1:-1] = grid_y
     
     return x, y
+
+
+# parameter: quadrant, radius of cylinder, vertices of inner square, arc angle, number of division in three direction
+
+def o_grid(qua, r, end, start, arc_angle, axial, d1, d2, d3):
+    """
+    Input:
+        qua: quadrant
+        r: radius of cylinder
+        r_inner: ratio of half diagonal of inner square to radius of cylinder, between 0 and 1
+        start: [x,y]
+        end: [x,y]
+        arc_angle: angle of inner arc
+        axial: axial length
+        d1: number of division in arc direction
+        d2: number of division in radius direction
+        d3: number of division in axial direction 
+    """
+
+    # find radius
+    angle = np.deg2rad(arc_angle)
+    radius = np.linalg.norm(end - start) / np.sin(angle) * np.sin(0.5 * np.pi - 0.5 * angle)
+
+    dir_vec = end - start # start -> end
+    dir_vec = dir_vec / np.linalg.norm(dir_vec)
+
+    perp_vec = np.array([ -dir_vec[1], dir_vec[0] ]) # counter-clockwise
+    midpoint = (end + start) / 2
+    center = midpoint + perp_vec * (0.5 * np.linalg.norm(dir_vec) / np.sin(0.5 * angle) * np.sin(0.5 * (np.pi - angle)))
+
+    vec_start = (start - center) / np.linalg.norm(start - center)
+    vec_end = (end - center) / np.linalg.norm(end - center)
+
+    perp_start = np.array([ -vec_start[1], vec_start[0] ])
+    perp_end = np.array([ vec_end[1], -vec_end[0]])
+
+    n = 2 * np.pi / angle # segment
+    distance = 4/3 * radius *np.tan(np.pi / (2  * n))
+    
+    control_start = start + perp_start * distance
+    control_end = end + perp_end * distance
+
+    
