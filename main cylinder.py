@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from laplace import solve_grid_laplace_sor
-from cylindermesh import initial_o, initial_square
-from plot3dout import bin_fort12
+from lib.laplace import solve_grid_laplace_sor
+from lib.cylindermesh import initial_o, initial_square
+from lib.plot3dout import bin_fort12
 
 #========== parameters ==========
 # cylinder radius
