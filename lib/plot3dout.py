@@ -1,9 +1,12 @@
 import numpy as np
 import struct
 
+#=================== unformatted plot3d format (with record marker) ===================
 # X, Y, Z will be 4D matrices X(IZ, KZT, JZT, IZT)
-def bin_fort12(X, Y, Z):
-    with open("fort.12", "wb") as f:
+def unformatted_fort12(X, Y, Z):
+    filename = "fort.12"
+
+    with open(filename, "wb") as f:
         # write number of blocks
         blocks = np.array(len(X), dtype=np.int32) # len(X) = number of blocks
         len_blocks = blocks.nbytes
@@ -45,4 +48,37 @@ def bin_fort12(X, Y, Z):
             z.tofile(f)
             f.write(struct.pack("<i", len_x))
     
-    return "fort.12 established."
+    return filename + " established."
+
+
+#=================== binary plot3d format (no record marker) ===================
+# X, Y, Z will be 4D matrices X(IZ, KZT, JZT, IZT)
+def binary_fort12(X, Y, Z):
+    filename = "fort12.bin.xyz"
+
+    with open(filename, "wb") as f:
+        # write number of blocks
+        blocks = np.array(len(X), dtype=np.int32) # len(X) = number of blocks
+        f.write(struct.pack("<i", blocks))
+
+        # write maximum grid number in I, J and K direction for each block
+        dim = []
+        for i in range(len(X)):
+            for j in range(3):
+                dim.append(X[i].shape[2-j]) # IZT, JZT, KZT
+        dim = np.array(dim, dtype=np.int32)
+        dim.tofile(f)
+
+        # write coordinates of all the points in a block
+        # write all the "x", then all the "y", then "z"
+        for block in range(len(X)):
+            x = np.array(X[block], dtype=np.float32) # change dtype
+            x.tofile(f) # row-major
+
+            y = np.array(Y[block], dtype=np.float32)
+            y.tofile(f)
+
+            z = np.array(Z[block], dtype=np.float32)
+            z.tofile(f)
+    
+    return filename + " established."

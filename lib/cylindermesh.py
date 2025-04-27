@@ -77,13 +77,13 @@ def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3):
     # initial grid between boundaries
     grid_x = np.linspace(out_x, arc_x, d2+1)
     grid_y = np.linspace(out_y, arc_y, d2+1)
-
+    """
     # initial grid
     x = np.concatenate(([out_x], grid_x, [arc_x]), axis=0)
     y = np.concatenate(([out_y], grid_y, [arc_y]), axis=0)
-
+    """
     # solve laplace
-    x, y, iterations = solve_grid_laplace_sor(x, y)
+    x, y, iterations = solve_grid_laplace_sor(grid_x, grid_y)
     print(f"SOR of O-grid in quadrant {qua} converged in {iterations} iterations.")
 
     # create 3D mesh

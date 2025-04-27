@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from lib.cylindermesh import o_grid, h_grid
-from lib.plot3dout import bin_fort12
+from lib.plot3dout import unformatted_fort12, binary_fort12
 
 #========== parameters ==========
 # cylinder radius
@@ -23,7 +23,7 @@ XT = []
 YT = []
 ZT = []
 
-fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+#fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
 for qua in range(1,5): 
     x, y, z = o_grid(qua, r, r_square, 20, pos_z, len_z, arc_number, radius_number, axis_number)
@@ -37,11 +37,12 @@ YT.append(y)
 ZT.append(z)
 
 # establish fort.12
-txt = bin_fort12(XT, YT, ZT)
+txt = binary_fort12(XT, YT, ZT)
 print(txt)
-
+"""
 # plot
 for q in range(5):
     ax.scatter(XT[q], YT[q], ZT[q])
 
 plt.show()
+"""
