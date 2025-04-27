@@ -1,8 +1,7 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
-a=np.array([2,3,4])
-b=np.array([3,4,5])
-c=[a,b]
-print(len(c))
-print(len(c[0]))
-print(np.shape(c[0])[0])
+a=np.array([1,2,3])
+b=np.array([4,5,6])
+c=np.linspace(b,a,5)
+print(c)
