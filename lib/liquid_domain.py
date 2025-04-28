@@ -42,9 +42,9 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     # y interpolation
     grid2d_y = R * np.sin(-np.arccos(grid2d_x / R))
     inlet2d_y = np.full_like(grid2d_y, center[1])
-    inlet_y = np.linspace(inlet2d_y, grid2d_y, num_pipe)
-    inlet_x = np.broadcast_to(grid2d_x, (num_pipe, *grid2d_x.shape))
-    inlet_z = np.broadcast_to(grid2d_z, (num_pipe, *grid2d_z.shape))
+    inlet_y = np.linspace(inlet2d_y, grid2d_y, num_pipe+1)
+    inlet_x = np.broadcast_to(grid2d_x, (num_pipe+1, *grid2d_x.shape))
+    inlet_z = np.broadcast_to(grid2d_z, (num_pipe+1, *grid2d_z.shape))
 
     # rotate
     theta_inlet = np.arctan(inlet_y / inlet_x)
@@ -63,8 +63,8 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     #=================== outer extension ===================
     bound_theta = np.full(num_s+1, outer_theta_fixed)
     bound_z = np.linspace(outer_z_start, outer_z_end, num_s+1)
-    out2d_theta = np.linspace(bound_theta, theta[0], num_arc)
-    out2d_z = np.linspace(bound_z, grid2d_z[0], num_arc)
+    out2d_theta = np.linspace(bound_theta, theta[0], num_arc+1)
+    out2d_z = np.linspace(bound_z, grid2d_z[0], num_arc+1)
 
     jj, Rg, ii = np.meshgrid(np.arange(out2d_theta.shape[0]), R_grid, np.arange(out2d_theta.shape[1]))
     out_theta = np.broadcast_to(out2d_theta, (num_rl+1, *out2d_theta.shape))
@@ -166,9 +166,9 @@ def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inle
     # y interpolation
     square_y = R * np.sin(-np.arccos(square_x / R))
     square_inlet_y = np.full_like(square_y, center[1])
-    pipe_square_y = np.linspace(square_inlet_y, square_y, num_pipe)
-    pipe_square_x = np.broadcast_to(square_x, (num_pipe, *square_x.shape))
-    pipe_square_z = np.broadcast_to(square_z, (num_pipe, *square_z.shape))
+    pipe_square_y = np.linspace(square_inlet_y, square_y, num_pipe+1)
+    pipe_square_x = np.broadcast_to(square_x, (num_pipe+1, *square_x.shape))
+    pipe_square_z = np.broadcast_to(square_z, (num_pipe+1, *square_z.shape))
 
     # rotate
     square_theta_inlet = np.arctan(pipe_square_y / pipe_square_x)
