@@ -1,26 +1,25 @@
 import numpy as np
 
 # projection of a quarter + outer region
-def generate_block(center, r, R, fix, theta_center, angle_start, angle_end, 
+def generate_block(center, r, R, theta_center, angle_start, angle_end, 
                    square_start, square_end, num_s, num_r, num_rl, num_arc, outer_z_start, outer_z_end, outer_theta_fixed):
     blocks = []
 
     # arc points
     angle = np.linspace(angle_start, angle_end, num_s+1)
-    x = r * np.cos(angle) + center[0]
-    z = r * np.sin(angle) + center[2]
+    x = r * np.cos(angle)
+    z = r * np.sin(angle)
 
     # square points
-    square_x = np.linspace(square_start[0], square_end[0], num_s+1) + center[0]
-    square_z = np.linspace(square_start[1], square_end[1], num_s+1) + center[2]
+    square_x = np.linspace(square_start[0], square_end[0], num_s+1)
+    square_z = np.linspace(square_start[1], square_end[1], num_s+1)
 
     # radial interpolation
-    grid2d_x = np.linspace(x, square_x, num_r+1)
-    grid2d_z = np.linspace(z, square_z, num_r+1)
+    grid2d_x = np.linspace(x, square_x, num_r+1) + center[0]
+    grid2d_z = np.linspace(z, square_z, num_r+1) + center[2]
 
     # project to cylinder
-    d = fix[0] - grid2d_x
-    theta = -np.arccos((R - d) / R) + theta_center
+    theta = -np.arccos(grid2d_x / R) + theta_center
 
     # 3D mesh internal
     R_grid = np.linspace(R, center[0], num_rl+1)
@@ -31,6 +30,12 @@ def generate_block(center, r, R, fix, theta_center, angle_start, angle_end,
     grid_y = Rg * np.sin(theta_grid)
     grid_z = np.broadcast_to(grid2d_z, (num_rl+1, *grid2d_z.shape))
     blocks.append((grid_x, grid_y, grid_z))
+
+    # another half
+    theta_grid_2 = theta_grid + np.pi
+    grid_x_2 = Rg * np.cos(theta_grid_2)
+    grid_y_2 = Rg * np.sin(theta_grid_2)
+    blocks.append((grid_x_2, grid_y_2, grid_z))
 
     # outer extension
     bound_theta = np.full(num_s+1, outer_theta_fixed)
@@ -45,6 +50,12 @@ def generate_block(center, r, R, fix, theta_center, angle_start, angle_end,
     out_y = Rg * np.sin(out_theta)
     out_z = np.broadcast_to(out2d_z, (num_rl+1, *out2d_z.shape))
     blocks.append((out_x, out_y, out_z))
+
+    # another half
+    out_theta_2 = out_theta + np.pi
+    out_x_2 = Rg * np.cos(out_theta_2)
+    out_y_2 = Rg * np.sin(out_theta_2)
+    blocks.append((out_x_2, out_y_2, out_z))
 
     return blocks
 
@@ -64,10 +75,8 @@ def liquid_cylinder():
     num_r = 3    # cells on orifice radius
     num_rl = 2   # cells on liquid domain thickness
     num_arc = 10 # cells on liquid domain arc
-    center = np.array([15.11, 0, -0.5]) # orifice center
-    fix = np.array([15.61, 0, -0.5])    # right-most point
-    d_center = fix[0] - center[0]
-    theta_center = np.arccos((R - d_center) / R) # angle after projection
+    center = np.array([15.11, 0, -0.5]) # orifice center 1
+    theta_center = np.arccos(center[0] / R) # angle after projection
 
     blocks_def = [
         (0, 0.5*np.pi, [0.5*r, 0], [0, 0.5*r], -0.5, 0, 0.5*np.pi),
@@ -78,7 +87,7 @@ def liquid_cylinder():
 
     # four quarter
     for angle_start, angle_end, square_start, square_end, outer_z_start, outer_z_end, outer_theta_fixed in blocks_def:
-        blocks = generate_block(center, r, R, fix, theta_center, 
+        blocks = generate_block(center, r, R, theta_center, 
                                  angle_start, angle_end, 
                                  square_start, square_end,
                                  num_s, num_r, num_rl, num_arc,
@@ -94,17 +103,16 @@ def liquid_cylinder():
     square_start3 = blocks_def[2][2]
     square_end3 = blocks_def[2][3]
 
-    square_up_x = np.linspace(square_start1[0], square_end1[0], num_s) + center[0]
-    square_up_z = np.linspace(square_start1[1], square_end1[1], num_s) + center[2]
-    square_down_x = np.linspace(square_start3[0], square_end3[0], num_s) + center[0]
-    square_down_z = np.linspace(square_start3[1], square_end3[1], num_s) + center[2]
+    square_up_x = np.linspace(square_start1[0], square_end1[0], num_s)
+    square_up_z = np.linspace(square_start1[1], square_end1[1], num_s)
+    square_down_x = np.linspace(square_start3[0], square_end3[0], num_s)
+    square_down_z = np.linspace(square_start3[1], square_end3[1], num_s)
 
-    square_x = np.linspace(square_up_x, square_down_x[::-1], num_s)
-    square_z = np.linspace(square_up_z, square_down_z[::-1], num_s)
+    square_x = np.linspace(square_up_x, square_down_x[::-1], num_s) + center[0]
+    square_z = np.linspace(square_up_z, square_down_z[::-1], num_s) + center[2]
 
-    
-    square_d = fix[0] - square_x
-    square_theta = -np.arccos((R - square_d) / R) + theta_center
+    # project
+    square_theta = -np.arccos(square_x / R) + theta_center
 
     # 3D mesh
     R_grid = np.linspace(R, center[0], num_rl+1)
@@ -117,6 +125,15 @@ def liquid_cylinder():
 
     XT.append(grid_x)
     YT.append(grid_y)
+    ZT.append(grid_z)
+
+    # another half
+    theta_grid_2 = theta_grid + np.pi
+    grid_x_2 = Rg * np.cos(theta_grid_2)
+    grid_y_2 = Rg * np.sin(theta_grid_2)
+
+    XT.append(grid_x_2)
+    YT.append(grid_y_2)
     ZT.append(grid_z)
     
 
