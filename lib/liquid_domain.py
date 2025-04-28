@@ -102,13 +102,22 @@ def liquid_cylinder():
     square_x = np.linspace(square_up_x, square_down_x[::-1], num_s)
     square_z = np.linspace(square_up_z, square_down_z[::-1], num_s)
 
+    
     square_d = fix[0] - square_x
     square_theta = -np.arccos((R - square_d) / R) + theta_center
-    square_y = R * np.sin(square_theta)
 
-    XT.append(square_x)
-    YT.append(square_y)
-    ZT.append(square_z)
+    # 3D mesh
+    R_grid = np.linspace(R, center[0], num_rl+1)
+    jj, Rg, ii = np.meshgrid(np.arange(square_theta.shape[0]), R_grid, np.arange(square_theta.shape[1]))
+    theta_grid = np.broadcast_to(square_theta, (num_rl+1, *square_theta.shape))
+
+    grid_x = Rg * np.cos(theta_grid)
+    grid_y = Rg * np.sin(theta_grid)
+    grid_z = np.broadcast_to(square_z, (num_rl+1, *square_z.shape))
+
+    XT.append(grid_x)
+    YT.append(grid_y)
+    ZT.append(grid_z)
     
 
     return XT, YT, ZT
