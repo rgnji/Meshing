@@ -7,7 +7,8 @@ from lib.laplace import solve_grid_laplace_sor
 #================= =================
 def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3):
     """
-    INPUT:
+    Generate o-grid (no inner h-grid).
+    Parameters:
         qua: 
             quadrant
         r: 
@@ -26,7 +27,7 @@ def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3):
             number of cells in radius direction
         d3: 
             number of cells in axial direction 
-    OUTPUT:
+    Returns:
         X, Y, Z:
             d3+1 * d2+1 * d1+1
     """
@@ -100,7 +101,8 @@ def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3):
 #================= =================
 def h_grid(r_square, arc_angle, axi_pos, axial, d1, d3):
     """
-    INPUT:
+    Generate h-grid (square).
+    Parameters:
         r_square: 
             half diagonal of inner square or radius of inner cylinder
         arc_angle: 
@@ -113,7 +115,7 @@ def h_grid(r_square, arc_angle, axi_pos, axial, d1, d3):
             number of cells in arc direction
         d3: 
             number of cells in axial direction 
-    OUTPUT:
+    Returns:
         X, Y, Z:
             d3+1 * d2+1 * d1+1
     """
