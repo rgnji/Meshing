@@ -49,20 +49,25 @@ def generate_block(center, r, R, fix, theta_center, angle_start, angle_end,
     return blocks
 
 
+
+
 def liquid_cylinder():
+    """
+    Meshing for tangetial inlet.
+    """
     XT, YT, ZT = [], [], []
 
     # Parameters
-    r = 0.5
-    R = 15.61
-    num_s = 3
-    num_r = 3
-    num_rl = 2
-    num_arc = 10
-    center = np.array([15.11, 0, -0.5])
-    fix = np.array([15.61, 0, -0.5])
+    r = 0.5      # orifice radius
+    R = 15.61    # liquid domain radius
+    num_s = 3    # cells on orifice arc
+    num_r = 3    # cells on orifice radius
+    num_rl = 2   # cells on liquid domain thickness
+    num_arc = 10 # cells on liquid domain arc
+    center = np.array([15.11, 0, -0.5]) # orifice center
+    fix = np.array([15.61, 0, -0.5])    # right-most point
     d_center = fix[0] - center[0]
-    theta_center = np.arccos((R - d_center) / R)
+    theta_center = np.arccos((R - d_center) / R) # angle after projection
 
     blocks_def = [
         (0, 0.5*np.pi, [0.5*r, 0], [0, 0.5*r], -0.5, 0, 0.5*np.pi),
@@ -71,6 +76,7 @@ def liquid_cylinder():
         (1.5*np.pi, 2*np.pi, [0, -0.5*r], [0.5*r, 0], -1, -0.5, 0.5*np.pi),
     ]
 
+    # four quarter
     for angle_start, angle_end, square_start, square_end, outer_z_start, outer_z_end, outer_theta_fixed in blocks_def:
         blocks = generate_block(center, r, R, fix, theta_center, 
                                  angle_start, angle_end, 
@@ -81,5 +87,28 @@ def liquid_cylinder():
             XT.append(grid_x)
             YT.append(grid_y)
             ZT.append(grid_z)
+    
+    # inner square
+    square_start1 = blocks_def[0][2]
+    square_end1 = blocks_def[0][3]
+    square_start3 = blocks_def[2][2]
+    square_end3 = blocks_def[2][3]
+
+    square_up_x = np.linspace(square_start1[0], square_end1[0], num_s) + center[0]
+    square_up_z = np.linspace(square_start1[1], square_end1[1], num_s) + center[2]
+    square_down_x = np.linspace(square_start3[0], square_end3[0], num_s) + center[0]
+    square_down_z = np.linspace(square_start3[1], square_end3[1], num_s) + center[2]
+
+    square_x = np.linspace(square_up_x, square_down_x[::-1], num_s)
+    square_z = np.linspace(square_up_z, square_down_z[::-1], num_s)
+
+    square_d = fix[0] - square_x
+    square_theta = -np.arccos((R - square_d) / R) + theta_center
+    square_y = R * np.sin(square_theta)
+
+    XT.append(square_x)
+    YT.append(square_y)
+    ZT.append(square_z)
+    
 
     return XT, YT, ZT

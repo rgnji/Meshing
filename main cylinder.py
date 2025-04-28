@@ -44,7 +44,8 @@ print(txt)
 
 XT, YT, ZT = liquid_cylinder()
 
-
+txt = binary_fort12(XT, YT, ZT)
+print(txt)
 
 # plot
 for q in range(len(XT)):
