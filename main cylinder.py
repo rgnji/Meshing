@@ -30,12 +30,14 @@ num_pipe = 20 # inlet pipe cells
 inlet_pipe_len = 15.11 # inlet pipe length
 
 
-#================= main program =================
+#================= grid generation =================
 XT = []
 YT = []
 ZT = []
 
-
+IZT = []
+JZT = []
+KZT = []
 
 # gas inlet
 for qua in range(1,5): 
@@ -43,11 +45,17 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
+    IZT.append(16)
+    JZT.append(29)
+    KZT.append(11)
 
 x, y, z = h_grid(0.5*14.11, 20, 0, 6, 15, 10)
 XT.append(x)
 YT.append(y)
 ZT.append(z)
+IZT.append(16)
+JZT.append(16)
+KZT.append(11)
 
 # liquid inlet
 xx, yy, zz = liquid_cylinder(r_orifice, R_liquidout, R_liquidin, num_s, num_r, num_rl, num_arc, num_pipe, inlet_pipe_len)
@@ -56,12 +64,16 @@ XT += xx
 YT += yy
 ZT += zz
 
+
 # liquid cylinder
 for qua in range(1,5): 
     x, y, z = o_grid(qua, 15.61, 15.11, 90, -1, 5, 15, 2, 10)
     XT.append(x)
     YT.append(y)
     ZT.append(z)
+    IZT.append(16)
+    JZT.append(3)
+    KZT.append(11)
 
 # gas recess
 for qua in range(1,5): 
@@ -69,11 +81,17 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
+    IZT.append(16)
+    JZT.append(29)
+    KZT.append(51)
 
 x, y, z = h_grid(0.5*14.11, 20, -6, 28.22, 15, 50)
 XT.append(x)
 YT.append(y)
 ZT.append(z)
+IZT.append(16)
+JZT.append(16)
+KZT.append(51)
 
 # wall recess
 for qua in range(1,5): 
@@ -81,6 +99,9 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
+    IZT.append(16)
+    JZT.append(5)
+    KZT.append(51)
 
 # liquid recess
 for qua in range(1,5): 
@@ -88,6 +109,9 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
+    IZT.append(16)
+    JZT.append(3)
+    KZT.append(51)
 
 # gas out
 for qua in range(1,5): 
@@ -95,11 +119,17 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
+    IZT.append(16)
+    JZT.append(29)
+    KZT.append(86)
 
 x, y, z = h_grid(0.5*14.11, 20, -34.22, 50, 15, 85)
 XT.append(x)
 YT.append(y)
 ZT.append(z)
+IZT.append(16)
+JZT.append(16)
+KZT.append(86)
 
 # wall out
 for qua in range(1,5): 
@@ -107,6 +137,9 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
+    IZT.append(16)
+    JZT.append(5)
+    KZT.append(86)
 
 # liquid out
 for qua in range(1,5): 
@@ -114,6 +147,9 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
+    IZT.append(16)
+    JZT.append(3)
+    KZT.append(86)
 
 # out
 for qua in range(1,5): 
@@ -121,10 +157,37 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
+    IZT.append(16)
+    JZT.append(41)
+    KZT.append(86)
 
 # establish fort12
 txt = binary_fort12(XT, YT, ZT)
 print(txt)
 
 
+#================= fort.11 =================
+with open("fort11.txt", 'r', encoding='UTF-8') as f:
+    # group 3
+    name = ['IZT', 'JZT', 'KZT', 'LPROC', 'CBG1', 'CBG2', 'CBG3', 'CBV1', 'CBV2', 'CBV3']
+    
+    for i in name:
+        f.write(f'{i:>6},')
+    f.write('\n')
 
+    dim = [IZT, JZT, KZT]
+
+    for i in range(len(IZT)):
+        for j in range(3):
+            f.write(f'{dim[j][i]:>6},')
+
+        if i < 48:
+            f.write(f'{1:>6},')
+        else:
+            f.write(f'{2:>6},')
+        
+        for k in range(6):
+            f.write(f'{0.:>6}')
+            if k < 5: f.write(',')
+        
+        f.write('\n')
