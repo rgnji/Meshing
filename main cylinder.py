@@ -35,6 +35,11 @@ XT = []
 YT = []
 ZT = []
 
+# group 2
+izon_count = 0
+ibnd_count = 0
+id_count = 0
+
 IZT = []
 JZT = []
 KZT = []
@@ -45,17 +50,22 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
-    IZT.append(16)
-    JZT.append(29)
-    KZT.append(11)
+    izon_count += 1
+    ibnd_count += 1
+    id_count += 1
+    IZT.append(x.shape[2])
+    JZT.append(x.shape[1])
+    KZT.append(x.shape[0])
 
 x, y, z = h_grid(0.5*14.11, 20, 0, 6, 15, 10)
 XT.append(x)
 YT.append(y)
 ZT.append(z)
-IZT.append(16)
-JZT.append(16)
-KZT.append(11)
+izon_count += 1
+ibnd_count += 1
+IZT.append(x.shape[2])
+JZT.append(x.shape[1])
+KZT.append(x.shape[0])
 
 # liquid inlet
 xx, yy, zz = liquid_cylinder(r_orifice, R_liquidout, R_liquidin, num_s, num_r, num_rl, num_arc, num_pipe, inlet_pipe_len)
@@ -64,6 +74,13 @@ XT += xx
 YT += yy
 ZT += zz
 
+for i in range(len(xx)):
+    izon_count += 1
+    IZT.append(xx[i].shape[2])
+    JZT.append(xx[i].shape[1])
+    KZT.append(xx[i].shape[0])
+ibnd_count += 10
+id_count += (4 + 10) * 2
 
 # liquid cylinder
 for qua in range(1,5): 
@@ -71,9 +88,11 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
-    IZT.append(16)
-    JZT.append(3)
-    KZT.append(11)
+    izon_count += 1
+    id_count += 2
+    IZT.append(x.shape[2])
+    JZT.append(x.shape[1])
+    KZT.append(x.shape[0])
 
 # gas recess
 for qua in range(1,5): 
@@ -81,17 +100,19 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
-    IZT.append(16)
-    JZT.append(29)
-    KZT.append(51)
+    izon_count += 1
+    IZT.append(x.shape[2])
+    JZT.append(x.shape[1])
+    KZT.append(x.shape[0])
 
 x, y, z = h_grid(0.5*14.11, 20, -6, 28.22, 15, 50)
 XT.append(x)
 YT.append(y)
 ZT.append(z)
-IZT.append(16)
-JZT.append(16)
-KZT.append(51)
+izon_count += 1
+IZT.append(x.shape[2])
+JZT.append(x.shape[1])
+KZT.append(x.shape[0])
 
 # wall recess
 for qua in range(1,5): 
@@ -99,9 +120,11 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
-    IZT.append(16)
-    JZT.append(5)
-    KZT.append(51)
+    izon_count += 1
+    id_count += 1
+    IZT.append(x.shape[2])
+    JZT.append(x.shape[1])
+    KZT.append(x.shape[0])
 
 # liquid recess
 for qua in range(1,5): 
@@ -109,9 +132,11 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
-    IZT.append(16)
-    JZT.append(3)
-    KZT.append(51)
+    izon_count += 1
+    id_count += 1
+    IZT.append(x.shape[2])
+    JZT.append(x.shape[1])
+    KZT.append(x.shape[0])
 
 # gas out
 for qua in range(1,5): 
@@ -119,17 +144,21 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
-    IZT.append(16)
-    JZT.append(29)
-    KZT.append(86)
+    izon_count += 1
+    ibnd_count += 1
+    IZT.append(x.shape[2])
+    JZT.append(x.shape[1])
+    KZT.append(x.shape[0])
 
 x, y, z = h_grid(0.5*14.11, 20, -34.22, 50, 15, 85)
 XT.append(x)
 YT.append(y)
 ZT.append(z)
-IZT.append(16)
-JZT.append(16)
-KZT.append(86)
+izon_count += 1
+ibnd_count += 1
+IZT.append(x.shape[2])
+JZT.append(x.shape[1])
+KZT.append(x.shape[0])
 
 # wall out
 for qua in range(1,5): 
@@ -137,9 +166,11 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
-    IZT.append(16)
-    JZT.append(5)
-    KZT.append(86)
+    izon_count += 1
+    ibnd_count += 1
+    IZT.append(x.shape[2])
+    JZT.append(x.shape[1])
+    KZT.append(x.shape[0])
 
 # liquid out
 for qua in range(1,5): 
@@ -147,9 +178,11 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
-    IZT.append(16)
-    JZT.append(3)
-    KZT.append(86)
+    izon_count += 1
+    ibnd_count += 1
+    IZT.append(x.shape[2])
+    JZT.append(x.shape[1])
+    KZT.append(x.shape[0])
 
 # out
 for qua in range(1,5): 
@@ -157,9 +190,11 @@ for qua in range(1,5):
     XT.append(x)
     YT.append(y)
     ZT.append(z)
-    IZT.append(16)
-    JZT.append(41)
-    KZT.append(86)
+    izon_count += 1
+    ibnd_count += 3
+    IZT.append(x.shape[2])
+    JZT.append(x.shape[1])
+    KZT.append(x.shape[0])
 
 # establish fort12
 txt = binary_fort12(XT, YT, ZT)
@@ -167,12 +202,39 @@ print(txt)
 
 
 #================= fort.11 =================
-with open("fort11.txt", 'r', encoding='UTF-8') as f:
+with open("fort11.txt", 'w', encoding='UTF-8') as f:
+    group1 = ['TITLE', 'IDIM']
+    group2 = ['IZON', 'IZFACE', 'IBND', 'ID', 'ISNGL']
+    group3 = ['IZT', 'JZT', 'KZT', 'LPROC', 'CBG1', 'CBG2', 'CBG3', 'CBV1', 'CBV2', 'CBV3']
+    group4_1 = ['IFCYC', 'IZB1', 'IZF1', 'IJZ11', 'IJZ12', 'JKZ11', 'JKZ12', 'INONUF']
+    group4_2 = ['', 'IZB2', 'IZF2', 'IJZ21', 'IJZ22', 'JKZ21', 'JKZ22', '']
+
+    # group 1
+    f.write(f'{group1[0]}:')
+    f.write(' GCSC Injector A\n')
+
+    f.write(f'{group1[1]},\n')
+    f.write(f'{3:>4},\n')
+
+    # group 2
+    for g2 in group2:
+        f.write(f'{g2:>6},')
+    f.write('\n')
+
+    f.write(f'{izon_count:>6},')
+
+    izface_count = (izon_count * 6 - (id_count + ibnd_count)) * 0.5
+    f.write(f'{izface_count:>6},')
+
+    f.write(f'{ibnd_count:>6},')
+
+    f.write(f'{id_count:>6},')
+
+    f.write(f'{0:>6},')
+
     # group 3
-    name = ['IZT', 'JZT', 'KZT', 'LPROC', 'CBG1', 'CBG2', 'CBG3', 'CBV1', 'CBV2', 'CBV3']
-    
-    for i in name:
-        f.write(f'{i:>6},')
+    for g3 in group3:
+        f.write(f'{g3:>6},')
     f.write('\n')
 
     dim = [IZT, JZT, KZT]
@@ -187,7 +249,18 @@ with open("fort11.txt", 'r', encoding='UTF-8') as f:
             f.write(f'{2:>6},')
         
         for k in range(6):
-            f.write(f'{0.:>6}')
-            if k < 5: f.write(',')
+            f.write(f'{0.:>6},')
         
         f.write('\n')
+
+        print("fort11.txt established.")
+    
+    # group 4
+    for g4 in group4_1:
+        f.write(f'{g4:>6},')
+    f.write('\n')
+    for g4 in group4_2:
+        f.write(f'{g4:>6},')
+    f.write('\n')
+
+    
