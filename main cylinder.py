@@ -37,168 +37,104 @@ ZT = []
 
 # group 2
 izon_count = 0
-ibnd_count = 0
-id_count = 0
+ibnd_count = (5+5+5)+(8+4+4+5)
+id_count = (4+(4+10)*2+8)+(4+4)+(4)
 
+# group 3
 IZT = []
 JZT = []
 KZT = []
 
-# gas inlet
-for qua in range(1,5): 
-    x, y, z = o_grid(qua, 14.11, 0.5*14.11, 20, 0, 6, 15, 28, 10)
-    XT.append(x)
-    YT.append(y)
-    ZT.append(z)
-    izon_count += 1
-    ibnd_count += 1
-    id_count += 1
-    IZT.append(x.shape[2])
-    JZT.append(x.shape[1])
-    KZT.append(x.shape[0])
+# meshing parameters
+mesh = [['o', 14.11, 0.5*14.11, 20, 0, 6, 15, 28, 10], # gas inlet
+        ['h', 0.5*14.11, 20, 0, 6, 15, 10], # gas inlet
+        ['l', r_orifice, R_liquidout, R_liquidin, num_s, num_r, num_rl, num_arc, num_pipe, inlet_pipe_len], # liquid inlet
+        ['o', 15.61, 15.11, 90, -1, 5, 15, 2, 10], # liquid cylinder
+        ['o', 14.11, 0.5*14.11, 20, -6, 28.22, 15, 28, 50], # gas recess
+        ['h', 0.5*14.11, 20, -6, 28.22, 15, 50], # gas recess
+        ['o', 15.11, 14.11, 90, -6, 28.22, 15, 4, 50], # wall recess
+        ['o', 15.61, 15.11, 90, -6, 28.22, 15, 2, 50], # liquid recess
+        ['o', 14.11, 0.5*14.11, 20, -34.22, 50, 15, 28, 85], # gas out
+        ['h', 0.5*14.11, 20, -34.22, 50, 15, 85], # gas out
+        ['o', 15.11, 14.11, 90, -34.22, 50, 15, 4, 85], # wall out
+        ['o', 15.61, 15.11, 90, -34.22, 50, 15, 2, 85], # liquid out
+        ['o', 25, 15.61, 90, -34.22, 50, 15, 40, 85], # out
+        ]
 
-x, y, z = h_grid(0.5*14.11, 20, 0, 6, 15, 10)
-XT.append(x)
-YT.append(y)
-ZT.append(z)
-izon_count += 1
-ibnd_count += 1
-IZT.append(x.shape[2])
-JZT.append(x.shape[1])
-KZT.append(x.shape[0])
 
-# liquid inlet
-xx, yy, zz = liquid_cylinder(r_orifice, R_liquidout, R_liquidin, num_s, num_r, num_rl, num_arc, num_pipe, inlet_pipe_len)
+# generate mesh
+for grid in mesh:
+    if grid[0] == 'o':
+        for qua in range(1,5): 
+            x, y, z = o_grid(qua, *grid[1:])
+            XT.append(x)
+            YT.append(y)
+            ZT.append(z)
+            izon_count += 1
+            IZT.append(x.shape[2])
+            JZT.append(x.shape[1])
+            KZT.append(x.shape[0])
+    
+    if grid[0] == 'h':
+        x, y, z = h_grid(*grid[1:])
+        XT.append(x)
+        YT.append(y)
+        ZT.append(z)
+        izon_count += 1
+        IZT.append(x.shape[2])
+        JZT.append(x.shape[1])
+        KZT.append(x.shape[0])
 
-XT += xx
-YT += yy
-ZT += zz
-
-for i in range(len(xx)):
-    izon_count += 1
-    IZT.append(xx[i].shape[2])
-    JZT.append(xx[i].shape[1])
-    KZT.append(xx[i].shape[0])
-ibnd_count += 10
-id_count += (4 + 10) * 2
-
-# liquid cylinder
-for qua in range(1,5): 
-    x, y, z = o_grid(qua, 15.61, 15.11, 90, -1, 5, 15, 2, 10)
-    XT.append(x)
-    YT.append(y)
-    ZT.append(z)
-    izon_count += 1
-    id_count += 2
-    IZT.append(x.shape[2])
-    JZT.append(x.shape[1])
-    KZT.append(x.shape[0])
-
-# gas recess
-for qua in range(1,5): 
-    x, y, z = o_grid(qua, 14.11, 0.5*14.11, 20, -6, 28.22, 15, 28, 50)
-    XT.append(x)
-    YT.append(y)
-    ZT.append(z)
-    izon_count += 1
-    IZT.append(x.shape[2])
-    JZT.append(x.shape[1])
-    KZT.append(x.shape[0])
-
-x, y, z = h_grid(0.5*14.11, 20, -6, 28.22, 15, 50)
-XT.append(x)
-YT.append(y)
-ZT.append(z)
-izon_count += 1
-IZT.append(x.shape[2])
-JZT.append(x.shape[1])
-KZT.append(x.shape[0])
-
-# wall recess
-for qua in range(1,5): 
-    x, y, z = o_grid(qua, 15.11, 14.11, 90, -6, 28.22, 15, 4, 50)
-    XT.append(x)
-    YT.append(y)
-    ZT.append(z)
-    izon_count += 1
-    id_count += 1
-    IZT.append(x.shape[2])
-    JZT.append(x.shape[1])
-    KZT.append(x.shape[0])
-
-# liquid recess
-for qua in range(1,5): 
-    x, y, z = o_grid(qua, 15.61, 15.11, 90, -6, 28.22, 15, 2, 50)
-    XT.append(x)
-    YT.append(y)
-    ZT.append(z)
-    izon_count += 1
-    id_count += 1
-    IZT.append(x.shape[2])
-    JZT.append(x.shape[1])
-    KZT.append(x.shape[0])
-
-# gas out
-for qua in range(1,5): 
-    x, y, z = o_grid(qua, 14.11, 0.5*14.11, 20, -34.22, 50, 15, 28, 85)
-    XT.append(x)
-    YT.append(y)
-    ZT.append(z)
-    izon_count += 1
-    ibnd_count += 1
-    IZT.append(x.shape[2])
-    JZT.append(x.shape[1])
-    KZT.append(x.shape[0])
-
-x, y, z = h_grid(0.5*14.11, 20, -34.22, 50, 15, 85)
-XT.append(x)
-YT.append(y)
-ZT.append(z)
-izon_count += 1
-ibnd_count += 1
-IZT.append(x.shape[2])
-JZT.append(x.shape[1])
-KZT.append(x.shape[0])
-
-# wall out
-for qua in range(1,5): 
-    x, y, z = o_grid(qua, 15.11, 14.11, 90, -34.22, 50, 15, 4, 85)
-    XT.append(x)
-    YT.append(y)
-    ZT.append(z)
-    izon_count += 1
-    ibnd_count += 1
-    IZT.append(x.shape[2])
-    JZT.append(x.shape[1])
-    KZT.append(x.shape[0])
-
-# liquid out
-for qua in range(1,5): 
-    x, y, z = o_grid(qua, 15.61, 15.11, 90, -34.22, 50, 15, 2, 85)
-    XT.append(x)
-    YT.append(y)
-    ZT.append(z)
-    izon_count += 1
-    ibnd_count += 1
-    IZT.append(x.shape[2])
-    JZT.append(x.shape[1])
-    KZT.append(x.shape[0])
-
-# out
-for qua in range(1,5): 
-    x, y, z = o_grid(qua, 25, 15.61, 90, -34.22, 50, 15, 40, 85)
-    XT.append(x)
-    YT.append(y)
-    ZT.append(z)
-    izon_count += 1
-    ibnd_count += 3
-    IZT.append(x.shape[2])
-    JZT.append(x.shape[1])
-    KZT.append(x.shape[0])
+    if grid[0] == 'l':
+        xx, yy, zz = liquid_cylinder(*grid[1:])
+        XT += xx
+        YT += yy
+        ZT += zz
+        for i in range(len(xx)):
+            izon_count += 1
+            IZT.append(xx[i].shape[2])
+            JZT.append(xx[i].shape[1])
+            KZT.append(xx[i].shape[0])
 
 # establish fort12
 txt = binary_fort12(XT, YT, ZT)
 print(txt)
+
+
+def o_patch(startblock, endblock, direction):
+    IFCYC = 1
+
+    if direction == 1: # I
+        f = 1
+        first = 1
+        second = 0
+    elif direction == 2: # J
+        f = 3
+        first = 2
+        second = 0
+    elif direction == 3: # K
+        f = 5
+        first = 2
+        second = 1
+
+    IZB1 = startblock
+    IZF1 = f
+    IZB2 = endblock
+    IZF2 = f + 1
+    
+    IJZ11 = 1
+    IJZ12 = XT[startblock].shape[first] 
+    JKZ11 = 1
+    JKZ12 = XT[startblock].shape[second] 
+    IJZ21 = 1
+    IJZ22 = XT[startblock].shape[first] 
+    JKZ21 = 1
+    JKZ22 = XT[startblock].shape[second] 
+
+    INONUF = 0
+
+    return [[IFCYC, IZB1, IZF1, IJZ11, IJZ12, JKZ11, JKZ12, INONUF],
+            [IZB2, IZF2, IJZ21, IJZ22, JKZ21, JKZ22]]
 
 
 #================= fort.11 =================
@@ -232,6 +168,8 @@ with open("fort11.txt", 'w', encoding='UTF-8') as f:
 
     f.write(f'{0:>6},')
 
+    f.write('\n')
+
     # group 3
     for g3 in group3:
         f.write(f'{g3:>6},')
@@ -252,8 +190,6 @@ with open("fort11.txt", 'w', encoding='UTF-8') as f:
             f.write(f'{0.:>6},')
         
         f.write('\n')
-
-        print("fort11.txt established.")
     
     # group 4
     for g4 in group4_1:
@@ -264,3 +200,5 @@ with open("fort11.txt", 'w', encoding='UTF-8') as f:
     f.write('\n')
 
     
+    
+    print("fort11.txt established.")
