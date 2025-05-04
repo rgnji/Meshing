@@ -30,12 +30,23 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     grid_x = Rg * np.cos(theta_grid)
     grid_y = Rg * np.sin(theta_grid)
     grid_z = np.broadcast_to(grid2d_z, (num_rl+1, *grid2d_z.shape))
+
+    # i,j,k to k,i,j
+    grid_x = grid_x.transpose(1, 2, 0)
+    grid_y = grid_y.transpose(1, 2, 0)
+    grid_z = grid_z.transpose(1, 2, 0)
+
     blocks.append((grid_x, grid_y, grid_z))
 
     #=================== another thickness ===================
     theta_grid_2 = theta_grid + np.pi
     grid_x_2 = Rg * np.cos(theta_grid_2)
     grid_y_2 = Rg * np.sin(theta_grid_2)
+
+    # i,j,k to k,i,j
+    grid_x_2 = grid_x_2.transpose(1, 2, 0)
+    grid_y_2 = grid_y_2.transpose(1, 2, 0)
+
     blocks.append((grid_x_2, grid_y_2, grid_z))
 
     #=================== inlet pipe ===================
@@ -52,19 +63,29 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     theta_inlet += theta_center
     inlet_x = r_inlet * np.cos(theta_inlet)
     inlet_y = r_inlet * np.sin(theta_inlet)
+
+    # i,j,k to k,i,j
+    inlet_x = inlet_x.transpose(1, 2, 0)
+    inlet_y = inlet_y.transpose(1, 2, 0)
+    inlet_z = inlet_z.transpose(1, 2, 0)
     blocks.append((inlet_x, inlet_y, inlet_z))
 
     #=================== another pipe ===================
     theta_inlet_2 = theta_inlet + np.pi
     inlet_x_2 = r_inlet * np.cos(theta_inlet_2)
     inlet_y_2 = r_inlet * np.sin(theta_inlet_2)
+
+    # i,j,k to k,i,j
+    inlet_x_2 = inlet_x.transpose(1, 2, 0)
+    inlet_y_2 = inlet_y.transpose(1, 2, 0)
+
     blocks.append((inlet_x_2, inlet_y_2, inlet_z))
 
     #=================== outer extension ===================
-    bound_theta = np.full(num_s+1, outer_theta_fixed)
-    bound_z = np.linspace(outer_z_start, outer_z_end, num_s+1)
-    out2d_theta = np.linspace(bound_theta, theta[0], num_arc+1)
-    out2d_z = np.linspace(bound_z, grid2d_z[0], num_arc+1)
+    bound_theta = np.full(num_s+1, outer_theta_fixed) # axial direction
+    bound_z = np.linspace(outer_z_start, outer_z_end, num_s+1) # axial direction
+    out2d_theta = np.linspace(bound_theta, theta[0], num_arc+1) # arc direction
+    out2d_z = np.linspace(bound_z, grid2d_z[0], num_arc+1) # arc direction
 
     jj, Rg, ii = np.meshgrid(np.arange(out2d_theta.shape[0]), R_grid, np.arange(out2d_theta.shape[1]))
     out_theta = np.broadcast_to(out2d_theta, (num_rl+1, *out2d_theta.shape))
@@ -72,12 +93,23 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     out_x = Rg * np.cos(out_theta)
     out_y = Rg * np.sin(out_theta)
     out_z = np.broadcast_to(out2d_z, (num_rl+1, *out2d_z.shape))
+
+    # i,j,k to k,i,j
+    out_x = out_x.transpose(1, 2, 0)
+    out_y = out_y.transpose(1, 2, 0)
+    out_z = out_z.transpose(1, 2, 0)
+
     blocks.append((out_x, out_y, out_z))
 
     #=================== another outer ===================
     out_theta_2 = out_theta + np.pi
     out_x_2 = Rg * np.cos(out_theta_2)
     out_y_2 = Rg * np.sin(out_theta_2)
+
+    # i,j,k to k,i,j
+    out_x_2 = out_x_2.transpose(1, 2, 0)
+    out_y_2 = out_y_2.transpose(1, 2, 0)
+
     blocks.append((out_x_2, out_y_2, out_z))
 
     return blocks

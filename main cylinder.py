@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from lib.cylindermesh import o_grid, h_grid
 from lib.plot3dout import unformatted_fort12, binary_fort12
 from lib.liquid_domain import liquid_cylinder
-from lib.controlcards import gridz_size, patch, o_patch, h_patch, o_inner_patch
+from lib.controlcards import gridz_size, patch, o_patch, h_patch, o_inner_patch, h_patch_liquid
 
 # arc_number == num_arc
 
@@ -73,28 +73,35 @@ print(txt)
 
 
 #================= fort.11 =================
+# o_patch
 group4_cards_o = [1, 6, 10, 15, 19, 23, 28, 32, 36]
+# h_patch
 group4_cards_h = [1, 10, 23]
-group4_cards_oin = [[15, 10], [19, 15], [28, 23], [32, 28], [36, 32]]
+# o_inner_patch
+group4_cards_o_in = [[15, 10], [19, 15], [28, 23], [32, 28], [36, 32]]
+# patch
 group4_cards_z = [[1, 10, 3], [2, 11, 3], [3, 12, 3], [4, 13, 3], [5, 14, 3],
                   [6, 19, 3], [7, 20, 3], [8, 21, 3], [9, 22, 3],
                   [10, 23, 3], [11, 24, 3], [12, 25, 3], [13, 26, 3], [14, 27, 3],
                   [15, 28, 3], [16, 29, 3], [17, 30, 3], [18, 31, 3],
                   [19, 32, 3], [20, 33, 3], [21, 34, 3], [22, 35, 3],
                   ]
-group4_cards_l = [[40, 42, 3], [40, 44, 2], [40, 64, 2], [40, 46, 1], # pipe, outer, h-grid, o-grid
-                  [46, 48, 3], [46, 50, 2], [46, 64, 2], [46, 52, 1],
-                  [52, 54, 3], [52, 56, 2], [52, 64, 2], [52, 58, 1],
-                  [58, 60, 3], [58, 62, 2], [58, 64, 2], [58, 40, 1],
-                  [41, 43, 3], [41, 45, 2], [41, 65, 2], [41, 47, 1],
-                  [47, 49, 3], [47, 51, 2], [47, 65, 2], [47, 53, 1],
-                  [53, 55, 3], [53, 57, 2], [53, 65, 2], [53, 59, 1],
-                  [59, 61, 3], [59, 63, 2], [59, 65, 2], [59, 41, 1],
-                  [42, 48, 1], [48, 54, 1], [54, 60, 1], [60, 42, 1], # pipe 1 o-grid
-                  [42, 66, 2], [48, 66, 2], [54, 66, 2], [60, 66, 2], # pipe 1 h-grid
-                  [43, 49, 1], [49, 55, 1], [55, 61, 1], [61, 43, 1], # pipe 2 o-grid
-                  [43, 67, 2], [49, 67, 2], [55, 67, 2], [61, 67, 2], # pipe 2 h-grid
-                  [42, 48, ]]
+group4_cards_l = [[42, 40, 2], [44, 40, 1], [40, 46, 3], # pipe, outer, o-grid
+                  [48, 46, 2], [50, 46, 1], [46, 52, 3],
+                  [54, 52, 2], [56, 52, 1], [52, 58, 3],
+                  [60, 58, 2], [62, 58, 1], [58, 40, 3],
+                  [43, 41, 2], [45, 41, 1], [41, 47, 3],
+                  [49, 47, 2], [51, 47, 1], [47, 53, 3],
+                  [55, 53, 2], [57, 53, 1], [53, 59, 3],
+                  [61, 59, 2], [63, 59, 1], [59, 41, 3],
+                  [42, 48, 3], [48, 54, 3], [54, 60, 3], [60, 42, 3], # pipe 1 o-grid                 
+                  [43, 49, 3], [49, 55, 3], [55, 61, 3], [61, 43, 3], # pipe 2 o-grid
+                  [62, 44, 3], [50, 56, 3], [63, 45, 3], [51, 57, 3] # outer
+                  ]
+# h_patch_liquid
+group4_liquid_h = [[40, 64], [41, 65], [42, 66], [43, 67]]
+# patch (izf1 and 2 = 2)
+group4_outer = [[44, 51], [62, 57], [50, 45], [56, 63]]
 
 
 with open("fort11.txt", 'w', encoding='UTF-8') as f:
@@ -147,6 +154,55 @@ with open("fort11.txt", 'w', encoding='UTF-8') as f:
         f.write(f'{g4:>6},')
     f.write('\n')
 
+    group4_output = []
+
+    for i in group4_cards_o:
+        group4_output.extend(o_patch(XT, i))
+    for i in group4_cards_h:
+        group4_output.extend(h_patch(XT, i))
+    for i in group4_cards_o_in:
+        group4_output.extend(o_inner_patch(XT, *i))
+    for i in group4_cards_z:
+        if i[2] == 1:
+            izf1 = 1
+            izf2 = 2
+        elif i[2] == 2:
+            izf1 = 3
+            izf2 = 4
+        elif i[2] == 3:
+            izf1 = 5
+            izf2 = 6
+        group4_output.extend(patch(XT, i[0], i[1], izf1, izf2, 1, 1, 1, 1))
+    for i in group4_cards_l:
+        if i[2] == 1:
+            izf1 = 1
+            izf2 = 2
+        elif i[2] == 2:
+            izf1 = 3
+            izf2 = 4
+        elif i[2] == 3:
+            izf1 = 5
+            izf2 = 6
+        group4_output.extend(patch(XT, i[0], i[1], izf1, izf2, 1, 1, 1, 1))
+    for i in group4_liquid_h:
+        group4_output.extend(h_patch_liquid(XT, *i))
+    for i in group4_outer:
+        group4_output.extend(patch(XT, i[0], i[1], 2, 2, 1, 1, 1, 1))
     
+    print(len(group4_output))
+    print(group4_output[0][1])
     
+    for item in group4_output:
+        """
+        print(type(group4_output[item][0])) # list ???
+        break
+        """
+        for item_1 in item[0]:
+            f.write(f'{item_1:>6},')
+        f.write('\n')
+        f.write('       ')
+        for item_2 in item[1]:
+            f.write(f'{item_2:>6},')
+        f.write('\n')
+        
     print("fort11.txt established.")
