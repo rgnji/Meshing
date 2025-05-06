@@ -1,3 +1,6 @@
+from numba import njit
+
+@njit
 #========== solve laplace equation ==========
 def solve_grid_laplace_sor(x, y, omega=1.5, tol=1e-6, max_iter=10000):
     x_new = x.copy()

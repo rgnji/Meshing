@@ -193,10 +193,6 @@ with open("fort11.txt", 'w', encoding='UTF-8') as f:
     print(group4_output[0][1])
     
     for item in group4_output:
-        """
-        print(type(group4_output[item][0])) # list ???
-        break
-        """
         for item_1 in item[0]:
             f.write(f'{item_1:>6},')
         f.write('\n')

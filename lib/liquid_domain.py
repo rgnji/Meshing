@@ -76,8 +76,8 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     inlet_y_2 = r_inlet * np.sin(theta_inlet_2)
 
     # i,j,k to k,i,j
-    inlet_x_2 = inlet_x.transpose(1, 2, 0)
-    inlet_y_2 = inlet_y.transpose(1, 2, 0)
+    inlet_x_2 = inlet_x_2.transpose(1, 2, 0)
+    inlet_y_2 = inlet_y_2.transpose(1, 2, 0)
 
     blocks.append((inlet_x_2, inlet_y_2, inlet_z))
 
