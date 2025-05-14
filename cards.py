@@ -1,7 +1,39 @@
 import numpy as np
 from struct import unpack
 
+# ================== group 5 ==================
+# zonal index of flow boundary (1-based)
+# information can be obtained from paraview
+# inlet, outlet
+IBCZON = [[1,2,3,4,5,
+           42,43,48,49,54,55,60,61,66,67],
+          [23,24,25,26,27,
+          28,29,30,31,
+          32,33,34,35,
+          36,37,38,39,
+          36,37,38,39,
+          36,37,38,39]]
+IDBC = [[6,6,6,6,6,
+         2,2,2,2,2,2,2,2,6,6],
+         [5,5,5,5,5,
+          5,5,5,5,
+          5,5,5,5,
+          4,4,4,4,
+          5,5,5,5,
+          6,6,6,6]]
+ITYBC = [[-2,-2,-2,-2,-2,
+          -2,-2,-2,-2,-2,-2,-2,-2,-2,-2],
+          [2,2,2,2,2,
+           2,2,2,2,
+           2,2,2,2,
+           2,2,2,2,
+           2,2,2,2,
+           2,2,2,2]]
+
+
+# =============================================
 # ================== read in ==================
+# =============================================
 with open("fort12.bin.xyz", "rb") as f12:
     data = f12.read(4)
     blocks = unpack("<i", data)[0]  # number of blocks
@@ -31,6 +63,10 @@ with open("fort12.bin.xyz", "rb") as f12:
         start = end
         end += size
         ZT.append( coor[start:end].reshape(dim[i][::-1]) )
+# =============================================
+# =============================================
+# =============================================
+
 
 
 # ================== group 2 ==================
@@ -101,7 +137,7 @@ for target in range(IZON):
     patched_interface.append(patch)
 
 IZFACE = sum(1 for ptc in patched_interface for blk in ptc if blk != -1) / 2
-IBND = (5+5+5)+(8+4+4+5)
+IBND = (5+5+5)+(12+4+4+5)
 ID = sum(1 for ptc in patched_interface for blk in ptc if blk == -1) - IBND
 ISNGL = 0
 
@@ -123,11 +159,11 @@ def gp4(block, face):
             vertex = 5
         return vertex
     
-    def reverse(r, d, XT_blk):
+    def reverse(r, d, dimension):
         if r == 1:
-            return XT_blk.shape[d], 1
+            return dimension[d], 1
         else:
-            return 1, XT_blk.shape[d]
+            return 1, dimension[d]
     
     # block 1 starting point
     target_start = start(face)
@@ -153,19 +189,24 @@ def gp4(block, face):
     if patched_interface[neighbor].index(block) == 1 or 2:
         ijz = vector_start[1] - vector_share[1]
         jkz = vector_start[2] - vector_share[2]
-        d = [1, 0] # j, k
+        d = [1, 2] # j, k in dim
     elif patched_interface[neighbor].index(block) == 3 or 4:
         ijz = vector_start[0] - vector_share[0]
         jkz = vector_start[2] - vector_share[2]
-        d = [2, 0] # i, k
+        d = [0, 2] # i, k in dim
     elif patched_interface[neighbor].index(block) == 5 or 6:
         ijz = vector_start[0] - vector_share[0]
         jkz = vector_start[1] - vector_share[1]
-        d = [2, 1] # i, j
+        d = [0, 1] # i, j in dim
 
-    return reverse(ijz, d[0], XT[neighbor]), reverse(jkz, d[1], XT[neighbor])
+    return reverse(ijz, d[0], dim[neighbor]), reverse(jkz, d[1], dim[neighbor])
 
+
+
+
+# =============================================
 # ================== fort.11 ==================
+# =============================================
 with open("fort11.txt", "w", encoding="UTF-8") as f:
     title = "GCSC INJECTOR A"
 
@@ -224,14 +265,14 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
                 IJZ11 = 1
                 JKZ11 = 1
                 if d4+1 == 1 or 2:
-                    IJZ12 = XT[blk4].shape[1]
-                    JKZ12 = XT[blk4].shape[0]
+                    IJZ12 = dim[blk4][1]
+                    JKZ12 = dim[blk4][2]
                 elif d4+1 == 3 or 4:
-                    IJZ12 = XT[blk4].shape[2]
-                    JKZ12 = XT[blk4].shape[0]
+                    IJZ12 = dim[blk4][0]
+                    JKZ12 = dim[blk4][2]
                 elif d4+1 == 5 or 6:
-                    IJZ12 = XT[blk4].shape[2]
-                    JKZ12 = XT[blk4].shape[1]
+                    IJZ12 = dim[blk4][0]
+                    JKZ12 = dim[blk4][1]
                 
                 IJZ21, IJZ22, JKZ21, JKZ22 = gp4(blk4, d4+1)
 
@@ -242,3 +283,34 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
                 f.write('\n')
 
     # ================== group 5 ==================
+    group5 = ['IBCZON','IDBC','ITYBC','IJBB','IJBS','IJBT','JKBS','JKBT']
+    for g5 in group5:
+        f.write(f'{g5:>7},')
+    f.write(f'\n')
+
+    for g5 in range(IBND):
+        f.write(f'{IBCZON[g5]:>7},{IDBC[g5]:>7},{ITYBC[g5]:>7},')
+        
+        if IDBC[g5] == 2 or 4 or 6:
+            IJBB = 1
+        elif IDBC[g5] == 1:
+            IJBB = dim[ IBCZON[g5] ][0]
+        elif IDBC[g5] == 3:
+            IJBB = dim[ IBCZON[g5] ][1]
+        elif IDBC[g5] == 5:
+            IJBB = dim[ IBCZON[g5] ][2]
+
+        IJBS = JKBS = 1
+        if IDBC[g5] == 1 or 2:
+            IJBT = dim[ IBCZON[g5] ][1]
+            JKBT = dim[ IBCZON[g5] ][2]
+        elif IDBC[g5] == 3 or 4:
+            IJBT = dim[ IBCZON[g5] ][0]
+            JKBT = dim[ IBCZON[g5] ][2]
+        elif IDBC[g5] == 5 or 6:
+            IJBT = dim[ IBCZON[g5] ][0]
+            JKBT = dim[ IBCZON[g5] ][1]
+
+        f.write(f'{IJBB:>7},{IJBS:>7},{IJBT:>7},{JKBS:>7},{JKBT:>7},\n')
+
+    # ================== group 6 ==================
