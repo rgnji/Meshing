@@ -1,0 +1,244 @@
+import numpy as np
+from struct import unpack
+
+# ================== read in ==================
+with open("fort12.bin.xyz", "rb") as f12:
+    data = f12.read(4)
+    blocks = unpack("<i", data)[0]  # number of blocks
+
+    dim = []
+    for i in range(blocks):
+        data = f12.read(4*3)
+        dim.append(unpack("<i", data)) # (IZT, JZT, KZT)
+    
+    coor = np.frombuffer(f12.read(), dtype=np.float32)
+
+    XT = []
+    YT = []
+    ZT = []
+    start = 0
+    end = 0
+    for i in range(blocks):
+        now = dim[i]
+        size = now[0] * now[1] * now[2]
+
+        start = end
+        end += size # end index
+        XT.append( coor[start:end].reshape(dim[i][::-1]) )
+        start = end
+        end += size
+        YT.append( coor[start:end].reshape(dim[i][::-1]) )
+        start = end
+        end += size
+        ZT.append( coor[start:end].reshape(dim[i][::-1]) )
+
+
+# ================== group 2 ==================
+IZON = len(XT) # number of blocks
+
+# eight vertices of each block
+verticesX = []
+verticesY = []
+verticesZ = []
+loc = [ [ 0, 0, 0],
+        [-1, 0, 0],
+        [-1,-1, 0],
+        [ 0,-1, 0],
+        [ 0, 0,-1],
+        [-1, 0,-1],
+        [-1,-1,-1],
+        [ 0,-1,-1]]
+for block in range(blocks):
+    x = []
+    y = []
+    z = []
+    for i, j, k in loc:
+        x.append(XT[k][j][i])
+        y.append(YT[k][j][i])
+        z.append(ZT[k][j][i])
+    verticesX.append(x)
+    verticesY.append(y)
+    verticesZ.append(z)
+
+# neighboring blocks in the six direction
+patched_interface = []
+direction = [[3,6,7],
+             [1,4,5],
+             [3,7,8],
+             [1,2,5],
+             [6,7,8],
+             [1,2,4]]
+
+for target in range(IZON):
+    patch = [] # shared faces, 6 values
+
+    # search for patched blocks in six direction
+    for d in range(6):
+        nb = [] # shared vertex, 3 sets
+
+        # find the blocks sharing the same vertices of direction[d]
+        for v in direction[d]:
+            target_x = verticesX[target][v-1]
+            target_y = verticesY[target][v-1]
+            target_z = verticesZ[target][v-1]
+            neighbor_x, neighbor_y, neighbor_z = set()
+
+            for block in list(range(IZON)).remove(target):
+                if target_x in verticesX[block]:
+                    neighbor_x.add(block)
+                if target_y in verticesY[block]:
+                    neighbor_y.add(block)
+                if target_z in verticesZ[block]:
+                    neighbor_z.add(block)
+            nb.append(set(neighbor_x & neighbor_y & neighbor_z))
+
+        # find the block sharing the same three vertices
+        if nb[0] & nb[1] & nb[2]:
+            patch.append(list(nb[0] & nb[1] & nb[2])[0])
+        else:
+            patch.append(-1)
+    
+    patched_interface.append(patch)
+
+IZFACE = sum(1 for ptc in patched_interface for blk in ptc if blk != -1) / 2
+IBND = (5+5+5)+(8+4+4+5)
+ID = sum(1 for ptc in patched_interface for blk in ptc if blk == -1) - IBND
+ISNGL = 0
+
+# ================== group 4 ==================
+def gp4(block, face):
+    """
+    block: index
+    face: 1~6
+    returns: IJZ21, IJZ22, JKZ21, JKZ22
+    """
+    def start(direction):
+        if direction == 2 or 4 or 6:
+            vertex = 1
+        elif direction == 1:
+            vertex = 2
+        elif direction == 3:
+            vertex = 4
+        elif direction == 5:
+            vertex = 5
+        return vertex
+    
+    def reverse(r, d, XT_blk):
+        if r == 1:
+            return XT_blk.shape[d], 1
+        else:
+            return 1, XT_blk.shape[d]
+    
+    # block 1 starting point
+    target_start = start(face)
+    target_vx = verticesX[block][target_start-1]
+    target_vy = verticesY[block][target_start-1]
+    target_vz = verticesZ[block][target_start-1]
+
+    # block 2 shared point
+    neighbor = patched_interface[block][face - 1]
+    for neighbor_vertex in range(8): # 0-based
+        neighbor_vx = verticesX[neighbor][neighbor_vertex]
+        neighbor_vy = verticesY[neighbor][neighbor_vertex]
+        neighbor_vz = verticesZ[neighbor][neighbor_vertex]
+        if neighbor_vx == target_vx and neighbor_vy == target_vy and neighbor_vz == target_vz:
+            break
+    
+    # block 2 starting point
+    neighbor_start = start(patched_interface[neighbor].index(block) + 1) # 1-based
+
+    # 1 for reversed, 0 for no change
+    vector_share = loc[neighbor_vertex]
+    vector_start = loc[neighbor_start - 1]
+    if patched_interface[neighbor].index(block) == 1 or 2:
+        ijz = vector_start[1] - vector_share[1]
+        jkz = vector_start[2] - vector_share[2]
+        d = [1, 0] # j, k
+    elif patched_interface[neighbor].index(block) == 3 or 4:
+        ijz = vector_start[0] - vector_share[0]
+        jkz = vector_start[2] - vector_share[2]
+        d = [2, 0] # i, k
+    elif patched_interface[neighbor].index(block) == 5 or 6:
+        ijz = vector_start[0] - vector_share[0]
+        jkz = vector_start[1] - vector_share[1]
+        d = [2, 1] # i, j
+
+    return reverse(ijz, d[0], XT[neighbor]), reverse(jkz, d[1], XT[neighbor])
+
+# ================== fort.11 ==================
+with open("fort11.txt", "w", encoding="UTF-8") as f:
+    title = "GCSC INJECTOR A"
+
+    # ================== group 1 ==================
+    f.write(f"TITLE: {title}\n")
+    f.write(f'IDIM,\n{3:>4},\n')
+
+    # ================== group 2 ==================
+    group2 = ['IZON', 'IZFACE', 'IBND', 'ID', 'ISNGL']
+    for g2 in group2:
+        f.write(f'{g2:>6},')
+    f.write('\n')
+    f.write(f'{IZON:>6},{IZFACE:>6},{IBND:>6},{ID:>6},{ISNGL:>6},\n')
+
+    # ================== group 3 ==================
+    group3 = ['IZT', 'JZT', 'KZT', 'LPROC', 'CBG1', 'CBG2', 'CBG3', 'CBV1', 'CBV2', 'CBV3']
+
+    for g3 in group3:
+        f.write(f'{g3:>6},')
+    f.write('\n')
+
+    for blk3 in range(IZON):
+        f.write(f'{dim[blk3][0]:>6},{dim[blk3][1]:>6},{dim[blk3][2]:>6},')
+
+        if blk3 < 48:
+            f.write(f'{1:>6},')
+        else:
+            f.write(f'{2:>6},')
+
+        for gg3 in range(6):
+            f.write(f'{0.:>6},')
+
+        f.write(f'\n')
+
+    # ================== group 4 ==================
+    group4_1 = ['IFCYC', 'IZB1', 'IZF1', 'IJZ11', 'IJZ12', 'JKZ11', 'JKZ12', 'INONUF']
+    group4_2 = ['IZB2', 'IZF2', 'IJZ21', 'IJZ22', 'JKZ21', 'JKZ22']
+    for g4 in group4_1:
+        f.write(f'{g4:>6},')
+    f.write('\n')
+    f.write(f'{'':>6} ')
+    for g4 in group4_2:
+        f.write(f'{g4:>6},')
+    f.write('\n')
+
+    IFCYC = 1
+    INONUF = 0
+    for blk4 in range(IZON):
+        for d4 in range(6):
+            if patched_interface[blk4][d4] and blk4 < patched_interface[blk4][d4]:
+                IZB1 = blk4 + 1
+                IZF1 = d4 + 1
+                IZB2 = patched_interface[blk4][d4] + 1
+                IZF2 = patched_interface[IZB2-1].index(blk4)
+                
+                IJZ11 = 1
+                JKZ11 = 1
+                if d4+1 == 1 or 2:
+                    IJZ12 = XT[blk4].shape[1]
+                    JKZ12 = XT[blk4].shape[0]
+                elif d4+1 == 3 or 4:
+                    IJZ12 = XT[blk4].shape[2]
+                    JKZ12 = XT[blk4].shape[0]
+                elif d4+1 == 5 or 6:
+                    IJZ12 = XT[blk4].shape[2]
+                    JKZ12 = XT[blk4].shape[1]
+                
+                IJZ21, IJZ22, JKZ21, JKZ22 = gp4(blk4, d4+1)
+
+                f.write(f'{IFCYC:>6},{IZB1:>6},{IZF1:>6},')
+                f.write(f'{IJZ11:>6},{IJZ12:>6},{JKZ11:>6},{JKZ12:>6},')
+                f.write(f'{INONUF:>6},\n')
+                f.write(f'{'':>6} {IZB2:>6},{IZF2:>6},{IJZ21:>6},{IJZ22:>6},{JKZ21:>6},{JKZ22:>6},')
+                f.write('\n')
+
+    # ================== group 5 ==================
