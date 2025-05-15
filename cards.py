@@ -5,31 +5,37 @@ from struct import unpack
 # zonal index of flow boundary (1-based)
 # information can be obtained from paraview
 # inlet, outlet
-IBCZON = [[1,2,3,4,5,
-           42,43,48,49,54,55,60,61,66,67],
-          [23,24,25,26,27,
+IBCZON = [1,2,3,4,5,
+          42,43,48,49,54,55,60,61,66,67,
+          23,24,25,26,27,
           28,29,30,31,
           32,33,34,35,
           36,37,38,39,
           36,37,38,39,
-          36,37,38,39]]
-IDBC = [[6,6,6,6,6,
-         2,2,2,2,2,2,2,2,6,6],
-         [5,5,5,5,5,
-          5,5,5,5,
-          5,5,5,5,
-          4,4,4,4,
-          5,5,5,5,
-          6,6,6,6]]
-ITYBC = [[-2,-2,-2,-2,-2,
-          -2,-2,-2,-2,-2,-2,-2,-2,-2,-2],
-          [2,2,2,2,2,
-           2,2,2,2,
-           2,2,2,2,
-           2,2,2,2,
-           2,2,2,2,
-           2,2,2,2]]
+          36,37,38,39]
+IDBC = [6,6,6,6,6,
+        2,2,2,2,2,2,2,2,6,6,
+        5,5,5,5,5,
+        5,5,5,5,
+        5,5,5,5,
+        4,4,4,4,
+        5,5,5,5,
+        6,6,6,6]
+ITYBC = [-2,-2,-2,-2,-2,
+         -2,-2,-2,-2,-2,-2,-2,-2,-2,-2,
+         2,2,2,2,2,
+         2,2,2,2,
+         2,2,2,2,
+         2,2,2,2,
+         2,2,2,2,
+         2,2,2,2]
 
+# ================== group 5 ==================
+IWTM = 1
+HQDOX = 0
+IWALL = 0
+DENNX = 0
+VISWX = 0
 
 # =============================================
 # ================== read in ==================
@@ -286,7 +292,7 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
     group5 = ['IBCZON','IDBC','ITYBC','IJBB','IJBS','IJBT','JKBS','JKBT']
     for g5 in group5:
         f.write(f'{g5:>7},')
-    f.write(f'\n')
+    f.write('\n')
 
     for g5 in range(IBND):
         f.write(f'{IBCZON[g5]:>7},{IDBC[g5]:>7},{ITYBC[g5]:>7},')
@@ -314,3 +320,63 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
         f.write(f'{IJBB:>7},{IJBS:>7},{IJBT:>7},{JKBS:>7},{JKBT:>7},\n')
 
     # ================== group 6 ==================
+    group6 = ['IWBZON','L1','L2','M1','M2','N1','N2','IWTM','HQDOX','IWALL','DENNX','VISWX']
+    for g6 in group6:
+        f.write(f'{g6:>7},')
+    f.write('\n')
+
+    def gp6(blk, face):
+        if face == 1:
+            istart= iend = dim[blk][0]
+            jstart = kstart = 1
+            jend = dim[blk][1]
+            kend = dim[blk][2]
+        elif face == 2:
+            istart = iend = 1
+            jstart = kstart = 1
+            jend = dim[blk][1]
+            kend = dim[blk][2]
+        elif face == 3:
+            jstart = jend = dim[blk][1]
+            istart = kstart = 1
+            iend = dim[blk][0]
+            kend = dim[blk][2]
+        elif face == 4:
+            jstart = jend = 1
+            istart = kstart = 1
+            iend = dim[blk][0]
+            kend = dim[blk][2]
+        elif face == 5:
+            kstart = kend = dim[blk][2]
+            istart = jstart = 1
+            iend = dim[blk][0]
+            jend = dim[blk][1]
+        elif face == 6:
+            kstart = kend = 1
+            istart = jstart = 1
+            iend = dim[blk][0]
+            jend = dim[blk][1]
+        return istart, iend, jstart, jend, kstart, kend
+
+    for blk6 in range(IZON):
+        for face6 in range(6):
+            if patched_interface[blk6][face6] == -1:
+                if (blk6 + 1) not in IBCZON:
+                    IWBZON = blk6 + 1
+                    L1, L2, M1, M2, N1, N2 = gp6(blk6, face6 + 1)
+                    f.write(f'{IWBZON:>7},')
+                    f.write(f'{L1:>7},{L2:>7},{M1:>7},{M2:>7},{N1:>7},{N2:>7},')
+                    f.write(f'{IWTM:>7},{HQDOX:>7},{IWALL:>7},{DENNX:>7},{VISWX:>7},\n')
+
+                else:
+                    for index6, value6 in enumerate(IBCZON):
+                        if value6 == blk6 + 1:
+                            if IDBC[index6] != face6 + 1:
+                                IWBZON = blk6 + 1
+                                L1, L2, M1, M2, N1, N2 = gp6(blk6, face6 + 1)
+                                f.write(f'{IWBZON:>7},')
+                                f.write(f'{L1:>7},{L2:>7},{M1:>7},{M2:>7},{N1:>7},{N2:>7},')
+                                f.write(f'{IWTM:>7},{HQDOX:>7},{IWALL:>7},{DENNX:>7},{VISWX:>7},\n')
+    
+    # ================== group 7 ==================
+    
