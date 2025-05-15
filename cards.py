@@ -30,12 +30,31 @@ ITYBC = [-2,-2,-2,-2,-2,
          2,2,2,2,
          2,2,2,2]
 
-# ================== group 5 ==================
+# ================== group 6 ==================
 IWTM = 1
 HQDOX = 0
 IWALL = 0
 DENNX = 0
 VISWX = 0
+
+# ================== group 8 ==================
+IDATA = 1
+IGEO = 9 #?
+ITT = 500
+ITPNT = 5
+ICOUP = 3
+NLIMT = 1
+IAX = 1
+ICYC = 3 #?
+
+# ================== group 8 ==================
+DTT = 0.01
+IREC = 1
+REC = 0.1
+THETA = .99
+BETAP = 1.01
+IEXX = 2
+PRAT = 0.0
 
 # =============================================
 # ================== read in ==================
@@ -379,4 +398,24 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
                                 f.write(f'{IWTM:>7},{HQDOX:>7},{IWALL:>7},{DENNX:>7},{VISWX:>7},\n')
     
     # ================== group 7 ==================
+    group7 = ['ISNZON', 'ISNBC', 'ISNAX', 'ISNBS', 'ISNBT']
+    for g7 in group7:
+        f.write(f'{g7:>6},')
+    f.write('\n')
+
+    # ================== group 8 ==================
+    group8 = ['IDATA', 'IGEO', 'ITT', 'ITPNT', 'ICOUP', 'NLIMT', 'IAX', 'ICYC']
+    for g8 in group8:
+        f.write(f'{g8:>6},')
+    f.write('\n')
+    f.write(f'{IDATA:>6},{IGEO:>6},{ITT:>6},{ITPNT:>6},{ICOUP:>6},{NLIMT:>6},{IAX:>6},{ICYC:>6},\n')
+
+    # ================== group 9 ==================
+    group9 = ['DTT', 'IREC', 'REC', 'THETA', 'BETAP', 'IEXX', 'PRAT']
+    for g9 in group9:
+        f.write(f'{g9:>6},')
+    f.write('\n')
+    f.write(f'{DTT:>6},{IREC:>6},{REC:>6},{THETA:>6},{BETAP:>6},{IEXX:>6},{PRAT:>6},\n')
+
+    # ================== group 10 ==================
     
