@@ -47,7 +47,7 @@ NLIMT = 1
 IAX = 1
 ICYC = 3 #?
 
-# ================== group 8 ==================
+# ================== group 9 ==================
 DTT = 0.01
 IREC = 1
 REC = 0.1
@@ -55,6 +55,27 @@ THETA = .99
 BETAP = 1.01
 IEXX = 2
 PRAT = 0.0
+
+# ================== group 10 ==================
+IPC = 12920 # injector exit center
+JPC = 14
+IPEX = 21880 # outlet center
+JPEX = 27
+IMN = 1 # liquid out
+JMN = 32
+
+# ================== group 11 ==================
+VISC = 18.37e-6
+IG = 2
+ITURB = 1
+ICOMP = 0 #?
+GAMA = 1.455
+CBE = 0
+CBH = 0
+EREXT = 5.0e-5
+
+# ================== group 12 ==================
+
 
 # =============================================
 # ================== read in ==================
@@ -418,4 +439,18 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
     f.write(f'{DTT:>6},{IREC:>6},{REC:>6},{THETA:>6},{BETAP:>6},{IEXX:>6},{PRAT:>6},\n')
 
     # ================== group 10 ==================
-    
+    group10 = ['IPC', 'JPC', 'IPEX', 'JPEX', 'IMN', 'JMN']
+    for g10 in group10:
+        f.write(f'{g10:>6},')
+    f.write('\n')
+    f.write(f'{IPC:>6},{JPC:>6},{IPEX:>6},{JPEX:>6},{IMN:>6},{JMN:>6},\n')
+
+    # ================== group 11 ==================
+    group11 = ['VISC', 'IG', 'ITURB', 'ICOMP', 'GAMA', 'CBE', 'CBH', 'EREXT']
+    for g11 in group11:
+        f.write(f'{g11:>9},')
+    f.write('\n')
+    f.write(f'{VISC:>9},{IG:>9},{ITURB:>9},{ICOMP:>9},{GAMA:>9},{CBE:>9},{CBH:>9},{EREXT:>9},')
+
+    # ================== group 12 ==================
+    group12 = []
