@@ -30,21 +30,21 @@ def unformatted_fort12(X, Y, Z):
         # write coordinates of all the points in a block
         # write all the "x", then all the "y", then "z"
         for block in range(len(X)):
-            x_flat = np.array(X[block].flatten(), dtype=np.float32) # total element size
+            x_flat = np.array(X[block].flatten(), dtype=np.float64) # total element size
             len_x = x_flat.nbytes
 
             f.write(struct.pack("<i", len_x)) # write x 
-            x = np.array(X[block], dtype=np.float32) # change dtype
+            x = np.array(X[block], dtype=np.float64) # change dtype
             x.tofile(f) # row-major
             f.write(struct.pack("<i", len_x))
 
             f.write(struct.pack("<i", len_x)) # write y
-            y = np.array(Y[block], dtype=np.float32)
+            y = np.array(Y[block], dtype=np.float64)
             y.tofile(f)
             f.write(struct.pack("<i", len_x))
 
             f.write(struct.pack("<i", len_x)) # write z
-            z = np.array(Z[block], dtype=np.float32)
+            z = np.array(Z[block], dtype=np.float64)
             z.tofile(f)
             f.write(struct.pack("<i", len_x))
     
@@ -72,13 +72,13 @@ def binary_fort12(X, Y, Z):
         # write coordinates of all the points in a block
         # write all the "x", then all the "y", then "z"
         for block in range(len(X)):
-            x = np.array(X[block], dtype=np.float32) # change dtype
+            x = np.array(X[block], dtype=np.float64) # change dtype
             x.tofile(f) # row-major
 
-            y = np.array(Y[block], dtype=np.float32)
+            y = np.array(Y[block], dtype=np.float64)
             y.tofile(f)
 
-            z = np.array(Z[block], dtype=np.float32)
+            z = np.array(Z[block], dtype=np.float64)
             z.tofile(f)
     
     return filename + " established."
