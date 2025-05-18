@@ -75,7 +75,39 @@ CBH = 0
 EREXT = 5.0e-5
 
 # ================== group 12 ==================
+ISWU = 93
+ISWP = 97
+ISWK = 93
+ISKEW = 0
 
+# ================== group 13 ==================
+U = 1
+V = 1
+W = 1
+TM = 0
+DK = 1
+DE = 1
+FL = 1
+EQ = 0
+VS = 1
+FM = 1
+SP = 1
+
+# ================== group 14 ==================
+NGAS = 1
+NREACT = 0
+IUNIT = 1
+DENREF = 1
+UREF = 1
+TREF = 1
+XREF = 1
+PREF = 1
+
+# ================== group 17 ==================
+IGDINN = 1
+IOFINN = 1
+IOFOUT = 1
+IOFP3D = 1
 
 # =============================================
 # ================== read in ==================
@@ -420,9 +452,6 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
     
     # ================== group 7 ==================
     group7 = ['ISNZON', 'ISNBC', 'ISNAX', 'ISNBS', 'ISNBT']
-    for g7 in group7:
-        f.write(f'{g7:>6},')
-    f.write('\n')
 
     # ================== group 8 ==================
     group8 = ['IDATA', 'IGEO', 'ITT', 'ITPNT', 'ICOUP', 'NLIMT', 'IAX', 'ICYC']
@@ -450,7 +479,60 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
     for g11 in group11:
         f.write(f'{g11:>9},')
     f.write('\n')
-    f.write(f'{VISC:>9},{IG:>9},{ITURB:>9},{ICOMP:>9},{GAMA:>9},{CBE:>9},{CBH:>9},{EREXT:>9},')
+    f.write(f'{VISC:>9},{IG:>9},{ITURB:>9},{ICOMP:>9},{GAMA:>9},{CBE:>9},{CBH:>9},{EREXT:>9},\n')
 
     # ================== group 12 ==================
-    group12 = []
+    group12 = ['ISWU','ISWP','ISWK','ISKEW']
+    for g12 in group12:
+        f.write(f'{g12:>6},')
+    f.write('\n')
+    f.write(f'{ISWU:>6},{ISWP:>6},{ISWK:>6},{ISKEW:>6},\n')
+
+    # ================== group 13 ==================
+    group13 = ['U','V','W','TM','DK','DE','FL','8','EQ','VS','FM','SP']
+    f.write('INSO(IEQ):\n')
+    for g13 in group13:
+        f.write(f'{g13:>3},')
+    f.write('\n')
+    f.write(f'{U:>3},{V:>3},{W:>3},{TM:>3},{DK:>3},{DE:>3},{FL:>3},{"8":>3},{EQ:>3},{VS:>3},{FM:>3},{SP:>3},\n')
+
+    # ================== group 14 ==================
+    group14 = ['NGAS','NREACT','IUNIT','DENREF','UREF','TREF','XREF','PREF']
+    for g14 in group14:
+        f.write(f'{g14:>6},')
+    f.write('\n')
+    f.write(f'{NGAS:>6},{NREACT:>6},{IUNIT:>6},{DENREF:>6},{UREF:>6},{TREF:>6},{XREF:>6},{PREF:>6},\n')
+
+    # ================== group 15 ==================
+    group15 = ['ISPARK','ISPKMIN','ISPMAX']
+    for g15 in group15:
+        f.write(f'{g15:>6},')
+    f.write('\n')
+
+    # ================== group 16 ==================
+    group16 = ['ISPKON','ISPKZN','ISPKI1','ISPKIM','ISPKJ1','ISPKJM','ISPKK1','ISPKKM','TMSPK','ISPKDBG']
+
+    # ================== group 17 ==================
+    group17 = ['IGDINN','IOFINN','IOFOUT','IOFP3D']
+    for g17 in group17:
+        f.write(f'{g17:>6},')
+    f.write('\n')
+    f.write(f'{IGDINN:>6},{IOFINN:>6},{IOFOUT:>6},{IOFP3D:>6},\n')
+
+    # ================== group 18 ==================
+    name = ['H2O']
+    temperature = [[200, 6000]]
+    coef = [[2.67703787E+00, 2.97318329E-03, -7.73769690E-07,  9.44336689E-11, -4.26900959E-15,
+            -2.98858938E+04, 6.88255571E+00,  4.19864056E+00, -2.03643410E-03,  6.52040211E-06,
+             5.48797062E-09, 1.77197817E-12, -3.02937267E+04, -8.49032208E-01, -2.90848168E+04]]
+    for g18 in range(len(name)):
+        f.write(f'{name[g18]:<15}')
+        f.write(f'{' ':27}')
+        f.write(f'{temperature[g18]:>10.3f}\n')
+        f.write(f'{coef[g18][0:5]:<15.8e}\n')
+        f.write(f'{coef[g18][5:10]:<15.8e}\n')
+        f.write(f'{coef[g18][10:15]:<15.8e}\n')
+
+    # ================== group 19 ==================
+    
+    # ================== group 20 ==================
