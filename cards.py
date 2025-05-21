@@ -21,8 +21,8 @@ IDBC = [6,6,6,6,6,
         4,4,4,4,
         5,5,5,5,
         6,6,6,6]
-ITYBC = [-2,-2,-2,-2,-2,
-         -2,-2,-2,-2,-2,-2,-2,-2,-2,-2,
+ITYBC = [-1,-1,-1,-1,-1,
+         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
          2,2,2,2,2,
          2,2,2,2,
          2,2,2,2,
@@ -113,15 +113,16 @@ IOFP3D = 1
 # ================== read in ==================
 # =============================================
 with open("fort12.bin.xyz", "rb") as f12:
-    data = f12.read(4)
+    # read fort.12 as double precision
+    data = f12.read(8)
     blocks = unpack("<i", data)[0]  # number of blocks
 
     dim = []
     for i in range(blocks):
-        data = f12.read(4*3)
+        data = f12.read(8*3)
         dim.append(unpack("<i", data)) # (IZT, JZT, KZT)
     
-    coor = np.frombuffer(f12.read(), dtype=np.float32)
+    coor = np.frombuffer(f12.read(), dtype=np.float64)
 
     XT = []
     YT = []
