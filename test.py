@@ -152,3 +152,7 @@ for qua in range(1,5):
     KZT.append(x.shape[0])
 
 """
+import numpy as np
+ls = np.array([1,2,3])
+a, b, c = ls * 3
+print(a, b, c)

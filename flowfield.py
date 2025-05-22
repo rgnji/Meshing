@@ -1,6 +1,9 @@
 import numpy as np
 from struct import unpack, pack
 
+# ============================================
+# ============================================
+# geometrical condition
 with open("fort12.bin.xyz", "rb") as f12:
     # read fort.12 as double precision
     data = f12.read(8)
@@ -73,6 +76,8 @@ density = 1
 
 
 # boundary condition
+# current bc: conserved mass flow rate
+# mass flow rate => velocity => u, v, w
 IBCZON = [1,2,3,4,5,
           42,43,48,49,54,55,60,61,66,67]
 IDBC = [6,6,6,6,6,
@@ -89,11 +94,11 @@ inlet_gas_q = 0
 inlet_liquid_density = 1000 # kg/m3
 inlet_gas_density = 1
 
-k_liquid = 3/2 * (0.05 * (mass_rate_liquid/density_liquid * inlet_liquid_r**2*np.pi))
-k_gas = 3/2 *(0.05 * (mass_rate_gas/density_gas * inlet_gas_r**2*np.pi))
+inlet_liquid_k = 3/2 * (0.05 * (mass_rate_liquid/density_liquid * inlet_liquid_r**2*np.pi))
+inlet_gas_k = 3/2 *(0.05 * (mass_rate_gas/density_gas * inlet_gas_r**2*np.pi))
 
-epsilon_liquid = 0.09**0.75 * k_liquid**1.5 / (2 * inlet_liquid_r)
-epsilon_gas = 0.09**0.75 * k_gas**1.5 / (2 * inlet_gas_r)
+inlet_liquid_epsilon = 0.09**0.75 * inlet_liquid_k**1.5 / (2 * inlet_liquid_r)
+inlet_gas_epsilon = 0.09**0.75 * inlet_gas_k**1.5 / (2 * inlet_gas_r)
 
 
 # ============================================
@@ -112,20 +117,45 @@ def face_check(face, block, bc):
         block[-1, :, :] = bc
     elif face == 6:
         block[0, :, :] = bc
+    return
 
-with open('fort13.bin.xyz', 'rb') as f13:
+def initial_uvw(block, face, velocity): # mass flow rate => velocity => u, v, w
+    if face == 1: # I-max
+        i, j, k = XT[block].shape[2], 0, 0
+        neighbor = np.array([XT[block][k][j][i-1], YT[block][k][j][i-1], ZT[block][k][j][i-1]])
+    elif face == 2: # I-1
+        i, j, k = 0, 0, 0
+        neighbor = np.array([XT[block][k][j][i+1], YT[block][k][j][i+1], ZT[block][k][j][i+1]])
+    elif face == 3: # J-max
+        i, j, k = 0, XT[block].shape[1], 0
+        neighbor = np.array([XT[block][k][j-1][i], YT[block][k][j-1][i], ZT[block][k][j-1][i]])
+    elif face == 4: # J-1
+        i, j, k = 0, 0, 0
+        neighbor = np.array([XT[block][k][j+1][i], YT[block][k][j+1][i], ZT[block][k][j+1][i]])
+    elif face == 5: # K-max
+        i, j, k = 0, 0, XT[block].shape[0]
+        neighbor = np.array([XT[block][k-1][j][i], YT[block][k-1][j][i], ZT[block][k-1][j][i]])
+    elif face == 6: # K-1
+        i, j, k = 0, 0, 0
+        neighbor = np.array([XT[block][k+1][j][i], YT[block][k+1][j][i], ZT[block][k+1][j][i]])
+
+    boundary = np.array([XT[block][k][j][i], YT[block][k][j][i], ZT[block][k][j][i]])
+    direction = (neighbor - boundary) / np.linalg.norm(neighbor - boundary)
+    uu, vv, ww = velocity * direction
+    return uu, vv, ww
+
+with open('fort13.bin.xyz', 'wb') as f13:
     f13.write(pack('<i', INSO_1))
     f13.write(pack('<i', INSO_4))
     f13.write(pack('<i', INSO_5))
     f13.write(pack('<i', INSO_7))
     f13.write(pack('<i', NGAS))
 
-    for i in range(IZON): # mass inlet => inlet density, quality need to be changed
+    for i in range(IZON): # mass flow rate inlet => u, v, w, density, (quality), mass fraction need to be changed
         izt, jzt, kzt = dim[i]
 
+        # internal flow field 
         blk_den = np.full((kzt, jzt, izt), density / RHOREF_gas)
-        blk_q = np.full((kzt, jzt, izt), q)
-
         blk_u = np.full((kzt, jzt, izt), u / UREF)
         blk_v = np.full((kzt, jzt, izt), v / UREF)
         blk_w = np.full((kzt, jzt, izt), w / UREF)
@@ -137,17 +167,47 @@ with open('fort13.bin.xyz', 'rb') as f13:
         blk_de = np.random.uniform((0.09**0.75 * 1e-6**0.75 / inlet_gas_r) / (UREF**3 / XREF), 
                                    (0.09**0.75 * 1e-4**0.75 / inlet_gas_r) / (UREF**3 / XREF), 
                                    (kzt, jzt, izt))
+        
+        blk_q = np.full((kzt, jzt, izt), q)        
+        blk_liquid_fm = np.full((kzt, jzt, izt), 0)
+        blk_gas_fm = np.full((kzt, jzt, izt), 1)
 
+        # deal with boundary face
         if i+1 in IBCZON:
             blk_index = IBCZON.index(i+1)
-            if ITYBC[blk_index] == 1:
-                face_check(IDBC[blk_index], blk_u, )
-                face_check(IDBC[blk_index], blk_den, inlet_gas_density)
-                face_check(IDBC[blk_index], blk_q, inlet_gas_q)
-            elif ITYBC[blk_index] == 2:
-                face_check(IDBC[blk_index], blk_den, inlet_liquid_density)
-                face_check(IDBC[blk_index], blk_q, inlet_liquid_q)
 
+            # if gas inlet
+            if ITYBC[blk_index] == 1:
+                face_check(IDBC[blk_index], blk_den, inlet_gas_density / RHOREF_gas)
+
+                inlet_gas_u, inlet_gas_v, inlet_gas_w = initial_uvw(i, IDBC[blk_index], inlet_gas_velocity / UREF)
+                face_check(IDBC[blk_index], blk_u, inlet_gas_u)
+                face_check(IDBC[blk_index], blk_v, inlet_gas_v)
+                face_check(IDBC[blk_index], blk_w, inlet_gas_w)
+
+                face_check(IDBC[blk_index], blk_dk, inlet_gas_k)
+                face_check(IDBC[blk_index], blk_de, inlet_gas_epsilon)
+                
+                face_check(IDBC[blk_index], blk_q, inlet_gas_q) # don't need to calculate (?)
+
+            # if liquid inlet
+            elif ITYBC[blk_index] == 2:
+                face_check(IDBC[blk_index], blk_den, inlet_liquid_density / RHOREF_liquid)
+
+                inlet_liquid_u, inlet_liquid_v, inlet_liquid_w = initial_uvw(i, IDBC[blk_index], inlet_liquid_velocity / UREF)
+                face_check(IDBC[blk_index], blk_u, inlet_liquid_u)
+                face_check(IDBC[blk_index], blk_v, inlet_liquid_v)
+                face_check(IDBC[blk_index], blk_w, inlet_liquid_w)
+
+                face_check(IDBC[blk_index], blk_dk, inlet_liquid_k)
+                face_check(IDBC[blk_index], blk_de, inlet_liquid_epsilon)
+
+                face_check(IDBC[blk_index], blk_q, inlet_liquid_q) # don't need to calculate (?)
+                
+                face_check(IDBC[blk_index], blk_gas_fm, 0)
+                face_check(IDBC[blk_index], blk_liquid_fm, 1)
+
+        # output to fort.13
         blk_den.astype(np.float64).tofile(f13)
         blk_u.astype(np.float64).tofile(f13)
         blk_v.astype(np.float64).tofile(f13)
@@ -158,3 +218,7 @@ with open('fort13.bin.xyz', 'rb') as f13:
         blk_de.astype(np.float64).tofile(f13)
 
         blk_q.astype(np.float64).tofile(f13)
+
+        # the same order what cec table in fort.11 is
+        blk_liquid_fm.astype(np.float64).tofile(f13)
+        blk_gas_fm.astype(np.float64).tofile(f13)
