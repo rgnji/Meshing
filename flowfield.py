@@ -82,8 +82,12 @@ IBCZON = [1,2,3,4,5,
           42,43,48,49,54,55,60,61,66,67]
 IDBC = [6,6,6,6,6,
         2,2,2,2,2,2,2,2,6,6]
-ITYBC = [1,1,1,1,1,
-         2,2,2,2,2,2,2,2,2,2] # 1 for gas inlet, 2 for liquid inlet
+# 1 for gas inlet, 2 for liquid inlet
+ITYBC = [[1],[1],[1],[1],[1],
+         [2],[2],[2],[2],[2],[2],[2],[2],[2],[2]]
+
+fm_gas_inlet = [0, 1]
+fm_liquid_inlet = [1, 0]
 
 inlet_liquid_velocity = mass_rate_liquid / (RHOREF_liquid * inlet_liquid_r**2 * np.pi)
 inlet_gas_velocity = mass_rate_gas / (RHOREF_gas * inlet_gas_r**2 * np.pi)
@@ -152,6 +156,7 @@ with open('fort13.bin.xyz', 'wb') as f13:
     f13.write(pack('<i', NGAS))
 
     for i in range(IZON): # mass flow rate inlet => u, v, w, density, (quality), mass fraction need to be changed
+        
         izt, jzt, kzt = dim[i]
 
         # internal flow field 
@@ -168,30 +173,26 @@ with open('fort13.bin.xyz', 'wb') as f13:
                                    (0.09**0.75 * 1e-4**0.75 / inlet_gas_r) / (UREF**3 / XREF), 
                                    (kzt, jzt, izt))
         
-        blk_q = np.full((kzt, jzt, izt), q)        
-        blk_liquid_fm = np.full((kzt, jzt, izt), 0)
-        blk_gas_fm = np.full((kzt, jzt, izt), 1)
+        blk_q = np.full((kzt, jzt, izt), q)
+        blk_fm = [np.full((kzt, jzt, izt), 0), 
+                  np.full((kzt, jzt, izt), 1)]
 
         # deal with boundary face
         if i+1 in IBCZON:
             blk_index = IBCZON.index(i+1)
 
             # if gas inlet
-            if ITYBC[blk_index] == 1:
-                face_check(IDBC[blk_index], blk_den, inlet_gas_density / RHOREF_gas)
-
+            if 1 in ITYBC[blk_index]:
                 inlet_gas_u, inlet_gas_v, inlet_gas_w = initial_uvw(i, IDBC[blk_index], inlet_gas_velocity / UREF)
                 face_check(IDBC[blk_index], blk_u, inlet_gas_u)
                 face_check(IDBC[blk_index], blk_v, inlet_gas_v)
                 face_check(IDBC[blk_index], blk_w, inlet_gas_w)
 
-                face_check(IDBC[blk_index], blk_dk, inlet_gas_k)
-                face_check(IDBC[blk_index], blk_de, inlet_gas_epsilon)
-                
-                face_check(IDBC[blk_index], blk_q, inlet_gas_q) # don't need to calculate (?)
+                face_check(IDBC[blk_index], blk_dk, inlet_gas_k / UREF**2)
+                face_check(IDBC[blk_index], blk_de, inlet_gas_epsilon / (UREF**3 / XREF))
 
             # if liquid inlet
-            elif ITYBC[blk_index] == 2:
+            if 2 in ITYBC[blk_index]:
                 face_check(IDBC[blk_index], blk_den, inlet_liquid_density / RHOREF_liquid)
 
                 inlet_liquid_u, inlet_liquid_v, inlet_liquid_w = initial_uvw(i, IDBC[blk_index], inlet_liquid_velocity / UREF)
@@ -199,13 +200,12 @@ with open('fort13.bin.xyz', 'wb') as f13:
                 face_check(IDBC[blk_index], blk_v, inlet_liquid_v)
                 face_check(IDBC[blk_index], blk_w, inlet_liquid_w)
 
-                face_check(IDBC[blk_index], blk_dk, inlet_liquid_k)
-                face_check(IDBC[blk_index], blk_de, inlet_liquid_epsilon)
+                face_check(IDBC[blk_index], blk_dk, inlet_liquid_k / UREF**2)
+                face_check(IDBC[blk_index], blk_de, inlet_liquid_epsilon / (UREF**3 / XREF))
 
-                face_check(IDBC[blk_index], blk_q, inlet_liquid_q) # don't need to calculate (?)
-                
-                face_check(IDBC[blk_index], blk_gas_fm, 0)
-                face_check(IDBC[blk_index], blk_liquid_fm, 1)
+                for kk in NGAS:
+                    face_check(IDBC[blk_index], blk_fm[kk], fm_liquid_inlet[kk])
+                    
 
         # output to fort.13
         blk_den.astype(np.float64).tofile(f13)
@@ -213,12 +213,9 @@ with open('fort13.bin.xyz', 'wb') as f13:
         blk_v.astype(np.float64).tofile(f13)
         blk_w.astype(np.float64).tofile(f13)
         blk_p.astype(np.float64).tofile(f13)
-
         blk_dk.astype(np.float64).tofile(f13)
         blk_de.astype(np.float64).tofile(f13)
-
         blk_q.astype(np.float64).tofile(f13)
-
         # the same order what cec table in fort.11 is
-        blk_liquid_fm.astype(np.float64).tofile(f13)
-        blk_gas_fm.astype(np.float64).tofile(f13)
+        for kk in NGAS:
+            blk_fm[kk].astype(np.float64).tofile(f13)

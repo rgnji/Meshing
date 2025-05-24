@@ -1,7 +1,10 @@
 import numpy as np
 from struct import unpack
 
-# ================== group 5 ==================
+# =============================================
+# ========== global variables =================
+# =============================================
+# ===== group 5 =====
 # zonal index of flow boundary (1-based)
 # information can be obtained from paraview
 # inlet, outlet
@@ -29,15 +32,13 @@ ITYBC = [-1,-1,-1,-1,-1,
          2,2,2,2,
          2,2,2,2,
          2,2,2,2]
-
-# ================== group 6 ==================
+# ===== group 6 =====
 IWTM = 1
 HQDOX = 0
 IWALL = 0
 DENNX = 0
 VISWX = 0
-
-# ================== group 8 ==================
+# ===== group 8 =====
 IDATA = 1
 IGEO = 9 #?
 ITT = 500
@@ -46,8 +47,7 @@ ICOUP = 3
 NLIMT = 1
 IAX = 1
 ICYC = 3 #?
-
-# ================== group 9 ==================
+# ===== group 9 =====
 DTT = 0.01
 IREC = 1
 REC = 0.1
@@ -55,16 +55,14 @@ THETA = .99
 BETAP = 1.01
 IEXX = 2
 PRAT = 0.0
-
-# ================== group 10 ==================
+# ===== group 10 =====
 IPC = 12920 # injector exit center
 JPC = 14
 IPEX = 21880 # outlet center
 JPEX = 27
 IMN = 1 # liquid out
 JMN = 32
-
-# ================== group 11 ==================
+# ===== group 11 =====
 VISC = 18.37e-6
 IG = 2
 ITURB = 1
@@ -73,14 +71,12 @@ GAMA = 1.455
 CBE = 0
 CBH = 0
 EREXT = 5.0e-5
-
-# ================== group 12 ==================
+# ===== group 12 =====
 ISWU = 93
 ISWP = 97
 ISWK = 93
 ISKEW = 0
-
-# ================== group 13 ==================
+# ===== group 13 =====
 U = 1
 V = 1
 W = 1
@@ -92,8 +88,7 @@ EQ = 0
 VS = 1
 FM = 1
 SP = 1
-
-# ================== group 14 ==================
+# ===== group 14 =====
 NGAS = 2 # h2o and air
 NREACT = 0
 IUNIT = 1
@@ -102,25 +97,23 @@ UREF = 1
 TREF = 1
 XREF = 1
 PREF = 1
-
-# ================== group 17 ==================
+# ===== group 17 =====
 IGDINN = 1
 IOFINN = 1
 IOFOUT = 1
 IOFP3D = 1
-
 # =============================================
 # ================== read in ==================
 # =============================================
 with open("fort12.bin.xyz", "rb") as f12:
     # read fort.12 as double precision
-    data = f12.read(8)
+    data = f12.read(4)
     blocks = unpack("<i", data)[0]  # number of blocks
 
     dim = []
     for i in range(blocks):
-        data = f12.read(8*3)
-        dim.append(unpack("<i", data)) # (IZT, JZT, KZT)
+        data = f12.read(4*3)
+        dim.append(unpack("<3i", data)) # (IZT, JZT, KZT)
     
     coor = np.frombuffer(f12.read(), dtype=np.float64)
 
@@ -145,11 +138,8 @@ with open("fort12.bin.xyz", "rb") as f12:
 # =============================================
 # =============================================
 # =============================================
-
-
-
-# ================== group 2 ==================
-IZON = len(XT) # number of blocks
+# ===== group 2 =====
+IZON = blocks # number of blocks
 
 # eight vertices of each block
 verticesX = []
@@ -163,14 +153,14 @@ loc = [ [ 0, 0, 0],
         [-1, 0,-1],
         [-1,-1,-1],
         [ 0,-1,-1]]
-for block in range(blocks):
+for block in range(IZON):
     x = []
     y = []
     z = []
     for i, j, k in loc:
-        x.append(XT[k][j][i])
-        y.append(YT[k][j][i])
-        z.append(ZT[k][j][i])
+        x.append(XT[block][k][j][i])
+        y.append(YT[block][k][j][i])
+        z.append(ZT[block][k][j][i])
     verticesX.append(x)
     verticesY.append(y)
     verticesZ.append(z)
@@ -196,16 +186,16 @@ for target in range(IZON):
             target_x = verticesX[target][v-1]
             target_y = verticesY[target][v-1]
             target_z = verticesZ[target][v-1]
-            neighbor_x, neighbor_y, neighbor_z = set()
+            neighbor = set()
 
-            for block in list(range(IZON)).remove(target):
-                if target_x in verticesX[block]:
-                    neighbor_x.add(block)
-                if target_y in verticesY[block]:
-                    neighbor_y.add(block)
-                if target_z in verticesZ[block]:
-                    neighbor_z.add(block)
-            nb.append(set(neighbor_x & neighbor_y & neighbor_z))
+            blks = list(range(IZON))
+            blks.remove(target)
+            for block in blks:
+                for i in range(8):
+                    if target_x == verticesX[block][i] and target_y == verticesY[block][i] and target_z == verticesZ[block][i]:
+                        neighbor.add(block)
+                        break
+            nb.append(neighbor)
 
         # find the block sharing the same three vertices
         if nb[0] & nb[1] & nb[2]:
@@ -220,7 +210,7 @@ IBND = (5+5+5)+(12+4+4+5)
 ID = sum(1 for ptc in patched_interface for blk in ptc if blk == -1) - IBND
 ISNGL = 0
 
-# ================== group 4 ==================
+# ===== group 4 =====
 def gp4(block, face):
     """
     block: index
@@ -278,14 +268,15 @@ def gp4(block, face):
         jkz = vector_start[1] - vector_share[1]
         d = [0, 1] # i, j in dim
 
-    return reverse(ijz, d[0], dim[neighbor]), reverse(jkz, d[1], dim[neighbor])
+    ijz21, ijz22 = reverse(ijz, d[0], dim[neighbor])
+    jkz21, jkz22 = reverse(jkz, d[1], dim[neighbor])
 
-
-
+    return ijz21, ijz22, jkz21, jkz22
 
 # =============================================
 # ================== fort.11 ==================
 # =============================================
+"""
 with open("fort11.txt", "w", encoding="UTF-8") as f:
     title = "GCSC INJECTOR A"
 
@@ -543,3 +534,21 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
     # ================== group 19 ==================
     
     # ================== group 20 ==================
+"""
+
+#print(patched_interface[61])
+"""
+print(verticesX[5])
+print(verticesY[5])
+print(verticesZ[5])
+print(verticesX[61])
+print(verticesY[61])
+print(verticesZ[61])"""
+
+with open('test.txt', 'w') as f:
+    f.write('block 5:\n')
+    for i in range(8):
+        f.write(f'{i+1}: [{verticesX[0][i]:>25},{verticesY[0][i]:>25},{verticesZ[0][i]:>25}]\n')
+    f.write('block 61:\n')
+    for i in range(8):
+        f.write(f'{i+1}: [{verticesX[61][i]:>25},{verticesY[61][i]:>25},{verticesZ[61][i]:>25}]\n')
