@@ -82,3 +82,109 @@ def binary_fort12(X, Y, Z):
             z.tofile(f)
     
     return filename + " established."
+
+
+def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, dk, de, q, fm):
+    filename = 'fort.13'
+
+    with open(filename, 'wb') as f:
+        len1 = np.array([INSO_1], dtype=np.int32).nbytes
+        len2 = np.array([INSO_4], dtype=np.int32).nbytes
+        len3 = np.array([INSO_5], dtype=np.int32).nbytes
+        len4 = np.array([INSO_7], dtype=np.int32).nbytes
+        len5 = np.array([NGAS], dtype=np.int32).nbytes
+
+        f.write(struct.pack('<i', len1))
+        f.write(struct.pack('<i', INSO_1))
+        f.write(struct.pack('<i', len1))
+
+        f.write(struct.pack('<i', len2))
+        f.write(struct.pack('<i', INSO_4))
+        f.write(struct.pack('<i', len2))
+
+        f.write(struct.pack('<i', len3))
+        f.write(struct.pack('<i', INSO_5))
+        f.write(struct.pack('<i', len3))
+
+        f.write(struct.pack('<i', len4))
+        f.write(struct.pack('<i', INSO_7))
+        f.write(struct.pack('<i', len4))
+
+        f.write(struct.pack('<i', len5))
+        f.write(struct.pack('<i', NGAS))
+        f.write(struct.pack('<i', len5))
+
+        for i in range(IZON):
+            len_den = np.array(den[i], dtype=np.float64).nbytes
+            f.write(struct.pack('<i', len_den))
+            den[i].astype(np.float64).tofile(f)
+            f.write(struct.pack('<i', len_den))
+
+            len_u = np.array(u[i], dtype=np.float64).nbytes
+            f.write(struct.pack('<i', len_u))
+            u[i].astype(np.float64).tofile(f)
+            f.write(struct.pack('<i', len_u))
+
+            len_v = np.array(v[i], dtype=np.float64).nbytes
+            f.write(struct.pack('<i', len_v))
+            v[i].astype(np.float64).tofile(f)
+            f.write(struct.pack('<i', len_v))
+
+            len_w = np.array(w[i], dtype=np.float64).nbytes
+            f.write(struct.pack('<i', len_w))
+            w[i].astype(np.float64).tofile(f)
+            f.write(struct.pack('<i', len_w))
+
+            len_p = np.array(p[i], dtype=np.float64).nbytes
+            f.write(struct.pack('<i', len_p))
+            p[i].astype(np.float64).tofile(f)
+            f.write(struct.pack('<i', len_p))
+
+            len_dk = np.array(dk[i], dtype=np.float64).nbytes
+            f.write(struct.pack('<i', len_dk))
+            dk[i].astype(np.float64).tofile(f)
+            f.write(struct.pack('<i', len_dk))
+
+            len_de = np.array(de[i], dtype=np.float64).nbytes
+            f.write(struct.pack('<i', len_de))
+            de[i].astype(np.float64).tofile(f)
+            f.write(struct.pack('<i', len_de))
+
+            len_q = np.array(q[i], dtype=np.float64).nbytes
+            f.write(struct.pack('<i', len_q))
+            q[i].astype(np.float64).tofile(f)
+            f.write(struct.pack('<i', len_q))
+
+            # the same order what cec table in fort.11 is
+            for kk in range(NGAS):
+                len_fm = np.array(fm[i][kk], dtype=np.float64).nbytes
+                f.write(struct.pack('<i', len_fm))
+                fm[i][kk].astype(np.float64).tofile(f)
+                f.write(struct.pack('<i', len_fm))
+    
+    return filename + ' established.'
+
+def binary_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, dk, de, q, fm):
+    filename = 'fort13.bin.xyz'
+
+    with open(filename, 'wb') as f:
+        f.write(struct.pack('<i', INSO_1))
+        f.write(struct.pack('<i', INSO_4))
+        f.write(struct.pack('<i', INSO_5))
+        f.write(struct.pack('<i', INSO_7))
+        f.write(struct.pack('<i', NGAS))
+
+        for i in range(IZON):
+            den[i].astype(np.float64).tofile(f)
+            u[i].astype(np.float64).tofile(f)
+            v[i].astype(np.float64).tofile(f)
+            w[i].astype(np.float64).tofile(f)
+            p[i].astype(np.float64).tofile(f)
+            dk[i].astype(np.float64).tofile(f)
+            de[i].astype(np.float64).tofile(f)
+            q[i].astype(np.float64).tofile(f)
+            # the same order what cec table in fort.11 is
+            for kk in range(NGAS):
+                fm[i][kk].astype(np.float64).tofile(f)
+    
+    return filename + ' established.'
