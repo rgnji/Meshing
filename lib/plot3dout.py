@@ -84,6 +84,7 @@ def binary_fort12(X, Y, Z):
     return filename + " established."
 
 
+#=================== unformatted plot3d format (with record marker) ===================
 def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, dk, de, q, fm):
     filename = 'fort.13'
 
@@ -164,6 +165,8 @@ def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w,
     
     return filename + ' established.'
 
+
+#=================== binary plot3d format (no record marker) ===================
 def binary_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, dk, de, q, fm):
     filename = 'fort13.bin.xyz'
 

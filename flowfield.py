@@ -218,3 +218,6 @@ for i in range(IZON): # mass flow rate inlet => u, v, w, density, (quality), mas
 # establish fort.13
 txt = binary_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den_blocks, u_blocks, v_blocks, w_blocks, p_blocks, dk_blocks, de_blocks, q_blocks, fm_blocks)
 print(txt)
+
+txt = unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den_blocks, u_blocks, v_blocks, w_blocks, p_blocks, dk_blocks, de_blocks, q_blocks, fm_blocks)
+print(txt)

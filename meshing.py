@@ -68,4 +68,5 @@ for grid in mesh:
 txt = binary_fort12(XT, YT, ZT)
 print(txt)
 
-
+txt = unformatted_fort12(XT, YT, ZT)
+print(txt)
