@@ -36,6 +36,11 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     grid_y = grid_y.transpose(1, 2, 0)
     grid_z = grid_z.transpose(1, 2, 0)
 
+    # round
+    grid_x = np.round(grid_x, 14)
+    grid_y = np.round(grid_y, 14)
+    grid_z = np.round(grid_z, 14)
+
     blocks.append((grid_x, grid_y, grid_z))
 
     #=================== another thickness ===================
@@ -46,6 +51,10 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     # i,j,k to k,i,j
     grid_x_2 = grid_x_2.transpose(1, 2, 0)
     grid_y_2 = grid_y_2.transpose(1, 2, 0)
+
+    # round
+    grid_x_2 = np.round(grid_x_2, 14)
+    grid_y_2 = np.round(grid_y_2, 14)
 
     blocks.append((grid_x_2, grid_y_2, grid_z))
 
@@ -68,6 +77,12 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     inlet_x = inlet_x.transpose(1, 2, 0)
     inlet_y = inlet_y.transpose(1, 2, 0)
     inlet_z = inlet_z.transpose(1, 2, 0)
+
+    # round
+    inlet_x = np.round(inlet_x, 14)
+    inlet_y = np.round(inlet_y, 14)
+    inlet_z = np.round(inlet_z, 14)
+
     blocks.append((inlet_x, inlet_y, inlet_z))
 
     #=================== another pipe ===================
@@ -78,6 +93,10 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     # i,j,k to k,i,j
     inlet_x_2 = inlet_x_2.transpose(1, 2, 0)
     inlet_y_2 = inlet_y_2.transpose(1, 2, 0)
+
+    # round
+    inlet_x_2 = np.round(inlet_x_2, 14)
+    inlet_y_2 = np.round(inlet_y_2, 14)
 
     blocks.append((inlet_x_2, inlet_y_2, inlet_z))
 
@@ -99,6 +118,11 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     out_y = out_y.transpose(1, 2, 0)
     out_z = out_z.transpose(1, 2, 0)
 
+    # round
+    out_x = np.round(out_x, 14)
+    out_y = np.round(out_y, 14)
+    out_z = np.round(out_z, 14)
+
     blocks.append((out_x, out_y, out_z))
 
     #=================== another outer ===================
@@ -109,6 +133,10 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     # i,j,k to k,i,j
     out_x_2 = out_x_2.transpose(1, 2, 0)
     out_y_2 = out_y_2.transpose(1, 2, 0)
+
+    # round
+    out_x_2 = np.round(out_x_2, 14)
+    out_y_2 = np.round(out_y_2, 14)
 
     blocks.append((out_x_2, out_y_2, out_z))
 
@@ -181,6 +209,11 @@ def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inle
     grid_y = Rg * np.sin(theta_grid)
     grid_z = np.broadcast_to(square_z, (num_rl+1, *square_z.shape))
 
+    # round
+    grid_x = np.round(grid_x, 14)
+    grid_y = np.round(grid_y, 14)
+    grid_z = np.round(grid_z, 14)
+
     XT.append(grid_x)
     YT.append(grid_y)
     ZT.append(grid_z)
@@ -189,6 +222,10 @@ def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inle
     theta_grid_2 = theta_grid + np.pi
     grid_x_2 = Rg * np.cos(theta_grid_2)
     grid_y_2 = Rg * np.sin(theta_grid_2)
+
+    # round
+    grid_x_2 = np.round(grid_x_2, 14)
+    grid_y_2 = np.round(grid_y_2, 14)
 
     XT.append(grid_x_2)
     YT.append(grid_y_2)
@@ -209,6 +246,11 @@ def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inle
     pipe_square_x = square_r_inlet * np.cos(square_theta_inlet)
     pipe_square_y = square_r_inlet * np.sin(square_theta_inlet)
 
+    # round
+    pipe_square_x = np.round(pipe_square_x, 14)
+    pipe_square_y = np.round(pipe_square_y, 14)
+    pipe_square_z = np.round(pipe_square_z, 14)
+
     XT.append(pipe_square_x)
     YT.append(pipe_square_y)
     ZT.append(pipe_square_z)
@@ -217,6 +259,10 @@ def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inle
     square_theta_inlet_2 = square_theta_inlet + np.pi
     pipe_square_x_2 = square_r_inlet * np.cos(square_theta_inlet_2)
     pipe_square_y_2 = square_r_inlet * np.sin(square_theta_inlet_2)
+
+    # round
+    pipe_square_x_2 = np.round(pipe_square_x_2, 14)
+    pipe_square_y_2 = np.round(pipe_square_y_2, 14)
 
     XT.append(pipe_square_x_2)
     YT.append(pipe_square_y_2)

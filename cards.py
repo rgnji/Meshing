@@ -206,7 +206,7 @@ for target in range(IZON):
     patched_interface.append(patch)
 
 IZFACE = sum(1 for ptc in patched_interface for blk in ptc if blk != -1) / 2
-IBND = (5+5+5)+(12+4+4+5)
+IBND = len(IBCZON)
 ID = sum(1 for ptc in patched_interface for blk in ptc if blk == -1) - IBND
 ISNGL = 0
 
@@ -276,7 +276,6 @@ def gp4(block, face):
 # =============================================
 # ================== fort.11 ==================
 # =============================================
-"""
 with open("fort11.txt", "w", encoding="UTF-8") as f:
     title = "GCSC INJECTOR A"
 
@@ -330,7 +329,7 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
                 IZB1 = blk4 + 1
                 IZF1 = d4 + 1
                 IZB2 = patched_interface[blk4][d4] + 1
-                IZF2 = patched_interface[IZB2-1].index(blk4)
+                IZF2 = patched_interface[IZB2-1].index(blk4) + 1
                 
                 IJZ11 = 1
                 JKZ11 = 1
@@ -364,22 +363,22 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
         if IDBC[g5] == 2 or 4 or 6:
             IJBB = 1
         elif IDBC[g5] == 1:
-            IJBB = dim[ IBCZON[g5] ][0]
+            IJBB = dim[ IBCZON[g5]-1 ][0]
         elif IDBC[g5] == 3:
-            IJBB = dim[ IBCZON[g5] ][1]
+            IJBB = dim[ IBCZON[g5]-1 ][1]
         elif IDBC[g5] == 5:
-            IJBB = dim[ IBCZON[g5] ][2]
+            IJBB = dim[ IBCZON[g5]-1 ][2]
 
         IJBS = JKBS = 1
         if IDBC[g5] == 1 or 2:
-            IJBT = dim[ IBCZON[g5] ][1]
-            JKBT = dim[ IBCZON[g5] ][2]
+            IJBT = dim[ IBCZON[g5]-1 ][1]
+            JKBT = dim[ IBCZON[g5]-1 ][2]
         elif IDBC[g5] == 3 or 4:
-            IJBT = dim[ IBCZON[g5] ][0]
-            JKBT = dim[ IBCZON[g5] ][2]
+            IJBT = dim[ IBCZON[g5]-1 ][0]
+            JKBT = dim[ IBCZON[g5]-1 ][2]
         elif IDBC[g5] == 5 or 6:
-            IJBT = dim[ IBCZON[g5] ][0]
-            JKBT = dim[ IBCZON[g5] ][1]
+            IJBT = dim[ IBCZON[g5]-1 ][0]
+            JKBT = dim[ IBCZON[g5]-1 ][1]
 
         f.write(f'{IJBB:>7},{IJBS:>7},{IJBT:>7},{JKBS:>7},{JKBT:>7},\n')
 
@@ -527,28 +526,18 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
         f.write(f'{name[g18]:<15}')
         f.write(f'{' ':27}')
         f.write(f'{mtmole[g18]:>10.3f}\n')
-        f.write(f'{coef[g18][0:5]:<15.8e}\n')
-        f.write(f'{coef[g18][5:10]:<15.8e}\n')
-        f.write(f'{coef[g18][10:15]:<15.8e}\n')
+
+        g18_count = 0
+        for i in range(14):
+            f.write(f'{coef[g18][i]:>15.8E}')
+            g18_count += 1
+            if g18_count % 5 == 0:
+                f.write('\n')
+        
+        f.write('\n')
 
     # ================== group 19 ==================
     
     # ================== group 20 ==================
-"""
 
-#print(patched_interface[61])
-"""
-print(verticesX[5])
-print(verticesY[5])
-print(verticesZ[5])
-print(verticesX[61])
-print(verticesY[61])
-print(verticesZ[61])"""
-
-with open('test.txt', 'w') as f:
-    f.write('block 5:\n')
-    for i in range(8):
-        f.write(f'{i+1}: [{verticesX[0][i]:>25},{verticesY[0][i]:>25},{verticesZ[0][i]:>25}]\n')
-    f.write('block 61:\n')
-    for i in range(8):
-        f.write(f'{i+1}: [{verticesX[61][i]:>25},{verticesY[61][i]:>25},{verticesZ[61][i]:>25}]\n')
+    print('fort.11 established.')

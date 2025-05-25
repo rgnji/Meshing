@@ -78,10 +78,10 @@ def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3):
     # initial grid between boundaries
     grid_x = np.linspace(out_x, arc_x, d2+1)
     grid_y = np.linspace(out_y, arc_y, d2+1)
-
+    grid_x = np.round(grid_x, 15)
+    grid_y = np.round(grid_y, 15)
+    
     # solve laplace
-    grid_x = np.round(grid_x, 14)
-    grid_y = np.round(grid_y, 14)
     if arc_angle != 90:
         x, y, iterations = solve_grid_laplace_sor(grid_x, grid_y)
         print(f"SOR of O-grid in quadrant {qua} converged in {iterations} iterations.")
@@ -183,8 +183,6 @@ def h_grid(r_square, arc_angle, axi_pos, axial, d1, d3):
     y[1:-1, 1:-1] = grid_y[1:-1]
 
     # solve laplace
-    x = np.round(x, 14)
-    y = np.round(y, 14)
     x, y, iterations = solve_grid_laplace_sor(x, y)
     print(f"SOR of H-grid converged in {iterations} iterations.")
 
@@ -197,3 +195,8 @@ def h_grid(r_square, arc_angle, axi_pos, axial, d1, d3):
                           np.arange(x.shape[1]))
 
     return X, Y, Z
+
+
+v=['o', 14.11, 0.5*14.11, 20, 0, 6, 15, 28, 10]
+ax, ay, az=o_grid(1, *v[1:])
+print()
