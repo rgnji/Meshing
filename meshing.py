@@ -2,9 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from lib.cylindermesh import o_grid, h_grid
-from lib.plot3dout import unformatted_fort12, binary_fort12
 from lib.liquid_domain import liquid_cylinder
-from lib.controlcards import gridz_size, patch, o_patch, h_patch, o_inner_patch, h_patch_liquid
+from lib.plot3dout import unformatted_fort12, binary_fort12
 
 # arc_number == num_arc
 
