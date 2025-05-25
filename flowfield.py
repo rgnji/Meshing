@@ -6,13 +6,13 @@ from struct import unpack, pack
 # geometrical condition
 with open("fort12.bin.xyz", "rb") as f12:
     # read fort.12 as double precision
-    data = f12.read(8)
-    IZON = unpack("<i", data)[0]  # number of blocks
+    data = f12.read(4)
+    blocks = unpack("<i", data)[0]  # number of blocks
 
     dim = []
-    for i in range(IZON):
-        data = f12.read(8*3)
-        dim.append(unpack("<i", data)) # (IZT, JZT, KZT)
+    for i in range(blocks):
+        data = f12.read(4*3)
+        dim.append(unpack("<3i", data)) # (IZT, JZT, KZT)
     
     coor = np.frombuffer(f12.read(), dtype=np.float64)
 
@@ -21,7 +21,7 @@ with open("fort12.bin.xyz", "rb") as f12:
     ZT = []
     start = 0
     end = 0
-    for i in range(IZON):
+    for i in range(blocks):
         now = dim[i]
         size = now[0] * now[1] * now[2]
 
@@ -42,7 +42,9 @@ INSO_1 = 1 # U
 INSO_4 = 0 # TM
 INSO_5 = 1 # DK
 INSO_7 = 1 # FL
-NGAS = 1
+NGAS = 2
+
+IZON = blocks
 
 # constant
 MW_liquid = 18 * 10**-3
@@ -203,7 +205,8 @@ with open('fort13.bin.xyz', 'wb') as f13:
                 face_check(IDBC[blk_index], blk_dk, inlet_liquid_k / UREF**2)
                 face_check(IDBC[blk_index], blk_de, inlet_liquid_epsilon / (UREF**3 / XREF))
 
-                for kk in NGAS:
+                for kk in range(NGAS):
+                    print('kk =', kk)
                     face_check(IDBC[blk_index], blk_fm[kk], fm_liquid_inlet[kk])
                     
 
@@ -217,5 +220,7 @@ with open('fort13.bin.xyz', 'wb') as f13:
         blk_de.astype(np.float64).tofile(f13)
         blk_q.astype(np.float64).tofile(f13)
         # the same order what cec table in fort.11 is
-        for kk in NGAS:
+        for kk in range(NGAS):
             blk_fm[kk].astype(np.float64).tofile(f13)
+    
+    print('fort.13 established.')
