@@ -519,6 +519,8 @@ INSO(IEQ):
   1,  1,  1,  0,  1,  1,  1,  8,  0,  1,  1,  1,
   NGAS,NREACT, IUNIT,DENREF,  UREF,  TREF,  XREF,  PREF,
      2,     0,     1,     1,     1,     1,     1,     1,
+ISPARK,ISPKMIN,ISPMAX,
+     0,     0,     0
 IGDINN,IOFINN,IOFOUT,IOFP3D,
      1,     1,     1,     1,
 H2O                                           18.000
