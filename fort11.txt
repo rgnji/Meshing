@@ -2,7 +2,7 @@ TITLE: GCSC INJECTOR A
 IDIM,
    3,
   IZON,IZFACE,  IBND,    ID, ISNGL,
-    67, 149.5,    40,    63,     0,
+    67,   149,    40,    63,     0,
    IZT,   JZT,   KZT, LPROC,  CBG1,  CBG2,  CBG3,  CBV1,  CBV2,  CBV3,
     16,    29,    11,     1,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,
     16,    29,    11,     1,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,

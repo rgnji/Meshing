@@ -205,7 +205,7 @@ for target in range(IZON):
     
     patched_interface.append(patch)
 
-IZFACE = sum(1 for ptc in patched_interface for blk in ptc if blk != -1) / 2
+IZFACE = int(sum(1 for ptc in patched_interface for blk in ptc if blk != -1) / 2)
 IBND = len(IBCZON)
 ID = sum(1 for ptc in patched_interface for blk in ptc if blk == -1) - IBND
 ISNGL = 0
