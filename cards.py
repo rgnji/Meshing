@@ -496,9 +496,6 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
 
     # ================== group 15 ==================
     group15 = ['ISPARK','ISPKMIN','ISPMAX']
-    for g15 in group15:
-        f.write(f'{g15:>6},')
-    f.write('\n')
 
     # ================== group 16 ==================
     group16 = ['ISPKON','ISPKZN','ISPKI1','ISPKIM','ISPKJ1','ISPKJM','ISPKK1','ISPKKM','TMSPK','ISPKDBG']
