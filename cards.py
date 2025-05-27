@@ -205,9 +205,13 @@ for target in range(IZON):
     
     patched_interface.append(patch)
 
-IZFACE = int(sum(1 for ptc in patched_interface for blk in ptc if blk != -1) / 2)
+IZFACE = 0
+for b in range(IZON):
+        for d in range(6):
+            if patched_interface[b][d] and b < patched_interface[b][d]:
+                IZFACE += 1
 IBND = len(IBCZON)
-ID = sum(1 for ptc in patched_interface for blk in ptc if blk == -1) - IBND
+ID = IZON * 6 - IZFACE * 2 - IBND
 ISNGL = 0
 
 # ===== group 4 =====
@@ -503,6 +507,12 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
 
     # ================== group 16 ==================
     group16 = ['ISPKON','ISPKZN','ISPKI1','ISPKIM','ISPKJ1','ISPKJM','ISPKK1','ISPKKM','TMSPK','ISPKDBG']
+    for g16 in group16:
+        f.write(f'{g16:>6},')
+    f.write('\n')
+    for g16 in group16:
+        f.write(f'{0:>6},')
+    f.write('\n')
 
     # ================== group 17 ==================
     group17 = ['IGDINN','IOFINN','IOFOUT','IOFP3D']
@@ -541,4 +551,14 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
     
     # ================== group 20 ==================
 
+    # ================== group 21 ==================
+
+    # ================== fluid entry ==================
+    f.write('***END******\n')
+    f.write('FLUID\n')
+    f.write('c Species(a20) , ideal gas(=0), real fluid(=1)\n')
+    f.write('H2O           1\n')
+    f.write('AIR           0\n')
+
+    # ================== end ==================
     print('fort.11 established.')
