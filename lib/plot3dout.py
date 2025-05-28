@@ -88,25 +88,13 @@ def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w,
 
     with open(filename, 'wb') as f:
 
-        f.write(struct.pack('<i', 4))
+        f.write(struct.pack('<i', 20))
         f.write(struct.pack('<i', INSO_1))
-        f.write(struct.pack('<i', 4))
-
-        f.write(struct.pack('<i', 4))
         f.write(struct.pack('<i', INSO_4))
-        f.write(struct.pack('<i', 4))
-
-        f.write(struct.pack('<i', 4))
         f.write(struct.pack('<i', INSO_5))
-        f.write(struct.pack('<i', 4))
-
-        f.write(struct.pack('<i', 4))
         f.write(struct.pack('<i', INSO_7))
-        f.write(struct.pack('<i', 4))
-
-        f.write(struct.pack('<i', 4))
         f.write(struct.pack('<i', NGAS))
-        f.write(struct.pack('<i', 4))
+        f.write(struct.pack('<i', 20))
 
         for i in range(IZON):
             len_den = np.array(den[i], dtype=np.float32).nbytes
