@@ -139,8 +139,6 @@ with open("fort12.bin.xyz", "rb") as f12:
 # =============================================
 # =============================================
 # ===== group 2 =====
-IZON = blocks # number of blocks
-
 # eight vertices of each block
 verticesX = []
 verticesY = []
@@ -153,7 +151,7 @@ loc = [ [ 0, 0, 0],
         [-1, 0,-1],
         [-1,-1,-1],
         [ 0,-1,-1]]
-for block in range(IZON):
+for block in range(blocks):
     x = []
     y = []
     z = []
@@ -174,7 +172,7 @@ direction = [[3,6,7],
              [6,7,8],
              [1,2,4]]
 
-for target in range(IZON):
+for target in range(blocks):
     patch = [] # shared faces, 6 values
 
     # search for patched blocks in six direction
@@ -188,7 +186,7 @@ for target in range(IZON):
             target_z = verticesZ[target][v-1]
             neighbor = set()
 
-            blks = list(range(IZON))
+            blks = list(range(blocks))
             blks.remove(target)
             for block in blks:
                 for i in range(8):
@@ -205,14 +203,6 @@ for target in range(IZON):
     
     patched_interface.append(patch)
 
-IZFACE = 0
-for b in range(IZON):
-        for d in range(6):
-            if patched_interface[b][d] and b < patched_interface[b][d]:
-                IZFACE += 1
-IBND = len(IBCZON)
-ID = IZON * 6 - IZFACE * 2 - IBND
-ISNGL = 0
 
 # ===== group 4 =====
 def gp4(block, face):
@@ -287,21 +277,15 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
     f.write(f"TITLE: {title}\n")
     f.write(f'IDIM,\n{3:>4},\n')
 
-    # ================== group 2 ==================
-    group2 = ['IZON', 'IZFACE', 'IBND', 'ID', 'ISNGL']
-    for g2 in group2:
-        f.write(f'{g2:>6},')
-    f.write('\n')
-    f.write(f'{IZON:>6},{IZFACE:>6},{IBND:>6},{ID:>6},{ISNGL:>6},\n')
-
     # ================== group 3 ==================
     group3 = ['IZT', 'JZT', 'KZT', 'LPROC', 'CBG1', 'CBG2', 'CBG3', 'CBV1', 'CBV2', 'CBV3']
+    IZON = 0
 
     for g3 in group3:
         f.write(f'{g3:>6},')
     f.write('\n')
 
-    for blk3 in range(IZON):
+    for blk3 in range(blocks):
         f.write(f'{dim[blk3][0]:>6},{dim[blk3][1]:>6},{dim[blk3][2]:>6},')
 
         if blk3 < 48:
@@ -313,10 +297,13 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
             f.write(f'{0.:>6},')
 
         f.write(f'\n')
+        IZON += 1
 
     # ================== group 4 ==================
     group4_1 = ['IFCYC', 'IZB1', 'IZF1', 'IJZ11', 'IJZ12', 'JKZ11', 'JKZ12', 'INONUF']
     group4_2 = ['IZB2', 'IZF2', 'IJZ21', 'IJZ22', 'JKZ21', 'JKZ22']
+    IZFACE = 0
+
     for g4 in group4_1:
         f.write(f'{g4:>6},')
     f.write('\n')
@@ -354,9 +341,12 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
                 f.write(f'{INONUF:>6},\n')
                 f.write(f'{"":>6} {IZB2:>6},{IZF2:>6},{IJZ21:>6},{IJZ22:>6},{JKZ21:>6},{JKZ22:>6},')
                 f.write('\n')
+                IZFACE += 1
 
     # ================== group 5 ==================
     group5 = ['IBCZON','IDBC','ITYBC','IJBB','IJBS','IJBT','JKBS','JKBT']
+    IBND = 0
+
     for g5 in group5:
         f.write(f'{g5:>7},')
     f.write('\n')
@@ -385,9 +375,11 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
             JKBT = dim[ IBCZON[g5]-1 ][1]
 
         f.write(f'{IJBB:>7},{IJBS:>7},{IJBT:>7},{JKBS:>7},{JKBT:>7},\n')
+        IBND += 1
 
     # ================== group 6 ==================
     group6 = ['IWBZON','L1','L2','M1','M2','N1','N2','IWTM','HQDOX','IWALL','DENNX','VISWX']
+    ID = 0
     for g6 in group6:
         f.write(f'{g6:>7},')
     f.write('\n')
@@ -434,6 +426,7 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
                     f.write(f'{IWBZON:>7},')
                     f.write(f'{L1:>7},{L2:>7},{M1:>7},{M2:>7},{N1:>7},{N2:>7},')
                     f.write(f'{IWTM:>7},{HQDOX:>7},{IWALL:>7},{DENNX:>7},{VISWX:>7},\n')
+                    ID += 1
 
                 else:
                     for index6, value6 in enumerate(IBCZON):
@@ -444,12 +437,21 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
                                 f.write(f'{IWBZON:>7},')
                                 f.write(f'{L1:>7},{L2:>7},{M1:>7},{M2:>7},{N1:>7},{N2:>7},')
                                 f.write(f'{IWTM:>7},{HQDOX:>7},{IWALL:>7},{DENNX:>7},{VISWX:>7},\n')
+                                ID += 1
     
     # ================== group 7 ==================
     group7 = ['ISNZON', 'ISNBC', 'ISNAX', 'ISNBS', 'ISNBT']
+    ISNGL = 0
     for g7 in group7:
         f.write(f'{g7:>6},')
     f.write('\n')
+
+    # ================== group 2 ==================
+    group2 = ['IZON', 'IZFACE', 'IBND', 'ID', 'ISNGL']
+    for g2 in group2:
+        f.write(f'{g2:>6},')
+    f.write('\n')
+    f.write(f'{IZON:>6},{IZFACE:>6},{IBND:>6},{ID:>6},{ISNGL:>6},\n')
 
     # ================== group 8 ==================
     group8 = ['IDATA', 'IGEO', 'ITT', 'ITPNT', 'ICOUP', 'NLIMT', 'IAX', 'ICYC']
