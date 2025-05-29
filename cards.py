@@ -66,7 +66,7 @@ JMN = 32
 VISC = 18.37e-6
 IG = 2
 ITURB = 1
-ICOMP = 0 #?
+AMC = 0
 GAMA = 1.455
 CBE = 0
 CBH = 0
@@ -320,7 +320,7 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
     for g4 in group4_1:
         f.write(f'{g4:>6},')
     f.write('\n')
-    f.write(f'{'':>6} ')
+    f.write(f'{"":>6} ')
     for g4 in group4_2:
         f.write(f'{g4:>6},')
     f.write('\n')
@@ -352,7 +352,7 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
                 f.write(f'{IFCYC:>6},{IZB1:>6},{IZF1:>6},')
                 f.write(f'{IJZ11:>6},{IJZ12:>6},{JKZ11:>6},{JKZ12:>6},')
                 f.write(f'{INONUF:>6},\n')
-                f.write(f'{'':>6} {IZB2:>6},{IZF2:>6},{IJZ21:>6},{IJZ22:>6},{JKZ21:>6},{JKZ22:>6},')
+                f.write(f'{"":>6} {IZB2:>6},{IZF2:>6},{IJZ21:>6},{IJZ22:>6},{JKZ21:>6},{JKZ22:>6},')
                 f.write('\n')
 
     # ================== group 5 ==================
@@ -447,6 +447,9 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
     
     # ================== group 7 ==================
     group7 = ['ISNZON', 'ISNBC', 'ISNAX', 'ISNBS', 'ISNBT']
+    for g7 in group7:
+        f.write(f'{g7:>6},')
+    f.write('\n')
 
     # ================== group 8 ==================
     group8 = ['IDATA', 'IGEO', 'ITT', 'ITPNT', 'ICOUP', 'NLIMT', 'IAX', 'ICYC']
@@ -470,11 +473,11 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
     f.write(f'{IPC:>6},{JPC:>6},{IPEX:>6},{JPEX:>6},{IMN:>6},{JMN:>6},\n')
 
     # ================== group 11 ==================
-    group11 = ['VISC', 'IG', 'ITURB', 'ICOMP', 'GAMA', 'CBE', 'CBH', 'EREXT']
+    group11 = ['VISC', 'IG', 'ITURB', 'AMC', 'GAMA', 'CBE', 'CBH', 'EREXT']
     for g11 in group11:
         f.write(f'{g11:>9},')
     f.write('\n')
-    f.write(f'{VISC:>9},{IG:>9},{ITURB:>9},{ICOMP:>9},{GAMA:>9},{CBE:>9},{CBH:>9},{EREXT:>9},\n')
+    f.write(f'{VISC:>9},{IG:>9},{ITURB:>9},{AMC:>9},{GAMA:>9},{CBE:>9},{CBH:>9},{EREXT:>9},\n')
 
     # ================== group 12 ==================
     group12 = ['ISWU','ISWP','ISWK','ISKEW']
@@ -503,15 +506,11 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
     for g15 in group15:
         f.write(f'{g15:>6},')
     f.write('\n')
-    f.write(f'{0:>6},{0:>6},{0:>6}\n')
 
     # ================== group 16 ==================
     group16 = ['ISPKON','ISPKZN','ISPKI1','ISPKIM','ISPKJ1','ISPKJM','ISPKK1','ISPKKM','TMSPK','ISPKDBG']
     for g16 in group16:
         f.write(f'{g16:>6},')
-    f.write('\n')
-    for g16 in group16:
-        f.write(f'{0:>6},')
     f.write('\n')
 
     # ================== group 17 ==================
@@ -534,9 +533,8 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
             -.17581880E-02,  .43543090E-05, -.30122530E-08,  .68264410E-12,
             -.10640230E+04,  .25293090E+01,]]
     for g18 in range(len(name)):
-        f.write(f'{name[g18]:<15}')
-        f.write(f'{' ':27}')
-        f.write(f'{mtmole[g18]:>10.3f}\n')
+        f.write(f'{name[g18]:<66}')
+        f.write(f'{mtmole[g18]:12.5f}\n')
 
         g18_count = 0
         for i in range(14):
@@ -554,11 +552,11 @@ with open("fort11.txt", "w", encoding="UTF-8") as f:
     # ================== group 21 ==================
 
     # ================== fluid entry ==================
-    f.write('***END******\n')
     f.write('FLUID\n')
     f.write('c Species(a20) , ideal gas(=0), real fluid(=1)\n')
     f.write('H2O           1\n')
     f.write('AIR           0\n')
+    f.write('DONE\n')
 
     # ================== end ==================
     print('fort.11 established.')
