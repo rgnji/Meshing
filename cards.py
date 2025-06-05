@@ -302,13 +302,12 @@ with open("fort.11", "w", encoding="UTF-8") as f:
         f.write(f'{g3:>6},')
     f.write('\n')
 
+    processor = 0
     for blk3 in range(blocks):
         f.write(f'{dim[blk3][0]:>6},{dim[blk3][1]:>6},{dim[blk3][2]:>6},')
 
-        if blk3 < 48:
-            f.write(f'{1:>6},')
-        else:
-            f.write(f'{2:>6},')
+        f.write(f'{(processor % 8) + 1:>6},')
+        processor += 1
 
         for gg3 in range(6):
             f.write(f'{0.:>6},')
@@ -556,9 +555,9 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     # ================== fluid entry ==================
     f.write('FLUID\n')
     f.write('c Species(a20) , ideal gas(=0), real fluid(=1)\n')
-    f.write('H2O           1\n')
-    f.write('AIR           0\n')
-    f.write('DONE\n')
+    f.write(f"{'H2O':<20}{'1':>5}\n")
+    f.write(f"{'AIR':<20}{'0':>5}\n")
+    f.write(f"{'DONE':<20}{'0':>5}\n")
 
     # ================== end ==================
     print('fort.11 established.')

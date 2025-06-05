@@ -153,7 +153,7 @@ def initial_uvw(block, face, velocity): # mass flow rate => velocity => u, v, w
 
 # generate fort.13 
 den_blocks, u_blocks, v_blocks, w_blocks, p_blocks = [], [], [], [], []
-dk_blocks, de_blocks, q_blocks, fm_blocks = [], [], [], []
+dk_blocks, de_blocks, am_blocks, q_blocks, fm_blocks = [], [], [], [], []
 
 for i in range(IZON): # mass flow rate inlet => u, v, w, density, (quality), mass fraction need to be changed
     izt, jzt, kzt = dim[i]
@@ -172,6 +172,7 @@ for i in range(IZON): # mass flow rate inlet => u, v, w, density, (quality), mas
                                 (0.09**0.75 * 1e-4**0.75 / inlet_gas_r) / (UREF**3 / XREF), 
                                 (kzt, jzt, izt))
     
+    blk_am = np.zeros((kzt, jzt, izt))
     blk_q = np.full((kzt, jzt, izt), q)
     blk_fm = [np.full((kzt, jzt, izt), 0), 
                 np.full((kzt, jzt, izt), 1)]
@@ -212,12 +213,13 @@ for i in range(IZON): # mass flow rate inlet => u, v, w, density, (quality), mas
     p_blocks.append(blk_p)
     dk_blocks.append(blk_dk)
     de_blocks.append(blk_de)
+    am_blocks.append(blk_am)
     q_blocks.append(blk_q)
     fm_blocks.append(blk_fm)
 
 # establish fort.13
-txt = binary_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den_blocks, u_blocks, v_blocks, w_blocks, p_blocks, dk_blocks, de_blocks, q_blocks, fm_blocks)
+txt = binary_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den_blocks, u_blocks, v_blocks, w_blocks, p_blocks, dk_blocks, de_blocks, am_blocks, q_blocks, fm_blocks)
 print(txt)
 
-txt = unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den_blocks, u_blocks, v_blocks, w_blocks, p_blocks, dk_blocks, de_blocks, q_blocks, fm_blocks)
+txt = unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den_blocks, u_blocks, v_blocks, w_blocks, p_blocks, dk_blocks, de_blocks, am_blocks, q_blocks, fm_blocks)
 print(txt)

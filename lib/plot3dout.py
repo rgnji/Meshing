@@ -83,7 +83,7 @@ def binary_fort12(X, Y, Z):
 
 
 #=================== unformatted plot3d format (with record marker) ===================
-def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, dk, de, q, fm):
+def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, dk, de, am, q, fm):
     filename = 'fort.13'
 
     with open(filename, 'wb') as f:
@@ -132,6 +132,11 @@ def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w,
             de[i].astype(np.float32).tofile(f)
             f.write(struct.pack('<i', len_de))
 
+            len_am = np.array(am[i], dtype=np.float32).nbytes
+            f.write(struct.pack('<i', len_am))
+            am[i].astype(np.float32).tofile(f)
+            f.write(struct.pack('<i', len_am))
+
             len_q = np.array(q[i], dtype=np.float32).nbytes
             f.write(struct.pack('<i', len_q))
             q[i].astype(np.float32).tofile(f)
@@ -148,7 +153,7 @@ def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w,
 
 
 #=================== binary plot3d format (no record marker) ===================
-def binary_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, dk, de, q, fm):
+def binary_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, dk, de, am, q, fm):
     filename = 'fort13.bin.xyz'
 
     with open(filename, 'wb') as f:
@@ -166,6 +171,7 @@ def binary_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, d
             p[i].astype(np.float64).tofile(f)
             dk[i].astype(np.float64).tofile(f)
             de[i].astype(np.float64).tofile(f)
+            am[i].astype(np.float64).tofile(f)
             q[i].astype(np.float64).tofile(f)
             # the same order what cec table in fort.11 is
             for kk in range(NGAS):
