@@ -4,7 +4,7 @@ from struct import unpack
 # =============================================
 # ========== global variables =================
 # =============================================
-processor_num = 1
+processor_num = 4
 # ===== group 5 =====
 # zonal index of flow boundary (1-based)
 # information can be obtained from paraview
