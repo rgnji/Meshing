@@ -42,3 +42,45 @@ clean:
 clean:
 	rm -f $(fdns_o) xfdns
 ```
+## 5. Compile xprep and xfdns:  
+  - enter the following:
+```
+chmod +x ./build-prep.sh
+./build-prep.sh
+chmod +x ./build.sh
+./build.sh
+```
+## 6. Compile prefluid.ex and tecout.ex:  
+```
+source /opt/intel/oneapi/setvars.sh  
+mpiifx -o ./prefluid.ex ./prefluid.f  
+mpiifx -o ./tecout.ex ./tecout.f  
+```
+# Running fdnsrfv-mpi in Windows:
+## Compile fdns:
+  1. Download Visual Studio and Intel oneAPI
+  2. Copy the following files to your fdns directory:
+```
+build.bat
+build-prep.bat
+makefile
+makefile.prep
+```
+  3. Open Intel oneAPI command prompt before compiling
+  4. Change to target directory
+  5. Entering build-prep.bat (build.bat)
+## Run fdns:
+  1. Open Intel oneAPI command prompt
+  2. entering:
+```
+mpiexec -n <number of processors> ./xprep.exe
+(mpiexec -n <number of processors> ./xfdns.exe)
+```
+## Note:
+  - shell -> batch
+  - make -> nmake
+# Run the main program:
+  1. Check number of processor in **card.py**
+  2. Execute card.py, meshing.py, flowfield.py to generate fort.11~13
+  3. Execute xprep(xprep.exe) and split fort.11~13 in order
+  4. Execute xfdns(xfdns.exe)
