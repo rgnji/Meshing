@@ -56,8 +56,17 @@ source /opt/intel/oneapi/setvars.sh
 mpiifx -o ./prefluid.ex ./prefluid.f  
 mpiifx -o ./tecout.ex ./tecout.f  
 ```
+## 7. Run xprep to split input files:
+```
+source /opt/intel/oneapi/setvars.sh (enter this line when you open a new command prompt)
+mpirun -n <number of processors> ./xprep
+```
+## 8. Run xfdns:
+```
+mpirun -n <number of processors> ./xfdns
+```
 # Running fdnsrfv-mpi in Windows:
-## Compile fdns:
+## 1. Compile fdns:
   1. Download Visual Studio and Intel oneAPI
   2. Copy the following files to your fdns directory:
 ```
@@ -69,7 +78,7 @@ makefile.prep
   3. Open Intel oneAPI command prompt before compiling
   4. Change to target directory
   5. Entering build-prep.bat (build.bat)
-## Run fdns:
+## 2. Run xprep and xfdns:
   1. Open Intel oneAPI command prompt
   2. entering:
 ```
