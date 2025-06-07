@@ -306,7 +306,7 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     for blk3 in range(blocks):
         f.write(f'{dim[blk3][0]:>6},{dim[blk3][1]:>6},{dim[blk3][2]:>6},')
 
-        f.write(f'{(processor % 8) + 1:>6},')
+        f.write(f'{(processor % 4) + 1:>6},')
         processor += 1
 
         for gg3 in range(6):
