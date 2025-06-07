@@ -4,6 +4,7 @@ from struct import unpack
 # =============================================
 # ========== global variables =================
 # =============================================
+processor_num = 1
 # ===== group 5 =====
 # zonal index of flow boundary (1-based)
 # information can be obtained from paraview
@@ -306,7 +307,7 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     for blk3 in range(blocks):
         f.write(f'{dim[blk3][0]:>6},{dim[blk3][1]:>6},{dim[blk3][2]:>6},')
 
-        f.write(f'{(processor % 8) + 1:>6},')
+        f.write(f'{(processor % processor_num) + 1:>6},')
         processor += 1
 
         for gg3 in range(6):
