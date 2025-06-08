@@ -23,18 +23,13 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     theta = -np.arccos(grid2d_x / R) + theta_center
 
     # 3D mesh thickness
-    R_grid = np.linspace(R, center[0], num_rl+1)
+    R_grid = np.linspace(center[0], R, num_rl+1)
     jj, Rg, ii = np.meshgrid(np.arange(theta.shape[0]), R_grid, np.arange(theta.shape[1]))
     theta_grid = np.broadcast_to(theta, (num_rl+1, *theta.shape))
 
     grid_x = Rg * np.cos(theta_grid)
     grid_y = Rg * np.sin(theta_grid)
     grid_z = np.broadcast_to(grid2d_z, (num_rl+1, *grid2d_z.shape))
-
-    # i,j,k to k,i,j
-    grid_x = grid_x.transpose(1, 2, 0)
-    grid_y = grid_y.transpose(1, 2, 0)
-    grid_z = grid_z.transpose(1, 2, 0)
 
     # round
     grid_x = np.round(grid_x, 14)
@@ -48,10 +43,6 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     grid_x_2 = Rg * np.cos(theta_grid_2)
     grid_y_2 = Rg * np.sin(theta_grid_2)
 
-    # i,j,k to k,i,j
-    grid_x_2 = grid_x_2.transpose(1, 2, 0)
-    grid_y_2 = grid_y_2.transpose(1, 2, 0)
-
     # round
     grid_x_2 = np.round(grid_x_2, 14)
     grid_y_2 = np.round(grid_y_2, 14)
@@ -62,7 +53,7 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     # y interpolation
     grid2d_y = R * np.sin(-np.arccos(grid2d_x / R))
     inlet2d_y = np.full_like(grid2d_y, center[1])
-    inlet_y = np.linspace(inlet2d_y, grid2d_y, num_pipe+1)
+    inlet_y = np.linspace(grid2d_y, inlet2d_y, num_pipe+1)
     inlet_x = np.broadcast_to(grid2d_x, (num_pipe+1, *grid2d_x.shape))
     inlet_z = np.broadcast_to(grid2d_z, (num_pipe+1, *grid2d_z.shape))
 
@@ -72,11 +63,6 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     theta_inlet += theta_center
     inlet_x = r_inlet * np.cos(theta_inlet)
     inlet_y = r_inlet * np.sin(theta_inlet)
-
-    # i,j,k to k,i,j
-    inlet_x = inlet_x.transpose(1, 2, 0)
-    inlet_y = inlet_y.transpose(1, 2, 0)
-    inlet_z = inlet_z.transpose(1, 2, 0)
 
     # round
     inlet_x = np.round(inlet_x, 14)
@@ -89,10 +75,6 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     theta_inlet_2 = theta_inlet + np.pi
     inlet_x_2 = r_inlet * np.cos(theta_inlet_2)
     inlet_y_2 = r_inlet * np.sin(theta_inlet_2)
-
-    # i,j,k to k,i,j
-    inlet_x_2 = inlet_x_2.transpose(1, 2, 0)
-    inlet_y_2 = inlet_y_2.transpose(1, 2, 0)
 
     # round
     inlet_x_2 = np.round(inlet_x_2, 14)
@@ -113,11 +95,6 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     out_y = Rg * np.sin(out_theta)
     out_z = np.broadcast_to(out2d_z, (num_rl+1, *out2d_z.shape))
 
-    # i,j,k to k,i,j
-    out_x = out_x.transpose(1, 2, 0)
-    out_y = out_y.transpose(1, 2, 0)
-    out_z = out_z.transpose(1, 2, 0)
-
     # round
     out_x = np.round(out_x, 14)
     out_y = np.round(out_y, 14)
@@ -129,10 +106,6 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     out_theta_2 = out_theta + np.pi
     out_x_2 = Rg * np.cos(out_theta_2)
     out_y_2 = Rg * np.sin(out_theta_2)
-
-    # i,j,k to k,i,j
-    out_x_2 = out_x_2.transpose(1, 2, 0)
-    out_y_2 = out_y_2.transpose(1, 2, 0)
 
     # round
     out_x_2 = np.round(out_x_2, 14)
@@ -201,7 +174,7 @@ def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inle
     square_theta = -np.arccos(square_x / R) + theta_center
 
     # 3D mesh
-    R_grid = np.linspace(R, center[0], num_rl+1)
+    R_grid = np.linspace(center[0], R, num_rl+1)
     jj, Rg, ii = np.meshgrid(np.arange(square_theta.shape[0]), R_grid, np.arange(square_theta.shape[1]))
     theta_grid = np.broadcast_to(square_theta, (num_rl+1, *square_theta.shape))
 
@@ -235,7 +208,7 @@ def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inle
     # y interpolation
     square_y = R * np.sin(-np.arccos(square_x / R))
     square_inlet_y = np.full_like(square_y, center[1])
-    pipe_square_y = np.linspace(square_inlet_y, square_y, num_pipe+1)
+    pipe_square_y = np.linspace(square_y, square_inlet_y, num_pipe+1)
     pipe_square_x = np.broadcast_to(square_x, (num_pipe+1, *square_x.shape))
     pipe_square_z = np.broadcast_to(square_z, (num_pipe+1, *square_z.shape))
 

@@ -89,7 +89,7 @@ def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3):
         x, y = grid_x, grid_y
 
     # create 3D mesh
-    z = np.linspace(axi_pos, axi_pos - axial, d3+1)
+    z = np.linspace(axi_pos - axial, axi_pos, d3+1)
     X = np.full( (d3+1, x.shape[0], x.shape[1]), x)  # shape(0, 1, 2) -> k, j, i 
     Y = np.full( (d3+1, y.shape[0], y.shape[1]), y)
     jj, Z, ii = np.meshgrid(np.arange(x.shape[0]),   # j, k, i
@@ -189,7 +189,7 @@ def h_grid(r_square, arc_angle, axi_pos, axial, d1, d3):
     print(f"SOR of H-grid converged in {iterations} iterations.")
 
     # create 3D mesh
-    z = np.linspace(axi_pos, axi_pos - axial, d3+1)
+    z = np.linspace(axi_pos - axial, axi_pos, d3+1)
     X = np.full( (d3+1, x.shape[0], x.shape[1]), x)  # shape(0, 1, 2) -> k, j, i 
     Y = np.full( (d3+1, y.shape[0], y.shape[1]), y)
     jj, Z, ii = np.meshgrid(np.arange(x.shape[0]),   # j, k, i
