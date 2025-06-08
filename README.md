@@ -90,6 +90,7 @@ mpiexec -n <number of processors> ./xprep.exe
   - make -> nmake
 # Run the main program:
   1. Check number of processor in **card.py**
-  2. Execute card.py, meshing.py, flowfield.py to generate fort.11~13
-  3. Execute xprep(xprep.exe) and split fort.11~13 in order
-  4. Execute xfdns(xfdns.exe)
+  2. Edit the settings relative to the solver
+  3. Execute **meshing.py, card.py, flowfield.py** to generate fort.11~13 (meshing.py needs to be run first)
+  4. Execute **xprep(xprep.exe)** and split fort.11~13 in order
+  5. Execute **xfdns(xfdns.exe)**
