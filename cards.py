@@ -192,7 +192,11 @@ for target in range(blocks):
             blks.remove(target)
             for block in blks:
                 for i in range(8):
-                    if target_x == round(verticesX[block][i], decimals) and target_y == round(verticesY[block][i], decimals) and target_z == round(verticesZ[block][i], decimals):
+                    if (
+                        target_x == round(verticesX[block][i], decimals) and
+                        target_y == round(verticesY[block][i], decimals) and
+                        target_z == round(verticesZ[block][i], decimals)
+                    ):
                         neighbor.add(block)
                         break
             nb.append(neighbor)
@@ -217,14 +221,10 @@ ID = IZON * 6 - IZFACE * 2 - IBND
 ISNGL = 0
 
 # ===== group 4 =====
-def gp4(block, face):
-    """
-    block: index
-    face: 1~6
-    returns: IJZ21, IJZ22, JKZ21, JKZ22
-    """
+def gp4_re(block, face):
+    
     def start(direction):
-        if direction == 2 or 4 or 6:
+        if direction in [2,4,6]:
             vertex = 1
         elif direction == 1:
             vertex = 2
@@ -234,50 +234,52 @@ def gp4(block, face):
             vertex = 5
         return vertex
     
-    def reverse(r, d, dimension):
-        if r == 1:
-            return dimension[d], 1
-        else:
-            return 1, dimension[d]
-    
     # block 1 starting point
     target_start = start(face)
-    target_vx = verticesX[block][target_start-1]
-    target_vy = verticesY[block][target_start-1]
-    target_vz = verticesZ[block][target_start-1]
-
+    target_vx = round(verticesX[block][target_start-1], decimals)
+    target_vy = round(verticesY[block][target_start-1], decimals)
+    target_vz = round(verticesZ[block][target_start-1], decimals)
+    
+    # block 2 face
+    neighbor = patched_interface[block][face-1]
+    face_neighbor = patched_interface[neighbor].index(block) + 1
+    
     # block 2 shared point
-    neighbor = patched_interface[block][face - 1]
     for neighbor_vertex in range(8): # 0-based
-        neighbor_vx = verticesX[neighbor][neighbor_vertex]
-        neighbor_vy = verticesY[neighbor][neighbor_vertex]
-        neighbor_vz = verticesZ[neighbor][neighbor_vertex]
+        neighbor_vx = round(verticesX[neighbor][neighbor_vertex], decimals)
+        neighbor_vy = round(verticesY[neighbor][neighbor_vertex], decimals)
+        neighbor_vz = round(verticesZ[neighbor][neighbor_vertex], decimals)
         if neighbor_vx == target_vx and neighbor_vy == target_vy and neighbor_vz == target_vz:
             break
     
-    # block 2 starting point
-    neighbor_start = start(patched_interface[neighbor].index(block) + 1) # 1-based
-
-    # 1 for reversed, 0 for no change
-    vector_share = loc[neighbor_vertex]
-    vector_start = loc[neighbor_start - 1]
-    if patched_interface[neighbor].index(block) == 1 or 2:
-        ijz = vector_start[1] - vector_share[1]
-        jkz = vector_start[2] - vector_share[2]
-        d = [1, 2] # j, k in dim
-    elif patched_interface[neighbor].index(block) == 3 or 4:
-        ijz = vector_start[0] - vector_share[0]
-        jkz = vector_start[2] - vector_share[2]
-        d = [0, 2] # i, k in dim
-    elif patched_interface[neighbor].index(block) == 5 or 6:
-        ijz = vector_start[0] - vector_share[0]
-        jkz = vector_start[1] - vector_share[1]
-        d = [0, 1] # i, j in dim
-
-    ijz21, ijz22 = reverse(ijz, d[0], dim[neighbor])
-    jkz21, jkz22 = reverse(jkz, d[1], dim[neighbor])
-
+    if face_neighbor in [1,2]:
+        d = [1, 2] # j, k (dim)
+        jj = loc[neighbor_vertex][1]
+        kk = loc[neighbor_vertex][2]
+    elif face_neighbor in [3,4]:
+        d = [0, 2] # i, k
+        jj = loc[neighbor_vertex][0]
+        kk = loc[neighbor_vertex][2]
+    elif face_neighbor in [5,6]:
+        d = [0, 1] # i, j
+        jj = loc[neighbor_vertex][0]
+        kk = loc[neighbor_vertex][1]
+    
+    if jj == -1:
+        ijz21 = dim[neighbor][d[0]]
+        ijz22 = 1
+    else:
+        ijz21 = 1
+        ijz22 = dim[neighbor][d[0]]
+    if kk == -1:
+        jkz21 = dim[neighbor][d[1]]
+        jkz22 = 1
+    else:
+        jkz21 = 1
+        jkz22 = dim[neighbor][d[1]]
+    
     return ijz21, ijz22, jkz21, jkz22
+    
 
 # =============================================
 # ================== fort.11 ==================
@@ -339,17 +341,17 @@ with open("fort.11", "w", encoding="UTF-8") as f:
                 
                 IJZ11 = 1
                 JKZ11 = 1
-                if d4+1 == 1 or 2:
+                if (d4+1) in [1,2]:
                     IJZ12 = dim[blk4][1]
                     JKZ12 = dim[blk4][2]
-                elif d4+1 == 3 or 4:
+                elif (d4+1) in [3,4]:
                     IJZ12 = dim[blk4][0]
                     JKZ12 = dim[blk4][2]
-                elif d4+1 == 5 or 6:
+                elif (d4+1) in [5,6]:
                     IJZ12 = dim[blk4][0]
                     JKZ12 = dim[blk4][1]
                 
-                IJZ21, IJZ22, JKZ21, JKZ22 = gp4(blk4, d4+1)
+                IJZ21, IJZ22, JKZ21, JKZ22 = gp4_re(blk4, d4+1)
 
                 f.write(f'{IFCYC:>6},{IZB1:>6},{IZF1:>6},')
                 f.write(f'{IJZ11:>6},{IJZ12:>6},{JKZ11:>6},{JKZ12:>6},')
@@ -367,7 +369,7 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     for g5 in range(len(IBCZON)):
         f.write(f'{IBCZON[g5]:>7},{IDBC[g5]:>7},{ITYBC[g5]:>7},')
         
-        if IDBC[g5] == 2 or 4 or 6:
+        if IDBC[g5] in [2,4,6]:
             IJBB = 1
         elif IDBC[g5] == 1:
             IJBB = dim[ IBCZON[g5]-1 ][0]
@@ -377,13 +379,13 @@ with open("fort.11", "w", encoding="UTF-8") as f:
             IJBB = dim[ IBCZON[g5]-1 ][2]
 
         IJBS = JKBS = 1
-        if IDBC[g5] == 1 or 2:
+        if IDBC[g5] in [1,2]:
             IJBT = dim[ IBCZON[g5]-1 ][1]
             JKBT = dim[ IBCZON[g5]-1 ][2]
-        elif IDBC[g5] == 3 or 4:
+        elif IDBC[g5] in [3,4]:
             IJBT = dim[ IBCZON[g5]-1 ][0]
             JKBT = dim[ IBCZON[g5]-1 ][2]
-        elif IDBC[g5] == 5 or 6:
+        elif IDBC[g5] in [5,6]:
             IJBT = dim[ IBCZON[g5]-1 ][0]
             JKBT = dim[ IBCZON[g5]-1 ][1]
 
