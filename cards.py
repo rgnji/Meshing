@@ -47,9 +47,9 @@ ITPNT = 5
 ICOUP = 3
 NLIMT = 1
 IAX = 1
-ICYC = 3 #?
+ICYC = 0 #?
 # ===== group 9 =====
-DTT = 0.01
+DTT = 1e-4
 IREC = 1
 REC = 0.1
 THETA = .99

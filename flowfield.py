@@ -84,8 +84,8 @@ density = 1
 # mass flow rate => velocity => u, v, w
 IBCZON = [1,2,3,4,5,
           42,43,48,49,54,55,60,61,66,67]
-IDBC = [6,6,6,6,6,
-        2,2,2,2,2,2,2,2,6,6]
+IDBC = [5,5,5,5,5,
+        5,5,5,5,5,5,5,5,5,5]
 # 1 for gas inlet, 2 for liquid inlet
 ITYBC = [[1],[1],[1],[1],[1],
          [2],[2],[2],[2],[2],[2],[2],[2],[2],[2]]
@@ -128,19 +128,19 @@ def face_check(face, block, bc):
 
 def initial_uvw(block, face, velocity): # mass flow rate => velocity => u, v, w
     if face == 1: # I-max
-        i, j, k = XT[block].shape[2], 0, 0
+        i, j, k = XT[block].shape[2]-1, 0, 0
         neighbor = np.array([XT[block][k][j][i-1], YT[block][k][j][i-1], ZT[block][k][j][i-1]])
     elif face == 2: # I-1
         i, j, k = 0, 0, 0
         neighbor = np.array([XT[block][k][j][i+1], YT[block][k][j][i+1], ZT[block][k][j][i+1]])
     elif face == 3: # J-max
-        i, j, k = 0, XT[block].shape[1], 0
+        i, j, k = 0, XT[block].shape[1]-1, 0
         neighbor = np.array([XT[block][k][j-1][i], YT[block][k][j-1][i], ZT[block][k][j-1][i]])
     elif face == 4: # J-1
         i, j, k = 0, 0, 0
         neighbor = np.array([XT[block][k][j+1][i], YT[block][k][j+1][i], ZT[block][k][j+1][i]])
     elif face == 5: # K-max
-        i, j, k = 0, 0, XT[block].shape[0]
+        i, j, k = 0, 0, XT[block].shape[0]-1
         neighbor = np.array([XT[block][k-1][j][i], YT[block][k-1][j][i], ZT[block][k-1][j][i]])
     elif face == 6: # K-1
         i, j, k = 0, 0, 0

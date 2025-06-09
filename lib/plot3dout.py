@@ -154,27 +154,32 @@ def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w,
 
 #=================== binary plot3d format (no record marker) ===================
 def binary_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, dk, de, am, q, fm):
-    filename = 'fort13.bin.xyz'
+    filename = 'fort13.bin.q'
 
     with open(filename, 'wb') as f:
-        f.write(struct.pack('<i', INSO_1))
-        f.write(struct.pack('<i', INSO_4))
-        f.write(struct.pack('<i', INSO_5))
-        f.write(struct.pack('<i', INSO_7))
-        f.write(struct.pack('<i', NGAS))
-
-        for i in range(IZON):
-            den[i].astype(np.float64).tofile(f)
-            u[i].astype(np.float64).tofile(f)
-            v[i].astype(np.float64).tofile(f)
-            w[i].astype(np.float64).tofile(f)
-            p[i].astype(np.float64).tofile(f)
-            dk[i].astype(np.float64).tofile(f)
-            de[i].astype(np.float64).tofile(f)
-            am[i].astype(np.float64).tofile(f)
-            q[i].astype(np.float64).tofile(f)
-            # the same order what cec table in fort.11 is
-            for kk in range(NGAS):
-                fm[i][kk].astype(np.float64).tofile(f)
+        
+        # nblocks
+        f.write(struct.pack('<i', len(den)))
+        
+        for i in range(len(den)):
+            ni = den[i].shape[2]
+            nj = den[i].shape[1]
+            nk = den[i].shape[0]
+            f.write(struct.pack('<i', ni))
+            f.write(struct.pack('<i', nj))
+            f.write(struct.pack('<i', nk))
+        
+        for i in range(len(den)):
+            den[i].tofile(f)
+            u[i].tofile(f)
+            v[i].tofile(f)
+            w[i].tofile(f)
+            p[i].tofile(f)
+            dk[i].tofile(f)
+            de[i].tofile(f)
+            am[i].tofile(f)
+            q[i].tofile(f)
+            for kk in range(len(fm[i])):
+                fm[i][kk].tofile(f)
     
     return filename + ' established.'
