@@ -1,6 +1,3 @@
-import numpy as np
-import matplotlib.pyplot as plt
-
 from lib.cylindermesh import o_grid, h_grid
 from lib.liquid_domain import liquid_cylinder
 from lib.plot3dout import unformatted_fort12, binary_fort12

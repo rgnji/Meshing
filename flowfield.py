@@ -56,11 +56,10 @@ RREF_gas = 8.31446261815324 / MW_gas
 
 inlet_liquid_r = 0.001
 inlet_gas_r = 0.05
-mass_rate_liquid = 0
-mass_rate_gas = 0
 density_liquid = 1000 
 density_gas = 1 
-
+mass_rate_liquid = 340*(np.pi*inlet_liquid_r**2)*density_liquid
+mass_rate_gas = 340*(np.pi*inlet_gas_r**2)*density_gas
 
 # reference state
 UREF = 1
