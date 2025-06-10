@@ -5,37 +5,31 @@ from lib.plot3dout import unformatted_fort13, binary_fort13
 # 
 #  read fort.12
 # 
-with open("fort12.bin.xyz", "rb") as f12:
-    # read fort.12 as double precision
-    data = f12.read(4)
-    IZON = unpack("<i", data)[0]  # number of blocks
-
-    dim = []
-    for i in range(IZON):
-        data = f12.read(4*3)
-        dim.append(unpack("<3i", data)) # (IZT, JZT, KZT)
+with open('fort.12', 'rb') as f:
+    buff = f.read(4*3)
+    IZON = unpack('<3i', buff)[1]
     
-    coor = np.frombuffer(f12.read(), dtype=np.float64)
-
-    XT = []
-    YT = []
-    ZT = []
-    start = 0
-    end = 0
+    IZT, JZT, KZT = [], [], []
     for i in range(IZON):
-        now = dim[i]
-        size = now[0] * now[1] * now[2]
-
-        start = end
-        end += size # end index
-        XT.append( coor[start:end].reshape(dim[i][::-1]) )
-        start = end
-        end += size
-        YT.append( coor[start:end].reshape(dim[i][::-1]) )
-        start = end
-        end += size
-        ZT.append( coor[start:end].reshape(dim[i][::-1]) )
-
+        buff = f.read(4*5)
+        arr = unpack('<5i', buff)
+        IZT.append(arr[1])
+        JZT.append(arr[2])
+        KZT.append(arr[3])
+    
+    XT, YT, ZT = [], [], []
+    for i in range(IZON):
+        size = IZT[i] * JZT[i] * KZT[i]
+        buff = f.read(4*(size+2))
+        grid = np.array(unpack(f'<{size+2}f', buff)[1:-1])
+        XT.append(grid)
+        buff = f.read(4*(size+2))
+        grid = np.array(unpack(f'<{size+2}f', buff)[1:-1])
+        YT.append(grid)
+        buff = f.read(4*(size+2))
+        grid = np.array(unpack(f'<{size+2}f', buff)[1:-1])
+        ZT.append(grid)
+        
 # 
 #  inlet blocks
 # 
@@ -132,49 +126,48 @@ BLKDK, BLKDE, BLKQ, BLKAM, BLKFM = [], [], [], [], []
 #  internal
 #
 for i in range(IZON):
-    IZT, JZT, KZT = dim[i]
-    BLKDN.append( np.full((KZT, JZT, IZT), DNIN/RHOREFGS) )
-    BLKU.append( np.full((KZT, JZT, IZT), UIN/UREF) )
-    BLKV.append( np.full((KZT, JZT, IZT), VIN/UREF) )
-    BLKW.append( np.full((KZT, JZT, IZT), WIN/UREF) )
-    BLKP.append( np.full((KZT, JZT, IZT), PIN/PREF) )
+    BLKDN.append( np.full((KZT[i], JZT[i], IZT[i]), DNIN/RHOREFGS) )
+    BLKU.append( np.full((KZT[i], JZT[i], IZT[i]), UIN/UREF) )
+    BLKV.append( np.full((KZT[i], JZT[i], IZT[i]), VIN/UREF) )
+    BLKW.append( np.full((KZT[i], JZT[i], IZT[i]), WIN/UREF) )
+    BLKP.append( np.full((KZT[i], JZT[i], IZT[i]), PIN/PREF) )
     
     DKINUP = 1E-4
     DKINDW = 1E-6
     DEINUP = 0.09*DKINUP**1.5/(2*15.61)
     DEINDW = 0.09*DKINDW**1.5/(2*15.61)
-    BLKDK.append( np.random.uniform(DKINDW/UREF**2, DKINUP/UREF**2, (KZT, JZT, IZT)) )
-    BLKDE.append( np.random.uniform(DEINDW/(UREF**3*XREF), DEINUP/(UREF**3*XREF), (KZT, JZT, IZT)) )
+    BLKDK.append( np.random.uniform(DKINDW/UREF**2, DKINUP/UREF**2, (KZT[i], JZT[i], IZT[i])) )
+    BLKDE.append( np.random.uniform(DEINDW/(UREF**3*XREF), DEINUP/(UREF**3*XREF), (KZT[i], JZT[i], IZT[i])) )
     
-    BLKAM.append( np.full((KZT, JZT, IZT), AMIN) ) 
-    BLKQ.append( np.full((KZT, JZT, IZT), QIN) )
-    BLKFM.append( [np.full((KZT, JZT, IZT), FMGS[0]), 
-                   np.full((KZT, JZT, IZT), FMGS[1])] )
+    BLKAM.append( np.full((KZT[i], JZT[i], IZT[i]), AMIN) ) 
+    BLKQ.append( np.full((KZT[i], JZT[i], IZT[i]), QIN) )
+    BLKFM.append( [np.full((KZT[i], JZT[i], IZT[i]), FMGS[0]), 
+                   np.full((KZT[i], JZT[i], IZT[i]), FMGS[1])] )
 
 #
 #  boundary
 #
 for i in IBCZON[:5]:
-    BLKDN[i-1][:, :, -1] = DNGS
-    BLKU[i-1][:, :, -1] = UINGS
-    BLKV[i-1][:, :, -1] = VINGS
-    BLKW[i-1][:, :, -1] = WINGS
-    BLKP[i-1][:, :, -1] = PINGS
-    BLKDK[i-1][:, :, -1] = DKINGS
-    BLKDE[i-1][:, :, -1] = DEINGS
-    BLKFM[i-1][0][:, :, -1] = FMGS[0]
-    BLKFM[i-1][1][:, :, -1] = FMGS[1]
+    BLKDN[i-1][-1, :, :] = DNGS
+    BLKU[i-1][-1, :, :] = UINGS
+    BLKV[i-1][-1, :, :] = VINGS
+    BLKW[i-1][-1, :, :] = WINGS
+    BLKP[i-1][-1, :, :] = PINGS
+    BLKDK[i-1][-1, :, :] = DKINGS
+    BLKDE[i-1][-1, :, :] = DEINGS
+    BLKFM[i-1][0][-1, :, :] = FMGS[0]
+    BLKFM[i-1][1][-1, :, :] = FMGS[1]
 
 for i in IBCZON[5:]:
-    BLKDN[i-1][:, :, -1] = DNLQ
-    BLKU[i-1][:, :, -1] = UINLQ
-    BLKV[i-1][:, :, -1] = VINLQ
-    BLKW[i-1][:, :, -1] = WINLQ
-    BLKP[i-1][:, :, -1] = PINLQ
-    BLKDK[i-1][:, :, -1] = DKINLQ
-    BLKDE[i-1][:, :, -1] = DEINLQ
-    BLKFM[i-1][0][:, :, -1] = FMLQ[0]
-    BLKFM[i-1][1][:, :, -1] = FMLQ[1]
+    BLKDN[i-1][-1, :, :] = DNLQ
+    BLKU[i-1][-1, :, :] = UINLQ
+    BLKV[i-1][-1, :, :] = VINLQ
+    BLKW[i-1][-1, :, :] = WINLQ
+    BLKP[i-1][-1, :, :] = PINLQ
+    BLKDK[i-1][-1, :, :] = DKINLQ
+    BLKDE[i-1][-1, :, :] = DEINLQ
+    BLKFM[i-1][0][-1, :, :] = FMLQ[0]
+    BLKFM[i-1][1][-1, :, :] = FMLQ[1]
     
 #
 #  fort.13
