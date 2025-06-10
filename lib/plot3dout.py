@@ -175,11 +175,5 @@ def binary_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, d
             v[i].tofile(f)
             w[i].tofile(f)
             p[i].tofile(f)
-            dk[i].tofile(f)
-            de[i].tofile(f)
-            am[i].tofile(f)
-            q[i].tofile(f)
-            for kk in range(len(fm[i])):
-                fm[i][kk].tofile(f)
     
     return filename + ' established.'
