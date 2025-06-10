@@ -1,7 +1,6 @@
 import numpy as np
 from struct import unpack
-
-from lib.plot3dout import unformatted_fort13, binary_fort13
+from lib.plot3dout import unformatted_fort13
 
 # 
 #  read fort.12
@@ -78,7 +77,7 @@ RHOREFLQ = PREF / (RREFLQ * TREF)
 RHOREFGS = PREF / (RREFGS * TREF)
 
 #
-#  geometrt
+#  geometry
 #
 RINLQ = 1E-3    # m
 RINGS = 14.11E-3
@@ -87,33 +86,29 @@ ANGIN = np.arccos(15.11 / 15.61)
 #
 #  liquid inlet condition
 #
-DNLQ = 1000    # kg/m3
-VELINLQ = 340  # m/s
-FLOLQ = VELINLQ * (RINLQ**2*np.pi) * DNLQ # kg/s
+DNLQ = 1000        # kg/m3
+FLOLQ = 39.72E-3/4 # kg/s
+VELINLQ = FLOLQ / (np.pi*RINLQ**2 * DNLQ)
 UINLQ = VELINLQ * np.cos(ANGIN)
 VINLQ = VELINLQ * np.sin(ANGIN)
 WINLQ = 0
-PINLQ = 101300 # Pa
-DKINLQ = 0.015*VELINLQ**2
-DEINLQ = 0.09*DKINLQ**1.5/(2*RINLQ)
-FMLQ = [1, 0] # 1 -> H2O, 2 -> AIR
+PINLQ = 60*101300  # Pa
+FMLQ = [1, 0]      # 1 -> H2O, 2 -> AIR
 
 #
 #  gas inlet condition
 #
 DNGS = 1
-VELINGS = 340
-FLOGS = VELINGS * (RINGS**2*np.pi) * DNGS
+FLOGS = 297.9E-3/4
+VELINGS = FLOGS / (np.pi*RINGS**2 * DNGS)
 UINGS = 0
 VINGS = 0
-WINGS = VELINGS
-PINGS = 101300
-DKINGS = 0.015*VELINGS**2
-DEINGS = 0.09*DKINGS**1.5/(2*RINGS)
+WINGS = -VELINGS
+PINGS = 60*101300
 FMGS = [0, 1]
 
 #
-#  internal initial condition
+#  internal condition
 #
 DNIN = 1
 UIN = 0
@@ -121,6 +116,7 @@ VIN = 0
 WIN = 0
 PIN = 101300
 QIN = 0
+AMIN = 0
 
 #
 #
@@ -129,15 +125,42 @@ BLKDN, BLKU, BLKV, BLKW, BLKP = [], [], [], [], []
 BLKDK, BLKDE, BLKQ, BLKAM, BLKFM = [], [], [], [], []
 
 #
-#
+#  internal
 #
 for i in range(IZON):
     IZT, JZT, KZT = dim[i]
+    BLKDN.append( np.full((KZT, JZT, IZT), DNIN/RHOREFGS) )
+    BLKU.append( np.full((KZT, JZT, IZT), UIN/UREF) )
+    BLKV.append( np.full((KZT, JZT, IZT), VIN/UREF) )
+    BLKW.append( np.full((KZT, JZT, IZT), WIN/UREF) )
+    BLKP.append( np.full((KZT, JZT, IZT), PIN/PREF) )
     
-    BLKDN = np.full((KZT, JZT, IZT), DNIN/RHOREFGS)
-    BLKU = np.full((KZT, JZT, IZT), UIN/UREF)
-    BLKV = np.full((KZT, JZT, IZT), VIN/VREF)
-    BLKW = np.full((KZT, JZT, IZT), WIN/WREF)
-    BLKP = np.full((KZT, JZT, IZT), PIN/PREF)
+    DKINUP = 1E-4
+    DKINDW = 1E-6
+    DEINUP = 0.09*DKINUP**1.5/(2*15.61)
+    DEINDW = 0.09*DKINDW**1.5/(2*15.61)
+    BLKDK.append( np.random.uniform(DKINDW/UREF**2, DKINUP/UREF**2, (KZT, JZT, IZT)) )
+    BLKDE.append( np.random.uniform(DEINDW/(UREF**3*XREF), DEINUP/(UREF**3*XREF), (KZT, JZT, IZT)) )
     
-    BLKDK = np.full((KZT, JZT, IZT), )
+    BLKAM.append( np.zeros((KZT, JZT, IZT)) ) 
+    BLKQ.append( np.full((KZT, JZT, IZT), QIN) )
+    BLKFM.append( [np.full((KZT, JZT, IZT), FMGS[0]), 
+                   np.full((KZT, JZT, IZT), FMGS[1])] )
+
+#
+#  boundary
+#
+for i in IBCZON[:5]:
+    BLKP[i-1][:, :, -1] = PINGS
+
+for i in IBCZON[5:]:
+    BLKDN[i-1][:, :, -1] = DNLQ
+    BLKP[i-1][:, :, -1] = PINLQ
+    BLKFM[i-1][0][:, :, -1] = 1
+    BLKFM[i-1][1][:, :, -1] = 0
+    
+#
+#  fort.13
+#
+txt = unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, BLKDN, BLKU, BLKV, BLKW, BLKP, BLKDK, BLKDE, BLKAM, BLKQ, BLKFM)
+print(txt)

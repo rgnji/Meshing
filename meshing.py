@@ -8,15 +8,15 @@ from lib.plot3dout import unformatted_fort12, binary_fort12
 
 
 #========== parameters for liquid domain ==========
-r_orifice = 0.5 # inlet orifice radius
-R_liquidout = 15.61 # liquid domain outer radius
-R_liquidin = 15.11  # liquid domain inner radius
+r_orifice = 0.5E-3 # inlet orifice radius
+R_liquidout = 15.61E-3 # liquid domain outer radius
+R_liquidin = 15.11E-3  # liquid domain inner radius
 num_s = 3    # cells on orifice arc
 num_r = 3    # cells on orifice radius
 num_rl = 2   # cells on liquid domain thickness
 num_arc = 15 # cells on liquid domain arc
 num_pipe = 20 # inlet pipe cells
-inlet_pipe_len = 15.11 # inlet pipe length
+inlet_pipe_len = 15.11E-3 # inlet pipe length
 
 
 #================= grid generation =================
@@ -25,18 +25,18 @@ YT = []
 ZT = []
 
 # meshing parameters
-mesh = [['o', 14.11, 0.5*14.11, 20, 0, 6, 15, 28, 10], # gas inlet
-        ['h', 0.5*14.11, 20, 0, 6, 15, 10], # gas inlet
-        ['o', 15.61, 15.11, 90, -1, 5, 15, 2, 10], # liquid cylinder
-        ['o', 14.11, 0.5*14.11, 20, -6, 28.22, 15, 28, 50], # gas recess
-        ['h', 0.5*14.11, 20, -6, 28.22, 15, 50], # gas recess
-        ['o', 15.11, 14.11, 90, -6, 28.22, 15, 4, 50], # wall recess
-        ['o', 15.61, 15.11, 90, -6, 28.22, 15, 2, 50], # liquid recess
-        ['o', 14.11, 0.5*14.11, 20, -34.22, 20, 15, 28, 85], # gas out
-        ['h', 0.5*14.11, 20, -34.22, 20, 15, 85], # gas out
-        ['o', 15.11, 14.11, 90, -34.22, 20, 15, 4, 85], # wall out
-        ['o', 15.61, 15.11, 90, -34.22, 20, 15, 2, 85], # liquid out
-        ['o', 25, 15.61, 90, -34.22, 20, 15, 40, 85], # out
+mesh = [['o', 14.11E-3,     0.5*14.11E-3, 20,        0,         6E-3,     15, 28, 10], # gas inlet
+        ['h', 0.5*14.11E-3, 20,           0,         6E-3,      15,       10], # gas inlet
+        ['o', 15.61E-3,     15.11E-3,     90,        -1E-3,     5E-3,     15, 2,  10], # liquid cylinder
+        ['o', 14.11E-3,     0.5*14.11E-3, 20,        -6E-3,     28.22E-3, 15, 28, 50], # gas recess
+        ['h', 0.5*14.11E-3, 20,           -6E-3,     28.22E-3,  15,       50], # gas recess
+        ['o', 15.11E-3,     14.11E-3,     90,        -6E-3,     28.22E-3, 15, 4,  50], # wall recess
+        ['o', 15.61E-3,     15.11E-3,     90,        -6E-3,     28.22E-3, 15, 2,  50], # liquid recess
+        ['o', 14.11E-3,     0.5*14.11E-3, 20,        -34.22E-3, 20E-3,    15, 28, 85], # gas out
+        ['h', 0.5*14.11E-3, 20,           -34.22E-3, 20E-3,     15,       85], # gas out
+        ['o', 15.11E-3,     14.11E-3,     90,        -34.22E-3, 20E-3,    15, 4,  85], # wall out
+        ['o', 15.61E-3,     15.11E-3,     90,        -34.22E-3, 20E-3,    15, 2,  85], # liquid out
+        ['o', 25E-3,        15.61E-3,     90,        -34.22E-3, 20E-3,    15, 40, 85], # out
         ['l', r_orifice, R_liquidout, R_liquidin, num_s, num_r, num_rl, num_arc, num_pipe, inlet_pipe_len] # liquid inlet
         ]
 
