@@ -134,14 +134,14 @@ def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inle
     """
     XT, YT, ZT = [], [], []
 
-    center = np.array([R_inner, -inlet_pipe_len, -0.5]) # orifice center 1
+    center = np.array([R_inner, -inlet_pipe_len, -0.5e-3]) # orifice center 1
     theta_center = np.arccos(center[0] / R) # angle after projection
 
     blocks_def = [
-        (0, 0.5*np.pi, [0.5*r, 0], [0, 0.5*r], -0.5, 0, 0.5*np.pi),
-        (0.5*np.pi, np.pi, [0, 0.5*r], [-0.5*r, 0], 0, -0.5, -0.5*np.pi),
-        (np.pi, 1.5*np.pi, [-0.5*r, 0], [0, -0.5*r], -0.5, -1, -0.5*np.pi),
-        (1.5*np.pi, 2*np.pi, [0, -0.5*r], [0.5*r, 0], -1, -0.5, 0.5*np.pi),
+        (0, 0.5*np.pi, [0.5*r, 0], [0, 0.5*r], -0.5e-3, 0, 0.5*np.pi),
+        (0.5*np.pi, np.pi, [0, 0.5*r], [-0.5*r, 0], 0, -0.5e-3, -0.5*np.pi),
+        (np.pi, 1.5*np.pi, [-0.5*r, 0], [0, -0.5*r], -0.5e-3, -1e-3, -0.5*np.pi),
+        (1.5*np.pi, 2*np.pi, [0, -0.5*r], [0.5*r, 0], -1e-3, -0.5e-3, 0.5*np.pi),
     ]
 
     #=================== four quarter ===================
