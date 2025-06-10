@@ -94,3 +94,8 @@ mpiexec -n <number of processors> ./xprep.exe
   3. Execute **meshing.py, card.py, flowfield.py** to generate fort.11~13 (meshing.py needs to be run first)
   4. Execute **xprep(xprep.exe)** and split fort.11~13 in order
   5. Execute **xfdns(xfdns.exe)**
+# Some Notes:
+  1. IIQMAX in **fdns01** and **xprep.f** may need to be changed
+  2. The size of IZS, IZT...... in **tecout.f** may need to be changed
+  3. The direction of grids (i,j,k) needs to obey the **right hand rule**
+  4. binary_fort13 in plot3dout.py, flowfield.py, tecout.py and test.py are of no use

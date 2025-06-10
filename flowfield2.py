@@ -148,24 +148,24 @@ for i in range(IZON):
 #  boundary
 #
 for i in IBCZON[:5]:
-    BLKDN[i-1][-1, :, :] = DNGS
-    BLKU[i-1][-1, :, :] = UINGS
-    BLKV[i-1][-1, :, :] = VINGS
-    BLKW[i-1][-1, :, :] = WINGS
-    BLKP[i-1][-1, :, :] = PINGS
-    BLKDK[i-1][-1, :, :] = DKINGS
-    BLKDE[i-1][-1, :, :] = DEINGS
+    BLKDN[i-1][-1, :, :] = DNGS/RHOREFGS
+    BLKU[i-1][-1, :, :] = UINGS/UREF
+    BLKV[i-1][-1, :, :] = VINGS/UREF
+    BLKW[i-1][-1, :, :] = WINGS/UREF
+    BLKP[i-1][-1, :, :] = PINGS/PREF
+    BLKDK[i-1][-1, :, :] = DKINGS/UREF**2
+    BLKDE[i-1][-1, :, :] = DEINGS/(UREF**3*XREF)
     BLKFM[i-1][0][-1, :, :] = FMGS[0]
     BLKFM[i-1][1][-1, :, :] = FMGS[1]
 
 for i in IBCZON[5:]:
-    BLKDN[i-1][-1, :, :] = DNLQ
-    BLKU[i-1][-1, :, :] = UINLQ
-    BLKV[i-1][-1, :, :] = VINLQ
-    BLKW[i-1][-1, :, :] = WINLQ
-    BLKP[i-1][-1, :, :] = PINLQ
-    BLKDK[i-1][-1, :, :] = DKINLQ
-    BLKDE[i-1][-1, :, :] = DEINLQ
+    BLKDN[i-1][-1, :, :] = DNLQ/RHOREFLQ
+    BLKU[i-1][-1, :, :] = UINLQ/UREF
+    BLKV[i-1][-1, :, :] = VINLQ/UREF
+    BLKW[i-1][-1, :, :] = WINLQ/UREF
+    BLKP[i-1][-1, :, :] = PINLQ/PREF
+    BLKDK[i-1][-1, :, :] = DKINLQ/UREF**2
+    BLKDE[i-1][-1, :, :] = DEINLQ/(UREF**3*XREF)
     BLKFM[i-1][0][-1, :, :] = FMLQ[0]
     BLKFM[i-1][1][-1, :, :] = FMLQ[1]
     
