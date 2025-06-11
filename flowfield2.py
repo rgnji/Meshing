@@ -1,6 +1,6 @@
 import numpy as np
 from struct import unpack
-from lib.plot3dout import unformatted_fort13, binary_fort13
+from lib.plot3dout import unformatted_fort13, binary_fort13, ascii_fort13
 
 # 
 #  read fort.12
@@ -17,18 +17,27 @@ with open('fort.12', 'rb') as f:
         JZT.append(arr[2])
         KZT.append(arr[3])
     
-    XT, YT, ZT = [], [], []
+    XT, YT, ZT =[], [], []
     for i in range(IZON):
-        size = IZT[i] * JZT[i] * KZT[i]
-        buff = f.read(4*(size+2))
-        grid = np.array(unpack(f'<{size+2}f', buff)[1:-1])
-        XT.append(grid)
-        buff = f.read(4*(size+2))
-        grid = np.array(unpack(f'<{size+2}f', buff)[1:-1])
-        YT.append(grid)
-        buff = f.read(4*(size+2))
-        grid = np.array(unpack(f'<{size+2}f', buff)[1:-1])
-        ZT.append(grid)
+        size = IZT[i]*JZT[i]*KZT[i]
+        
+        f.read(4)
+        buff = f.read(4*size)
+        xflat = np.array(unpack(f'<{size}f', buff))
+        XT.append(xflat.reshape((KZT[i], JZT[i], IZT[i])))
+        f.read(4)
+        
+        f.read(4)
+        buff = f.read(4*size)
+        yflat = np.array(unpack(f'<{size}f', buff))
+        YT.append(yflat.reshape((KZT[i], JZT[i], IZT[i])))
+        f.read(4)
+        
+        f.read(4)
+        buff = f.read(4*size)
+        zflat = np.array(unpack(f'<{size}f', buff))
+        ZT.append(zflat.reshape((KZT[i], JZT[i], IZT[i])))
+        f.read(4)
         
 # 
 #  inlet blocks
@@ -175,4 +184,6 @@ for i in IBCZON[5:]:
 txt = unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, BLKDN, BLKU, BLKV, BLKW, BLKP, BLKDK, BLKDE, BLKAM, BLKQ, BLKFM)
 print(txt)
 txt = binary_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, BLKDN, BLKU, BLKV, BLKW, BLKP, BLKDK, BLKDE, BLKAM, BLKQ, BLKFM)
+print(txt)
+txt = ascii_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, BLKDN, BLKU, BLKV, BLKW, BLKP, BLKDK, BLKDE, BLKAM, BLKQ, BLKFM)
 print(txt)

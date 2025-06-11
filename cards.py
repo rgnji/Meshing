@@ -42,35 +42,35 @@ VISWX = 0
 # ===== group 8 =====
 IDATA = 1
 IGEO = 9 #?
-ITT = 500
-ITPNT = 5
+ITT = 20000
+ITPNT = 50
 ICOUP = 3
 NLIMT = 1
 IAX = 1
-ICYC = 0 #?
+ICYC = 0
 # ===== group 9 =====
 DTT = 1e-4
 IREC = 1
 REC = 0.1
-THETA = .99
+THETA = 0.5 #
 BETAP = 1.01
-IEXX = 2
-PRAT = 0.0
+IEXX = 2 #
+PRAT = 1 #
 # ===== group 10 =====
-IPC = 12920 # injector exit center
-JPC = 14
-IPEX = 21880 # outlet center
-JPEX = 27
-IMN = 1 # liquid out
-JMN = 32
+IPC = 100 
+JPC = 36
+IPEX = 100 
+JPEX = 36
+IMN = 100
+JMN = 27
 # ===== group 11 =====
 VISC = 18.37e-6
 IG = 2
-ITURB = 1
+ITURB = 3 #
 AMC = 0
 GAMA = 1.455
 CBE = 0
-CBH = 0
+CBH = -2 #
 EREXT = 5.0e-5
 # ===== group 12 =====
 ISWU = 93
@@ -106,36 +106,36 @@ IOFP3D = 1
 # =============================================
 # ================== read in ==================
 # =============================================
-with open("fort12.bin.xyz", "rb") as f12:
-    # read fort.12 as double precision
-    data = f12.read(4)
-    blocks = unpack("<i", data)[0]  # number of blocks
-
+with open("fort.12", 'rb') as f:
+    buff = f.read(4*3)
+    blocks = unpack('<3i', buff)[1]
+    
     dim = []
     for i in range(blocks):
-        data = f12.read(4*3)
-        dim.append(unpack("<3i", data)) # (IZT, JZT, KZT)
+        buff = f.read(4*5)
+        dim.append(unpack('<5i', buff)[1:4])
     
-    coor = np.frombuffer(f12.read(), dtype=np.float64)
-
-    XT = []
-    YT = []
-    ZT = []
-    start = 0
-    end = 0
+    XT, YT, ZT =[], [], []
     for i in range(blocks):
-        now = dim[i]
-        size = now[0] * now[1] * now[2]
-
-        start = end
-        end += size # end index
-        XT.append( coor[start:end].reshape(dim[i][::-1]) )
-        start = end
-        end += size
-        YT.append( coor[start:end].reshape(dim[i][::-1]) )
-        start = end
-        end += size
-        ZT.append( coor[start:end].reshape(dim[i][::-1]) )
+        size = dim[i][0]*dim[i][1]*dim[i][2]
+        
+        f.read(4)
+        buff = f.read(4*size)
+        xflat = np.array(unpack(f'<{size}f', buff))
+        XT.append(xflat.reshape((dim[i][2], dim[i][1], dim[i][0])))
+        f.read(4)
+        
+        f.read(4)
+        buff = f.read(4*size)
+        yflat = np.array(unpack(f'<{size}f', buff))
+        YT.append(yflat.reshape((dim[i][2], dim[i][1], dim[i][0])))
+        f.read(4)
+        
+        f.read(4)
+        buff = f.read(4*size)
+        zflat = np.array(unpack(f'<{size}f', buff))
+        ZT.append(zflat.reshape((dim[i][2], dim[i][1], dim[i][0])))
+        f.read(4)
 # =============================================
 # =============================================
 # =============================================

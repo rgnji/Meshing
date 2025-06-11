@@ -4,83 +4,50 @@ import struct
 #=================== unformatted plot3d format (with record marker) ===================
 # X, Y, Z will be 4D matrices X(IZ, KZT, JZT, IZT)
 def unformatted_fort12(X, Y, Z):
-    filename = "fort.12"
-
-    with open(filename, "wb") as f:
-        # write number of blocks
-        blocks = np.array(len(X), dtype=np.int32) # len(X) = number of blocks
-
-        f.write(struct.pack("<i", 4)) # start marker
-        blocks.tofile(f)
-        f.write(struct.pack("<i", 4)) # end marker
-
-        # write maximum grid number in I, J and K direction for each block
-        for i in range(len(X)):
-            dim = []
-            for j in range(3):
-                dim.append(X[i].shape[2-j]) # IZT, JZT, KZT
+    filename = 'fort.12'
+    decimals = 5
+    
+    IZON = len(X)
+    IZT, JZT, KZT = [], [], []
+    for i in range(IZON):
+        IZT.append(X[i].shape[2])
+        JZT.append(X[i].shape[1])
+        KZT.append(X[i].shape[0])
+    
+    with open(filename, 'wb') as f:
+        f.write(struct.pack('<i', 4))
+        f.write(struct.pack('<i', IZON))
+        f.write(struct.pack('<i', 4))
+        
+        for i in range(IZON):
+            f.write(struct.pack('<i', 12))
+            f.write(struct.pack('<i', IZT[i]))
+            f.write(struct.pack('<i', JZT[i]))
+            f.write(struct.pack('<i', KZT[i]))
+            f.write(struct.pack('<i', 12))
+        
+        for i in range(IZON):
+            size = IZT[i]*JZT[i]*KZT[i]
             
-            f.write(struct.pack('<i', 12))
-            dim = np.array(dim, dtype=np.int32)
-            dim.tofile(f)
-            f.write(struct.pack('<i', 12))
-
-        # write coordinates of all the points in a block
-        # write all the "x", then all the "y", then "z"
-        for block in range(len(X)):
-            x_flat = np.array(X[block].flatten(), dtype=np.float32) # total element size
-            len_x = x_flat.nbytes
-
-            f.write(struct.pack("<i", len_x)) # write x 
-            x = np.array(X[block], dtype=np.float32) # change dtype
-            x.tofile(f) # row-major
-            f.write(struct.pack("<i", len_x))
-
-            f.write(struct.pack("<i", len_x)) # write y
-            y = np.array(Y[block], dtype=np.float32)
-            y.tofile(f)
-            f.write(struct.pack("<i", len_x))
-
-            f.write(struct.pack("<i", len_x)) # write z
-            z = np.array(Z[block], dtype=np.float32)
-            z.tofile(f)
-            f.write(struct.pack("<i", len_x))
+            XT = X[i].flatten()
+            f.write(struct.pack('<i', 4*size))
+            for j in range(size):    
+                f.write(struct.pack('<f', round(XT[j], decimals)))    
+            f.write(struct.pack('<i', 4*size))
+            
+            YT = Y[i].flatten()
+            f.write(struct.pack('<i', 4*size))
+            for j in range(size):    
+                f.write(struct.pack('<f', round(YT[j], decimals)))    
+            f.write(struct.pack('<i', 4*size))
+            
+            ZT = Z[i].flatten()
+            f.write(struct.pack('<i', 4*size))
+            for j in range(size):    
+                f.write(struct.pack('<f', round(ZT[j], decimals)))    
+            f.write(struct.pack('<i', 4*size))
     
     return filename + " established."
-
-
-#=================== binary plot3d format (no record marker) ===================
-# X, Y, Z will be 4D matrices X(IZ, KZT, JZT, IZT)
-def binary_fort12(X, Y, Z):
-    filename = "fort12.bin.xyz"
-
-    with open(filename, "wb") as f:
-        # write number of blocks
-        blocks = np.array(len(X), dtype=np.int32) # len(X) = number of blocks
-        f.write(struct.pack("<i", blocks))
-
-        # write maximum grid number in I, J and K direction for each block
-        dim = []
-        for i in range(len(X)):
-            for j in range(3):
-                dim.append(X[i].shape[2-j]) # IZT, JZT, KZT
-        dim = np.array(dim, dtype=np.int32)
-        dim.tofile(f)
-
-        # write coordinates of all the points in a block
-        # write all the "x", then all the "y", then "z"
-        for block in range(len(X)):
-            x = np.array(X[block], dtype=np.float64) # change dtype
-            x.tofile(f) # row-major
-
-            y = np.array(Y[block], dtype=np.float64)
-            y.tofile(f)
-
-            z = np.array(Z[block], dtype=np.float64)
-            z.tofile(f)
-    
-    return filename + " established."
-
 
 #=================== unformatted plot3d format (with record marker) ===================
 def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, dk, de, am, q, fm):
@@ -151,6 +118,221 @@ def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w,
     
     return filename + ' established.'
 
+#
+#  ASCII fort.12
+#
+def ascii_fort12(X, Y, Z):
+    filename = 'fort12.txt'
+    decimals = 6
+    IZON = len(X)
+    IZT, JZT, KZT = [], [], []
+    for i in range(IZON):
+        IZT.append(X[i].shape[2])
+        JZT.append(X[i].shape[1])
+        KZT.append(X[i].shape[0])
+    
+    with open(filename, 'w') as f:
+        f.write(f'{IZON:>5}\n')
+        
+        for i in range(IZON):
+            f.write(f'{IZT[i]:>5}')
+            f.write(f'{JZT[i]:>5}')
+            f.write(f'{KZT[i]:>5}')
+            f.write('\n')
+        
+        for i in range(IZON):
+            size = IZT[i]*JZT[i]*KZT[i]
+            XT = X[i].flatten() * 10
+            YT = Y[i].flatten() * 10
+            ZT = Z[i].flatten() * 10
+            
+            count = 0
+            for j in range(size):
+                f.write(f'{round(XT[j], decimals):>16.8E}')
+                count += 1
+                if count % 5 == 0:
+                    f.write('\n')
+            if count % 5 != 0:
+                f.write('\n')
+                
+            count = 0
+            for j in range(size):
+                f.write(f'{round(YT[j], decimals):>16.8E}')
+                count += 1
+                if count % 5 == 0:
+                    f.write('\n')
+            if count % 5 != 0:
+                f.write('\n')
+            
+            count = 0
+            for j in range(size):
+                f.write(f'{round(ZT[j], decimals):>16.8E}')
+                count += 1
+                if count % 5 == 0:
+                    f.write('\n')
+            if count % 5 != 0:
+                f.write('\n')
+            
+    return filename + '(ASCII) established.'
+
+#
+#  ASCII fort.13
+#
+def ascii_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, DN, U, V, W, P, DK, DE, AM, Q, FM):
+    filename = 'fort13.txt'
+    IZON = len(DN)
+    IZT, JZT, KZT = [], [], []
+    for i in range(IZON):
+        IZT.append(DN[i].shape[2])
+        JZT.append(DN[i].shape[1])
+        KZT.append(DN[i].shape[0])
+    
+    with open(filename, 'w') as f:
+        f.write(f'{INSO_1:>5}{INSO_4:>5}{INSO_5:>5}{INSO_7:>5}{NGAS:>5}\n')
+        
+        for i in range(IZON):
+            size = IZT[i]*JZT[i]*KZT[i]
+            
+            DNT = DN[i].flatten() * 10
+            count = 0
+            for j in range(size):
+                f.write(f'{DNT[j]:>16.8E}')
+                count += 1
+                if count % 5 == 0:
+                    f.write('\n')
+            if count % 5 != 0:
+                f.write('\n')
+                
+            UT = U[i].flatten() * 10
+            count = 0
+            for j in range(size):
+                f.write(f'{UT[j]:>16.8E}')
+                count += 1
+                if count % 5 == 0:
+                    f.write('\n')
+            if count % 5 != 0:
+                f.write('\n')
+                
+            VT = V[i].flatten() * 10
+            count = 0
+            for j in range(size):
+                f.write(f'{VT[j]:>16.8E}')
+                count += 1
+                if count % 5 == 0:
+                    f.write('\n')
+            if count % 5 != 0:
+                f.write('\n')
+            
+            WT = W[i].flatten() * 10
+            count = 0
+            for j in range(size):
+                f.write(f'{WT[j]:>16.8E}')
+                count += 1
+                if count % 5 == 0:
+                    f.write('\n')
+            if count % 5 != 0:
+                f.write('\n')
+                
+            PT = P[i].flatten() * 10
+            count = 0
+            for j in range(size):
+                f.write(f'{PT[j]:>16.8E}')
+                count += 1
+                if count % 5 == 0:
+                    f.write('\n')
+            if count % 5 != 0:
+                f.write('\n')
+            
+            DKT = DK[i].flatten() * 10
+            count = 0
+            for j in range(size):
+                f.write(f'{DKT[j]:>16.8E}')
+                count += 1
+                if count % 5 == 0:
+                    f.write('\n')
+            if count % 5 != 0:
+                f.write('\n')
+                
+            DET = DE[i].flatten() * 10
+            count = 0
+            for j in range(size):
+                f.write(f'{DET[j]:>16.8E}')
+                count += 1
+                if count % 5 == 0:
+                    f.write('\n')
+            if count % 5 != 0:
+                f.write('\n')
+            
+            AMT = AM[i].flatten() * 10
+            count = 0
+            for j in range(size):
+                f.write(f'{AMT[j]:>16.8E}')
+                count += 1
+                if count % 5 == 0:
+                    f.write('\n')
+            if count % 5 != 0:
+                f.write('\n')
+            
+            QT = Q[i].flatten() * 10
+            count = 0
+            for j in range(size):
+                f.write(f'{QT[j]:>16.8E}')
+                count += 1
+                if count % 5 == 0:
+                    f.write('\n')
+            if count % 5 != 0:
+                f.write('\n')
+                
+            for kk in range(NGAS):
+                FMT = FM[i][kk].flatten() * 10
+                count = 0
+                for j in range(size):
+                    f.write(f'{FMT[j]:>16.8E}')
+                    count += 1
+                    if count % 5 == 0:
+                        f.write('\n')
+                if count % 5 != 0:
+                    f.write('\n')
+    
+    return filename + '(ASCII) established.'
+
+#=================== binary plot3d format (no record marker) ===================
+# X, Y, Z will be 4D matrices X(IZ, KZT, JZT, IZT)
+def binary_fort12(X, Y, Z):
+    filename = "fort12.bin.xyz"
+    decimals = 5
+    
+    IZON = len(X)
+    IZT, JZT, KZT = [], [], []
+    for i in range(IZON):
+        IZT.append(X[i].shape[2])
+        JZT.append(X[i].shape[1])
+        KZT.append(X[i].shape[0])
+    
+    with open(filename, 'wb') as f:
+        f.write(struct.pack('<i', IZON))
+        
+        for i in range(IZON):
+            f.write(struct.pack('<i', IZT[i]))
+            f.write(struct.pack('<i', JZT[i]))
+            f.write(struct.pack('<i', KZT[i]))
+        
+        for i in range(IZON):
+            size = IZT[i]*JZT[i]*KZT[i]
+            
+            XT = X[i].flatten()
+            for j in range(size):    
+                f.write(struct.pack('<f', round(XT[j], decimals)))    
+            
+            YT = Y[i].flatten()
+            for j in range(size):    
+                f.write(struct.pack('<f', round(YT[j], decimals)))    
+            
+            ZT = Z[i].flatten()
+            for j in range(size):    
+                f.write(struct.pack('<f', round(ZT[j], decimals)))    
+    
+    return filename + " established."
 
 #=================== binary plot3d format (no record marker) ===================
 def binary_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, dk, de, am, q, fm):
