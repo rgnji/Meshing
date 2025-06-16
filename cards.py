@@ -10,27 +10,18 @@ processor_num = 4
 # information can be obtained from paraview
 # inlet, outlet
 IBCZON = [1,2,3,4,5,
-          42,43,48,49,54,55,60,61,66,67,
-          23,24,25,26,27,
-          28,29,30,31,
-          32,33,34,35,
-          36,37,38,39,
-          36,37,38,39,
-          36,37,38,39]
+          25,26,31,32,37,38,43,44,49,50,
+          10,11,12,13,14,
+          15,16,17,18,
+          19,20,21,22]
 IDBC = [5,5,5,5,5,
         5,5,5,5,5,5,5,5,5,5,
         6,6,6,6,6,
         6,6,6,6,
-        6,6,6,6,
-        4,4,4,4,
-        5,5,5,5,
         6,6,6,6]
 ITYBC = [-1,-1,-1,-1,-1,
          -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
          2,2,2,2,2,
-         2,2,2,2,
-         2,2,2,2,
-         2,2,2,2,
          2,2,2,2,
          2,2,2,2]
 # ===== group 6 =====
@@ -41,10 +32,10 @@ DENNX = 0
 VISWX = 0
 # ===== group 8 =====
 IDATA = 1
-IGEO = 9 #?
+IGEO = 0    # any number but 1 and 9, which are for special cases
 ITT = 20000
 ITPNT = 50
-ICOUP = 1 # for unstable flow, ICOUP > 1
+ICOUP = 1   # for unstable flow, ICOUP > 1
 NLIMT = 1
 IAX = 1
 ICYC = 0
@@ -53,9 +44,9 @@ DTT = 1e-4
 IREC = 1
 REC = 0.1
 THETA = 1.0 #
-BETAP = 1 # compressible for real fluid model
+BETAP = 1   # compressible for real fluid model
 IEXX = 1 #
-PRAT = 1 #
+PRAT = 0 #
 # ===== group 10 =====
 IPC = 101
 JPC = 5
@@ -66,8 +57,8 @@ JMN = 15
 # ===== group 11 =====
 VISC = 18.37e-6
 IG = 2
-ITURB = 1 # use low-Re model if calculating viscous boundary layer
-AMC = 1 # compressible for real fluid model
+ITURB = 1   # use low-Re model if calculating viscous boundary layer
+AMC = 1     # compressible for real fluid model
 GAMA = 1.455
 CBE = 0
 CBH = 0 #
@@ -94,10 +85,10 @@ NGAS = 2 # h2o and air
 NREACT = 0
 IUNIT = 1
 DENREF = 1
-UREF = 1
-TREF = 1
-XREF = 1
-PREF = 1
+UREF = 69.593
+TREF = 300
+XREF = 1E-3
+PREF = 1E5
 # ===== group 17 =====
 IGDINN = 1
 IOFINN = 1
@@ -558,7 +549,7 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     # ================== fluid entry ==================
     f.write('FLUID\n')
     f.write('c Species(a20) , ideal gas(=0), real fluid(=1)\n')
-    f.write(f"{'H2O':<20}{'1':>5}\n")
+    f.write(f"{'H2O':<20}{'0':>5}\n")
     f.write(f"{'AIR':<20}{'0':>5}\n")
     f.write(f"{'DONE':<20}{'0':>5}\n")
 

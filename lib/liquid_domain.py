@@ -81,7 +81,7 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     inlet_y_2 = np.round(inlet_y_2, 14)
 
     blocks.append((inlet_x_2, inlet_y_2, inlet_z))
-
+    
     #=================== outer extension ===================
     bound_theta = np.full(num_s+1, outer_theta_fixed) # axial direction
     bound_z = np.linspace(outer_z_start, outer_z_end, num_s+1) # axial direction
@@ -134,14 +134,14 @@ def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inle
     """
     XT, YT, ZT = [], [], []
 
-    center = np.array([R_inner, -inlet_pipe_len, -0.5e-3]) # orifice center 1
+    center = np.array([R_inner, -inlet_pipe_len, -0.5]) # orifice center 1
     theta_center = np.arccos(center[0] / R) # angle after projection
 
     blocks_def = [
-        (0, 0.5*np.pi, [0.5*r, 0], [0, 0.5*r], -0.5e-3, 0, 0.5*np.pi),
-        (0.5*np.pi, np.pi, [0, 0.5*r], [-0.5*r, 0], 0, -0.5e-3, -0.5*np.pi),
-        (np.pi, 1.5*np.pi, [-0.5*r, 0], [0, -0.5*r], -0.5e-3, -1e-3, -0.5*np.pi),
-        (1.5*np.pi, 2*np.pi, [0, -0.5*r], [0.5*r, 0], -1e-3, -0.5e-3, 0.5*np.pi),
+        (0,         0.5*np.pi, [0.5*r, 0],  [0, 0.5*r],  center[2],   0,           0.5*np.pi),
+        (0.5*np.pi, np.pi,     [0, 0.5*r],  [-0.5*r, 0], 0,           center[2],   -0.5*np.pi),
+        (np.pi,     1.5*np.pi, [-0.5*r, 0], [0, -0.5*r], center[2],   2*center[2], -0.5*np.pi),
+        (1.5*np.pi, 2*np.pi,   [0, -0.5*r], [0.5*r, 0],  2*center[2], center[2],   0.5*np.pi),
     ]
 
     #=================== four quarter ===================
@@ -203,7 +203,7 @@ def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inle
     XT.append(grid_x_2)
     YT.append(grid_y_2)
     ZT.append(grid_z)
-
+    
     #=================== pipe inner square ===================
     # y interpolation
     square_y = R * np.sin(-np.arccos(square_x / R))
@@ -240,5 +240,5 @@ def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inle
     XT.append(pipe_square_x_2)
     YT.append(pipe_square_y_2)
     ZT.append(pipe_square_z)
-
+    
     return XT, YT, ZT
