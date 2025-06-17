@@ -197,7 +197,7 @@ for i in [10,11,12,13,14,15,16,17,18,19,20,21,22]:
     BLKW[i-1][:,:,:] = WRECESS / UREF
 """
 #
-#  boundary
+#  inlet boundary condition
 #
 for i in IBCZON[:5]:
     BLKDN[i-1][-1, :, :] = DNGS/DENREF
@@ -232,7 +232,13 @@ for i in IBCZON[10:]:
     BLKFM[i-1][0][-1, :, :] = FMLQ[0]
     BLKFM[i-1][1][-1, :, :] = FMLQ[1]
 
-
+#
+#  no-slip condition at inlet
+#
+for i in IBCZON:
+    BLKU[i-1][-1, 0, :] = 0
+    BLKV[i-1][-1, 0, :] = 0
+    BLKW[i-1][-1, 0, :] = 0
 
 #
 #  fort.13
