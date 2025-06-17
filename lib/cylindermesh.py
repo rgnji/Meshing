@@ -5,7 +5,7 @@ import sys
 from lib.laplace import solve_grid_laplace_sor
 
 #================= =================
-def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3, expr=1):
+def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3, exprx=1, exprz=1):
     """
     Generate o-grid (no inner h-grid).
     Parameters:
@@ -27,8 +27,10 @@ def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3, expr=1):
             number of cells in radius direction
         d3: 
             number of cells in axial direction 
-        tp:
-            1 for log scale distribution, 0 for linear distribution
+        exprx:
+            expansion ratio in radial direction
+        exprz:
+            expansion ratio in axial direction
     Returns:
         X, Y, Z:
             d3+1 * d2+1 * d1+1
@@ -85,7 +87,7 @@ def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3, expr=1):
     
     Lx = arc_x - out_x
     Ly = arc_y - out_y
-    ratios = 1 + (expr - 1) * np.linspace(0, 1, d2)
+    ratios = 1 + (exprx - 1) * np.linspace(0, 1, d2)
     total_ratio = np.sum(ratios)
     for i in range(d1+1):
         segmentx = Lx[i] * ratios / total_ratio
@@ -112,7 +114,18 @@ def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3, expr=1):
         x, y = grid_x, grid_y
 
     # create 3D mesh
+    """
     z = np.linspace(axi_pos - axial, axi_pos, d3+1)
+    """
+    
+    z = np.zeros(d3+1)
+    z[0] = axi_pos - axial
+    ratios = exprz - (exprz - 1) * np.linspace(0, 1, d3)
+    total_ratio = np.sum(ratios)
+    segment_axi = axial * ratios / total_ratio
+    for i in range(1, d3+1):
+        z[i] = z[i-1] + segment_axi[i-1]
+    
     X = np.full( (d3+1, x.shape[0], x.shape[1]), x)  # shape(0, 1, 2) -> k, j, i 
     Y = np.full( (d3+1, y.shape[0], y.shape[1]), y)
     jj, Z, ii = np.meshgrid(np.arange(x.shape[0]),   # j, k, i
@@ -123,7 +136,7 @@ def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3, expr=1):
 
 
 #================= =================
-def h_grid(r_square, arc_angle, axi_pos, axial, d1, d3):
+def h_grid(r_square, arc_angle, axi_pos, axial, d1, d3, exprz=1):
     """
     Generate h-grid (square).
     Parameters:
@@ -139,6 +152,8 @@ def h_grid(r_square, arc_angle, axi_pos, axial, d1, d3):
             number of cells in arc direction
         d3: 
             number of cells in axial direction 
+        exprz:
+            expansion ratio in axial direction
     Returns:
         X, Y, Z:
             d3+1 * d2+1 * d1+1
@@ -212,7 +227,18 @@ def h_grid(r_square, arc_angle, axi_pos, axial, d1, d3):
     print(f"SOR of H-grid converged in {iterations} iterations.")
 
     # create 3D mesh
+    """
     z = np.linspace(axi_pos - axial, axi_pos, d3+1)
+    """
+    
+    z = np.zeros(d3+1)
+    z[0] = axi_pos - axial
+    ratios = exprz - (exprz - 1) * np.linspace(0, 1, d3)
+    total_ratio = np.sum(ratios)
+    segment_axi = axial * ratios / total_ratio
+    for i in range(1, d3+1):
+        z[i] = z[i-1] + segment_axi[i-1]
+    
     X = np.full( (d3+1, x.shape[0], x.shape[1]), x)  # shape(0, 1, 2) -> k, j, i 
     Y = np.full( (d3+1, y.shape[0], y.shape[1]), y)
     jj, Z, ii = np.meshgrid(np.arange(x.shape[0]),   # j, k, i

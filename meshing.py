@@ -21,19 +21,19 @@ ZLQSTR = -1
 LENLQ  = 5
 DARCLQ = DARCGS
 DRADLQ = 4
-DAXLLQ = 5
+DAXLLQ = 12
 
 # gas recess
 ZRCSTR = -6
 LENRC  = 28.22
 DRADWL = 4
-DAXLRC = 12
+DAXLRC = 32
 
 #========== parameters for liquid domain ==========
 r_orifice = 0.5 # inlet orifice radius
 R_liquidout = 15.61 # liquid domain outer radius
 R_liquidin = 15.11  # liquid domain inner radius
-num_s = 5    # cells on orifice arc
+num_s = 4    # cells on orifice arc
 num_r = 5    # cells on orifice radius
 num_rl = DRADLQ   # cells on liquid domain thickness
 num_arc = DARCLQ  # cells on liquid domain arc
@@ -73,13 +73,13 @@ mesh = [['o', 14.11,     0.5*14.11, 20,     0,      6,     10, 7, 7], # gas inle
         ['l', r_orifice, R_liquidout, R_liquidin, num_s, num_r, num_rl, num_arc, num_pipe, inlet_pipe_len] # liquid inlet
         ]
 """
-mesh = [['o', RGSOUT, RGSHGD, 20, ZGSSTR, LENGS,  DARCGS, DRADGS, DAXLGS, 5], # gas inlet
-        ['h', RGSHGD,         20, ZGSSTR, LENGS,  DARCGS,         DAXLGS], # gas inlet
-        ['o', RLQOUT, RLQINN, 90, ZLQSTR, LENLQ,  DARCLQ, DRADLQ, DAXLLQ], # liquid swirl
-        ['o', RGSOUT, RGSHGD, 20, ZRCSTR, LENRC,  DARCGS, DRADGS, DAXLRC, 5], # gas recess
-        ['h', RGSHGD,         20, ZRCSTR, LENRC,  DARCGS,         DAXLRC], # gas recess
-        ['o', RLQINN, RGSOUT, 90, ZRCSTR, LENRC,  DARCGS, DRADWL, DAXLRC], # wall recess
-        ['o', RLQOUT, RLQINN, 90, ZRCSTR, LENRC,  DARCLQ, DRADLQ, DAXLRC],
+mesh = [['o', RGSOUT, RGSHGD, 20, ZGSSTR, LENGS,  DARCGS, DRADGS, DAXLGS, 5, 1], # gas inlet
+        ['h', RGSHGD,         20, ZGSSTR, LENGS,  DARCGS,         DAXLGS,    1], # gas inlet
+        ['o', RLQOUT, RLQINN, 90, ZLQSTR, LENLQ,  DARCLQ, DRADLQ, DAXLLQ, 1, 7], # liquid swirl
+        ['o', RGSOUT, RGSHGD, 20, ZRCSTR, LENRC,  DARCGS, DRADGS, DAXLRC, 5, 1], # gas recess
+        ['h', RGSHGD,         20, ZRCSTR, LENRC,  DARCGS,         DAXLRC,    1], # gas recess
+        ['o', RLQINN, RGSOUT, 90, ZRCSTR, LENRC,  DARCGS, DRADWL, DAXLRC, 1, 1], # wall recess
+        ['o', RLQOUT, RLQINN, 90, ZRCSTR, LENRC,  DARCLQ, DRADLQ, DAXLRC, 1, 1], # liquid recess
         ['l', r_orifice, R_liquidout, R_liquidin, num_s, num_r, num_rl, num_arc, num_pipe, inlet_pipe_len, 5] # liquid inlet
         ]
 
