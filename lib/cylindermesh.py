@@ -5,7 +5,7 @@ import sys
 from lib.laplace import solve_grid_laplace_sor
 
 #================= =================
-def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3):
+def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3, expr=1):
     """
     Generate o-grid (no inner h-grid).
     Parameters:
@@ -27,6 +27,8 @@ def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3):
             number of cells in radius direction
         d3: 
             number of cells in axial direction 
+        tp:
+            1 for log scale distribution, 0 for linear distribution
     Returns:
         X, Y, Z:
             d3+1 * d2+1 * d1+1
@@ -76,15 +78,36 @@ def o_grid(qua, r, r_square, arc_angle, axi_pos, axial, d1, d2, d3):
     out_y = r * sin(out_div)
     
     # initial grid between boundaries
+    grid_x = np.zeros((d2+1, d1+1))
+    grid_x[0] = out_x
+    grid_y = np.zeros((d2+1, d1+1))
+    grid_y[0] = out_y
+    
+    Lx = arc_x - out_x
+    Ly = arc_y - out_y
+    ratios = 1 + (expr - 1) * np.linspace(0, 1, d2)
+    total_ratio = np.sum(ratios)
+    for i in range(d1+1):
+        segmentx = Lx[i] * ratios / total_ratio
+        segmenty = Ly[i] * ratios / total_ratio
+        for j in range(1, d2+1):
+            grid_x[j, i] = grid_x[j-1, i] + segmentx[j-1]
+            grid_y[j, i] = grid_y[j-1, i] + segmenty[j-1]
+    grid_x[-1] = arc_x
+    grid_y[-1] = arc_y
+    
+    """
     grid_x = np.linspace(out_x, arc_x, d2+1)
     grid_y = np.linspace(out_y, arc_y, d2+1)
-
+    """
+    
     # solve laplace
     grid_x = np.round(grid_x, 14)
     grid_y = np.round(grid_y, 14)
     if arc_angle != 90:
-        x, y, iterations = solve_grid_laplace_sor(grid_x, grid_y)
-        print(f"SOR of O-grid in quadrant {qua} converged in {iterations} iterations.")
+        x, y = grid_x, grid_y
+        #x, y, iterations = solve_grid_laplace_sor(grid_x, grid_y)
+        #print(f"SOR of O-grid in quadrant {qua} converged in {iterations} iterations.")
     else:
         x, y = grid_x, grid_y
 

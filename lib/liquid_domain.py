@@ -2,7 +2,7 @@ import numpy as np
 
 # projection of a quarter + outer region
 def generate_block(center, r, R, theta_center, angle_start, angle_end, 
-                   square_start, square_end, num_s, num_r, num_rl, num_arc, num_pipe, outer_z_start, outer_z_end, outer_theta_fixed):
+                   square_start, square_end, num_s, num_r, num_rl, num_arc, num_pipe, outer_z_start, outer_z_end, outer_theta_fixed, expr):
     blocks = []
 
     #=================== thickness ===================
@@ -16,8 +16,31 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     square_z = np.linspace(square_start[1], square_end[1], num_s+1)
 
     # radial interpolation
+    """
     grid2d_x = np.linspace(x, square_x, num_r+1) + center[0]
     grid2d_z = np.linspace(z, square_z, num_r+1) + center[2]
+    """
+    
+    grid2d_x = np.zeros((num_r+1, num_s+1))
+    grid2d_x[0] = x
+    grid2d_z = np.zeros((num_r+1, num_s+1))
+    grid2d_z[0] = z
+    
+    Lx = square_x - x
+    Lz = square_z - z
+    ratios = 1 + (expr - 1) * np.linspace(0, 1, num_r)
+    total_ratio = np.sum(ratios)
+    for i in range(num_s+1):
+        segmentx = Lx[i] * ratios / total_ratio
+        segmentz = Lz[i] * ratios / total_ratio
+        for j in range(1, num_s+1):
+            grid2d_x[j, i] = grid2d_x[j-1, i] + segmentx[j-1]
+            grid2d_z[j, i] = grid2d_z[j-1, i] + segmentz[j-1]
+    grid2d_x[-1] = square_x
+    grid2d_z[-1] = square_z
+    
+    grid2d_x += center[0]
+    grid2d_z += center[2]
 
     # project to cylinder
     theta = -np.arccos(grid2d_x / R) + theta_center
@@ -58,7 +81,7 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     inlet_z = np.broadcast_to(grid2d_z, (num_pipe+1, *grid2d_z.shape))
 
     # rotate
-    theta_inlet = np.arctan(inlet_y / inlet_x)
+    theta_inlet = np.arctan2(inlet_y, inlet_x)
     r_inlet = np.sqrt(inlet_y**2 + inlet_x**2)
     theta_inlet += theta_center
     inlet_x = r_inlet * np.cos(theta_inlet)
@@ -118,7 +141,7 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
 
 
 
-def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inlet_pipe_len):
+def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inlet_pipe_len, expr=1):
     """
     Meshing for tangetial inlet.
     Parameters:
@@ -150,7 +173,7 @@ def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inle
                                  angle_start, angle_end, 
                                  square_start, square_end,
                                  num_s, num_r, num_rl, num_arc, num_pipe,
-                                 outer_z_start, outer_z_end, outer_theta_fixed)
+                                 outer_z_start, outer_z_end, outer_theta_fixed, expr)
         for grid_x, grid_y, grid_z in blocks:
             XT.append(grid_x)
             YT.append(grid_y)
@@ -213,7 +236,7 @@ def liquid_cylinder(r, R, R_inner, num_s, num_r, num_rl, num_arc, num_pipe, inle
     pipe_square_z = np.broadcast_to(square_z, (num_pipe+1, *square_z.shape))
 
     # rotate
-    square_theta_inlet = np.arctan(pipe_square_y / pipe_square_x)
+    square_theta_inlet = np.arctan2(pipe_square_y, pipe_square_x)
     square_r_inlet = np.sqrt(pipe_square_y**2 + pipe_square_x**2)
     square_theta_inlet += theta_center
     pipe_square_x = square_r_inlet * np.cos(square_theta_inlet)
