@@ -43,7 +43,8 @@ with open('fort.12', 'rb') as f:
 #  inlet blocks
 # 
 IBCZON = [1,2,3,4,5,
-          25,26,31,32,37,38,43,44,49,50]
+          25,31,37,43,49,
+          26,32,38,44,50]
 IDBC = [5,5,5,5,5,
         5,5,5,5,5,5,5,5,5,5]
 
@@ -86,7 +87,7 @@ PIPLEN = np.sqrt(PIPDIRX**2 + PIPDIRY**2)
 DNLQ = 1000        # kg/m3
 FLOLQ = 39.72E-3/4 # kg/s
 VELINLQ = FLOLQ / (np.pi*RINLQ**2 * DNLQ)
-UINLQ = VELINLQ * np.cos(ANGIN)
+UINLQ = -VELINLQ * np.cos(ANGIN)
 VINLQ = VELINLQ * np.sin(ANGIN)
 WINLQ = 0
 PINLQ = 101300  # Pa
@@ -116,8 +117,9 @@ UIN = 0
 VIN = 0
 WIN = 0
 PIN = 101300
-QIN = 0
+TM = 300
 AMIN = 0
+QIN = 0
 
 #
 #  liquid inlet pipe
@@ -138,7 +140,7 @@ WRECESS = -(FLOGS + FLOLQ) / (np.pi*RSWOUT**2) / DNGS
 #
 #
 #
-BLKDN, BLKU, BLKV, BLKW, BLKP = [], [], [], [], []
+BLKDN, BLKU, BLKV, BLKW, BLKP, BLKTM = [], [], [], [], [], []
 BLKDK, BLKDE, BLKQ, BLKAM, BLKFM = [], [], [], [], []
 
 #
@@ -150,6 +152,7 @@ for i in range(IZON):
     BLKV.append( np.full((KZT[i], JZT[i], IZT[i]), VIN/UREF) )
     BLKW.append( np.full((KZT[i], JZT[i], IZT[i]), WIN/UREF) )
     BLKP.append( np.full((KZT[i], JZT[i], IZT[i]), PIN/PREF) )
+    BLKTM.append( np.full((KZT[i], JZT[i], IZT[i]), TM/TREF) )
     
     DKINUP = 1E-4
     DKINDW = 1E-6
@@ -207,10 +210,21 @@ for i in IBCZON[:5]:
     BLKFM[i-1][0][-1, :, :] = FMGS[0]
     BLKFM[i-1][1][-1, :, :] = FMGS[1]
 
-for i in IBCZON[5:]:
+for i in IBCZON[5:10]:
     BLKDN[i-1][-1, :, :] = DNLQ/DENREF
     BLKU[i-1][-1, :, :] = UINLQ/UREF
     BLKV[i-1][-1, :, :] = VINLQ/UREF
+    BLKW[i-1][-1, :, :] = WINLQ/UREF
+    BLKP[i-1][-1, :, :] = PINLQ/PREF
+    BLKDK[i-1][-1, :, :] = DKINLQ/UREF**2
+    BLKDE[i-1][-1, :, :] = DEINLQ/(UREF**3*XREF)
+    BLKFM[i-1][0][-1, :, :] = FMLQ[0]
+    BLKFM[i-1][1][-1, :, :] = FMLQ[1]
+
+for i in IBCZON[10:]:
+    BLKDN[i-1][-1, :, :] = DNLQ/DENREF
+    BLKU[i-1][-1, :, :] = -UINLQ/UREF
+    BLKV[i-1][-1, :, :] = -VINLQ/UREF
     BLKW[i-1][-1, :, :] = WINLQ/UREF
     BLKP[i-1][-1, :, :] = PINLQ/PREF
     BLKDK[i-1][-1, :, :] = DKINLQ/UREF**2
