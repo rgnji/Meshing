@@ -235,7 +235,9 @@ for i in IBCZON[10:]:
 #
 #  no-slip condition at inlet
 #
-for i in IBCZON:
+for i in [1,2,3,4,
+          25,31,37,43,
+          26,32,38,44]:
     BLKU[i-1][-1, 0, :] = 0
     BLKV[i-1][-1, 0, :] = 0
     BLKW[i-1][-1, 0, :] = 0

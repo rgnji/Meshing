@@ -4,7 +4,7 @@ from struct import unpack
 # =============================================
 # ========== global variables =================
 # =============================================
-processor_num = 4
+processor_num = 2
 # ===== group 5 =====
 # zonal index of flow boundary (1-based)
 # information can be obtained from paraview
@@ -49,11 +49,11 @@ IEXX = 1 #
 PRAT = 0 #
 # ===== group 10 =====
 IPC = 101
-JPC = 5
+JPC = 1
 IPEX = 101 
 JPEX = 36
 IMN = 101
-JMN = 15
+JMN = 1
 # ===== group 11 =====
 VISC = 18.37e-6
 IG = 2
@@ -84,7 +84,7 @@ SP = 1
 NGAS = 2 # h2o and air
 NREACT = 0
 IUNIT = 1
-DENREF = 1
+DENREF = 1.1550255578176354
 UREF = 69.593
 TREF = 300
 XREF = 1E-3
@@ -494,7 +494,7 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     for g14 in group14:
         f.write(f'{g14:>6},')
     f.write('\n')
-    f.write(f'{NGAS:>6},{NREACT:>6},{IUNIT:>6},{DENREF:>6},{UREF:>6},{TREF:>6},{XREF:>6},{PREF:>6},\n')
+    f.write(f'{NGAS:>6},{NREACT:>6},{IUNIT:>6},{DENREF:>.4E},{UREF:>6},{TREF:>6},{XREF:>6},{PREF:>6},\n')
 
     # ================== group 15 ==================
     group15 = ['ISPARK','ISPKMIN','ISPMAX']
@@ -549,7 +549,7 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     # ================== fluid entry ==================
     f.write('FLUID\n')
     f.write('c Species(a20) , ideal gas(=0), real fluid(=1)\n')
-    f.write(f"{'H2O':<20}{'0':>5}\n")
+    f.write(f"{'H2O':<20}{'1':>5}\n")
     f.write(f"{'AIR':<20}{'0':>5}\n")
     f.write(f"{'DONE':<20}{'0':>5}\n")
 
