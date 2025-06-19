@@ -99,8 +99,8 @@ mpiexec -n <number of processors> ./xprep.exe
   2. The size of IZS, IZT...... in **tecout.f** may need to be changed
   3. The direction of grids (i,j,k) needs to obey the **right hand rule**
   4. The inlet type option in ITYBC (group 6) is not **-2** but **-3**
-  5. In group 10, the zones for JPC and JMN must not has local zone number greater than 
-     the number of processors that your mpirun uses
+  5. In group 10, the local zone number of the zones for JPC and JMN must equal to  
+     the number of the processor JPC and JMN locate
   6. In initial flow field, flow rate at the inlet is determined from inlet velocity
   7. The velocity at the boundary has to be zero in the initial flow field
   8. binary_fort13 in plot3dout.py, flowfield.py, tecout.py and test.py are of no use

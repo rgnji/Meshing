@@ -50,7 +50,7 @@ def unformatted_fort12(X, Y, Z):
     return filename + " established."
 
 #=================== unformatted plot3d format (with record marker) ===================
-def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, dk, de, am, q, fm):
+def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, tm, dk, de, am, q, fm):
     filename = 'fort.13'
 
     with open(filename, 'wb') as f:
@@ -88,16 +88,23 @@ def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w,
             f.write(struct.pack('<i', len_p))
             p[i].astype(np.float32).tofile(f)
             f.write(struct.pack('<i', len_p))
+            
+            if INSO_4 == 1:
+                len_tm = np.array(tm[i], dtype=np.float32).nbytes
+                f.write(struct.pack('<i', len_tm))
+                tm[i].astype(np.float32).tofile(f)
+                f.write(struct.pack('<i', len_tm))
 
-            len_dk = np.array(dk[i], dtype=np.float32).nbytes
-            f.write(struct.pack('<i', len_dk))
-            dk[i].astype(np.float32).tofile(f)
-            f.write(struct.pack('<i', len_dk))
-
-            len_de = np.array(de[i], dtype=np.float32).nbytes
-            f.write(struct.pack('<i', len_de))
-            de[i].astype(np.float32).tofile(f)
-            f.write(struct.pack('<i', len_de))
+            if INSO_5 == 1:
+                len_dk = np.array(dk[i], dtype=np.float32).nbytes
+                f.write(struct.pack('<i', len_dk))
+                dk[i].astype(np.float32).tofile(f)
+                f.write(struct.pack('<i', len_dk))
+    
+                len_de = np.array(de[i], dtype=np.float32).nbytes
+                f.write(struct.pack('<i', len_de))
+                de[i].astype(np.float32).tofile(f)
+                f.write(struct.pack('<i', len_de))
 
             len_am = np.array(am[i], dtype=np.float32).nbytes
             f.write(struct.pack('<i', len_am))
@@ -118,6 +125,7 @@ def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w,
     
     return filename + ' established.'
 
+##### no maintainence #####
 #
 #  ASCII fort.12
 #
@@ -178,7 +186,7 @@ def ascii_fort12(X, Y, Z):
 #
 #  ASCII fort.13
 #
-def ascii_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, DN, U, V, W, P, DK, DE, AM, Q, FM):
+def ascii_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, DN, U, V, W, P, TM, DK, DE, AM, Q, FM):
     filename = 'fort13.txt'
     IZON = len(DN)
     IZT, JZT, KZT = [], [], []
@@ -237,6 +245,16 @@ def ascii_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, DN, U, V, W, P, DK,
             count = 0
             for j in range(size):
                 f.write(f'{PT[j]:>16.8E}')
+                count += 1
+                if count % 5 == 0:
+                    f.write('\n')
+            if count % 5 != 0:
+                f.write('\n')
+                
+            TMT = TM[i].flatten() * 10
+            count = 0
+            for j in range(size):
+                f.write(f'{TMT[j]:>16.8E}')
                 count += 1
                 if count % 5 == 0:
                     f.write('\n')

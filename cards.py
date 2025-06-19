@@ -33,14 +33,14 @@ VISWX = 0
 # ===== group 8 =====
 IDATA = 1
 IGEO = 0    # any number but 1 and 9, which are for special cases
-ITT = 20000
+ITT = 200000
 ITPNT = 50
 ICOUP = 1   # for unstable flow, ICOUP > 1
 NLIMT = 1
 IAX = 1
 ICYC = 0
 # ===== group 9 =====
-DTT = 1e-4
+DTT = 1E-5
 IREC = 1
 REC = 0.1
 THETA = 1.0 #
@@ -48,11 +48,11 @@ BETAP = 1   # compressible for real fluid model
 IEXX = 1 #
 PRAT = 0 #
 # ===== group 10 =====
-IPC = 101
+IPC = 500
 JPC = 1
 IPEX = 101 
 JPEX = 36
-IMN = 101
+IMN = 500
 JMN = 1
 # ===== group 11 =====
 VISC = 18.37e-6

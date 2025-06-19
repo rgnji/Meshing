@@ -10,9 +10,9 @@ RGSOUT = 14.11
 RGSHGD = 0.5*RGSOUT
 ZGSSTR = 0
 LENGS  = 6
-DARCGS = 10
-DRADGS = 10
-DAXLGS = 7
+DARCGS = 20
+DRADGS = 20
+DAXLGS = 14
 
 # liquid swirl
 RLQOUT = 15.61
@@ -21,24 +21,25 @@ ZLQSTR = -1
 LENLQ  = 5
 DARCLQ = DARCGS
 DRADLQ = 4
-DAXLLQ = 12
+DAXLLQ = 24
 
 # gas recess
 ZRCSTR = -6
 LENRC  = 28.22
 DRADWL = 4
-DAXLRC = 32
+DAXLRC = 64
 
 #========== parameters for liquid domain ==========
 r_orifice = 0.5 # inlet orifice radius
 R_liquidout = 15.61 # liquid domain outer radius
 R_liquidin = 15.11  # liquid domain inner radius
+inlet_pipe_len = 15.11 # inlet pipe length
 num_s = 4    # cells on orifice arc
 num_r = 5    # cells on orifice radius
 num_rl = DRADLQ   # cells on liquid domain thickness
 num_arc = DARCLQ  # cells on liquid domain arc
-num_pipe = 10 # inlet pipe cells
-inlet_pipe_len = 15.11 # inlet pipe length
+num_pipe = 20 # inlet pipe cells
+
 
 
 #================= grid generation =================
@@ -109,5 +110,7 @@ txt = binary_fort12(XT, YT, ZT)
 print(txt)
 txt = unformatted_fort12(XT, YT, ZT)
 print(txt)
+"""
 txt = ascii_fort12(XT, YT, ZT)
 print(txt)
+"""
