@@ -4,7 +4,7 @@ from struct import unpack
 # =============================================
 # ========== global variables =================
 # =============================================
-processor_num = 2
+processor_num = 6
 # ===== group 5 =====
 # zonal index of flow boundary (1-based)
 # information can be obtained from paraview
@@ -33,14 +33,14 @@ VISWX = 0
 # ===== group 8 =====
 IDATA = 1
 IGEO = 0    # any number but 1 and 9, which are for special cases
-ITT = 200000
+ITT = 1E6
 ITPNT = 50
 ICOUP = 1   # for unstable flow, ICOUP > 1
 NLIMT = 1
 IAX = 1
 ICYC = 0
 # ===== group 9 =====
-DTT = 1E-5
+DTT = 1E-7
 IREC = 1
 REC = 0.1
 THETA = 1.0 #
