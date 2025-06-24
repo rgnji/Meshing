@@ -33,14 +33,14 @@ VISWX = 0
 # ===== group 8 =====
 IDATA = 1
 IGEO = 0    # any number but 1 and 9, which are for special cases
-ITT = 1E6
+ITT = 1E5
 ITPNT = 50
 ICOUP = 1   # for unstable flow, ICOUP > 1
 NLIMT = 1
 IAX = 1
 ICYC = 0
 # ===== group 9 =====
-DTT = 1E-7
+DTT = 5E-7
 IREC = 1
 REC = 0.1
 THETA = 1.0 #
@@ -62,7 +62,7 @@ AMC = 1     # compressible for real fluid model
 GAMA = 1.455
 CBE = 0
 CBH = 0 #
-EREXT = 5.0e-5
+EREXT = 5.0e-8
 # ===== group 12 =====
 ISWU = 93
 ISWP = 97
@@ -451,14 +451,14 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     for g8 in group8:
         f.write(f'{g8:>6},')
     f.write('\n')
-    f.write(f'{IDATA:>6},{IGEO:>6},{ITT:>6},{ITPNT:>6},{ICOUP:>6},{NLIMT:>6},{IAX:>6},{ICYC:>6},\n')
+    f.write(f'{IDATA:>6},{IGEO:>6},{ITT:>.3E},{ITPNT:>6},{ICOUP:>6},{NLIMT:>6},{IAX:>6},{ICYC:>6},\n')
 
     # ================== group 9 ==================
     group9 = ['DTT', 'IREC', 'REC', 'THETA', 'BETAP', 'IEXX', 'PRAT']
     for g9 in group9:
         f.write(f'{g9:>6},')
     f.write('\n')
-    f.write(f'{DTT:>6},{IREC:>6},{REC:>6},{THETA:>6},{BETAP:>6},{IEXX:>6},{PRAT:>6},\n')
+    f.write(f'{DTT:>.3E},{IREC:>6},{REC:>6},{THETA:>6},{BETAP:>6},{IEXX:>6},{PRAT:>6},\n')
 
     # ================== group 10 ==================
     group10 = ['IPC', 'JPC', 'IPEX', 'JPEX', 'IMN', 'JMN']
