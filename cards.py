@@ -50,8 +50,8 @@ PRAT = 0 #
 # ===== group 10 =====
 IPC = 5931
 JPC = 1
-IPEX = 101 
-JPEX = 36
+IPEX = 198
+JPEX = 14
 IMN = 5931
 JMN = 1
 # ===== group 11 =====
