@@ -95,12 +95,17 @@ mpiexec -n <number of processors> ./xprep.exe
   4. Execute **xprep(xprep.exe)** and split fort.11~13 in order
   5. Execute **xfdns(xfdns.exe)**
 # Some Notes:
-  1. IIQMAX in **fdns01** and **xprep.f** may need to be changed
-  2. The size of IZS, IZT...... in **tecout.f** may need to be changed
-  3. The direction of grids (i,j,k) needs to obey the **right hand rule**
-  4. The inlet type option in ITYBC (group 6) is not **-2** but **-3**
-  5. In group 10, the local zone number of the zones for JPC and JMN must equal to  
+  1. The direction of grids (i,j,k) needs to obey the **right hand rule**
+  2. The inlet type option in ITYBC (group 6) is not **-2** but **-3**
+  3. In group 10, the local zone number of the zones for JPC and JMN must equal to  
      the number of the processor JPC and JMN locate
-  6. In initial flow field, flow rate at the inlet is determined from inlet velocity
-  7. The velocity at the boundary has to be zero in the initial flow field
-  8. binary_fort13 in plot3dout.py, flowfield.py, tecout.py and test.py are of no use
+  4. In initial flow field, flow rate at the inlet is determined from inlet velocity
+  5. The velocity at the boundary has to be zero in the initial flow field
+  6. binary_fort13 in plot3dout.py, flowfield.py, tecout.py and test.py are of no use
+  7. fdns.f FDNS WRITE(  6,9350) **ITOPRE**,IZZ,I,J,K,ERRUVW,ERRM,ERRT,ERRK,UMON ->
+      WRITE(  6,9350) **ITO**,IZZ,I,J,K,ERRUVW,ERRM,ERRT,ERRK,UMON
+# Parameter check:
+  1. IIQMAX (fdns01, prep.f)
+  2. IWP (fdns01)
+  3. MZON, MBIF, MBIO, MBWA (fdns01)
+  4. IZS, IZT, JZS, JZT, KZS, KZT (tecout.f)
