@@ -4,7 +4,7 @@ from struct import unpack
 # =============================================
 # ========== global variables =================
 # =============================================
-processor_num = 4
+processor_num = 5
 # ===== group 5 =====
 # zonal index of flow boundary (1-based)
 # information can be obtained from paraview
@@ -40,7 +40,7 @@ NLIMT = 1
 IAX = 1
 ICYC = 0
 # ===== group 9 =====
-DTT = 1E-7
+DTT = 5E-7 # reference time = XREF/UREF = 1.4E-5
 IREC = 1
 REC = 0.1
 THETA = 1.0 #
@@ -48,11 +48,11 @@ BETAP = 1   # compressible for real fluid model
 IEXX = 1 #
 PRAT = 0 #
 # ===== group 10 =====
-IPC = 5931
+IPC = 5793 # (I,J,K,IZ)=(18, 3,14, 1)
 JPC = 1
-IPEX = 198
+IPEX = 199 # (I,J,K,IZ)=(10,10, 1,14)
 JPEX = 14
-IMN = 5931
+IMN = 5793
 JMN = 1
 # ===== group 11 =====
 VISC = 18.37e-6
