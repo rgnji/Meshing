@@ -4,7 +4,7 @@ from struct import unpack
 # =============================================
 # ========== global variables =================
 # =============================================
-processor_num = 6
+processor_num = 4
 # ===== group 5 =====
 # zonal index of flow boundary (1-based)
 # information can be obtained from paraview
@@ -32,7 +32,7 @@ DENNX = 0
 VISWX = 0
 # ===== group 8 =====
 IDATA = 1
-IGEO = 0    # any number but 1 and 9, which are for special cases
+IGEO = 5    # any number > 0 but 1 and 9, which are for special cases
 ITT = 1E5
 ITPNT = 50
 ICOUP = 1   # for unstable flow, ICOUP > 1
@@ -40,7 +40,7 @@ NLIMT = 1
 IAX = 1
 ICYC = 0
 # ===== group 9 =====
-DTT = 5E-7
+DTT = 1E-7
 IREC = 1
 REC = 0.1
 THETA = 1.0 #
@@ -48,11 +48,11 @@ BETAP = 1   # compressible for real fluid model
 IEXX = 1 #
 PRAT = 0 #
 # ===== group 10 =====
-IPC = 500
+IPC = 5931
 JPC = 1
 IPEX = 101 
 JPEX = 36
-IMN = 500
+IMN = 5931
 JMN = 1
 # ===== group 11 =====
 VISC = 18.37e-6
