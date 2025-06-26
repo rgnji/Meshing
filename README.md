@@ -101,11 +101,11 @@ mpiexec -n <number of processors> ./xprep.exe
      the number of the processor JPC and JMN locate
   4. In initial flow field, flow rate at the inlet is determined from inlet velocity
   5. The velocity at the boundary has to be zero in the initial flow field
-  6. binary_fort13 in plot3dout.py, flowfield.py, tecout.py and test.py are of no use
-  7. fdns.f FDNS WRITE(  6,9350) **ITOPRE**,IZZ,I,J,K,ERRUVW,ERRM,ERRT,ERRK,UMON ->
-      WRITE(  6,9350) **ITO**,IZZ,I,J,K,ERRUVW,ERRM,ERRT,ERRK,UMON
+  6. Check how much memory one processor uses to avoid out of memory
 # Parameter check:
   1. IIQMAX (fdns01, prep.f)
   2. IWP (fdns01)
   3. MZON, MBIF, MBIO, MBWA (fdns01)
   4. IZS, IZT, JZS, JZT, KZS, KZT (tecout.f)
+  5. fdns.f FDNS: WRITE(  6,9350) **ITOPRE**,IZZ,I,J,K,ERRUVW,ERRM,ERRT,ERRK,UMON  
+    -> WRITE(  6,9350) **ITO**,IZZ,I,J,K,ERRUVW,ERRM,ERRT,ERRK,UMON
