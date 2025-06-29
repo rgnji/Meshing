@@ -33,14 +33,17 @@ VISWX = 0
 # ===== group 8 =====
 IDATA = 1
 IGEO = 5    # any number > 0 but 1 and 9, which are for special cases
-ITT = 1E5
+ITT = 1E4
 ITPNT = 50
 ICOUP = 1   # for unstable flow, ICOUP > 1
 NLIMT = 1
 IAX = 1
 ICYC = 0
 # ===== group 9 =====
-DTT = 5E-7 # reference time = XREF/UREF = 1.4E-5
+#DTT = 1E-7 # reference time = XREF/UREF = 1.4E-5
+#DTT = 1E-6
+DTT = 1E-5
+#DTT = 5E-5
 IREC = 1
 REC = 0.1
 THETA = 1.0 #
@@ -75,7 +78,7 @@ W = 1
 TM = 1
 DK = 1
 DE = 1
-FL = 1
+FL = 0
 EQ = 0
 VS = 1
 FM = 1
@@ -547,11 +550,12 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     # ================== group 21 ==================
 
     # ================== fluid entry ==================
+    """
     f.write('FLUID\n')
     f.write('c Species(a20) , ideal gas(=0), real fluid(=1)\n')
-    f.write(f"{'H2O':<20}{'1':>5}\n")
+    f.write(f"{'H2O':<20}{'0':>5}\n")
     f.write(f"{'AIR':<20}{'0':>5}\n")
     f.write(f"{'DONE':<20}{'0':>5}\n")
-
+    """
     # ================== end ==================
     print('fort.11 established.')

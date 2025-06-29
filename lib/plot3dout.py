@@ -110,11 +110,12 @@ def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w,
             f.write(struct.pack('<i', len_am))
             am[i].astype(np.float32).tofile(f)
             f.write(struct.pack('<i', len_am))
-
-            len_q = np.array(q[i], dtype=np.float32).nbytes
-            f.write(struct.pack('<i', len_q))
-            q[i].astype(np.float32).tofile(f)
-            f.write(struct.pack('<i', len_q))
+            
+            if INSO_7 >= 1:
+                len_q = np.array(q[i], dtype=np.float32).nbytes
+                f.write(struct.pack('<i', len_q))
+                q[i].astype(np.float32).tofile(f)
+                f.write(struct.pack('<i', len_q))
 
             # the same order what cec table in fort.11 is
             for kk in range(NGAS):

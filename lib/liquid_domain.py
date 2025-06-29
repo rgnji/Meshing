@@ -76,7 +76,17 @@ def generate_block(center, r, R, theta_center, angle_start, angle_end,
     # y interpolation
     grid2d_y = R * np.sin(-np.arccos(grid2d_x / R))
     inlet2d_y = np.full_like(grid2d_y, center[1])
-    inlet_y = np.linspace(grid2d_y, inlet2d_y, num_pipe+1)
+    
+    baseline = np.linspace(0, 0.5*np.pi, num_pipe+1)
+    baseline_sin = np.sin(baseline)
+    baseline_sin[-1] = 1
+    grid2d_yy = np.broadcast_to(grid2d_y, (num_pipe+1, *grid2d_y.shape))
+    inlet2d_yy = np.broadcast_to(inlet2d_y, (num_pipe+1, *inlet2d_y.shape))
+    inlet_y = np.full_like(grid2d_yy, 0)
+    for i in range(num_pipe+1):
+        inlet_y[i] = grid2d_yy[i] + (inlet2d_yy[i] - grid2d_yy[i]) * baseline_sin[i]
+    
+    #inlet_y = np.linspace(grid2d_y, inlet2d_y, num_pipe+1)
     inlet_x = np.broadcast_to(grid2d_x, (num_pipe+1, *grid2d_x.shape))
     inlet_z = np.broadcast_to(grid2d_z, (num_pipe+1, *grid2d_z.shape))
 

@@ -54,7 +54,7 @@ IDBC = [5,5,5,5,5,
 INSO_1 = 1 # U
 INSO_4 = 1 # TM
 INSO_5 = 1 # DK
-INSO_7 = 1 # FL
+INSO_7 = 0 # FL
 NGAS = 2
 
 #
@@ -165,37 +165,15 @@ for i in range(IZON):
     BLKQ.append( np.full((KZT[i], JZT[i], IZT[i]), QIN) )
     BLKFM.append( [np.full((KZT[i], JZT[i], IZT[i]), FMGS[0]), 
                    np.full((KZT[i], JZT[i], IZT[i]), FMGS[1])] )
-"""
-#
-#  liquid inlet pipe
-#
-
-for i in [23,27,31,35,39]:
-    BLKU[i-1][:,:,:] = UPIPLQ / UREF
-    BLKV[i-1][:,:,:] = VPIPLQ / UREF
-    
-for i in [24,28,32,36,40]:
-    BLKU[i-1][:,:,:] = - UPIPLQ / UREF
-    BLKV[i-1][:,:,:] = - VPIPLQ / UREF
-    
-#
-#  liquid swirl
-#
-for i in [6,7,8,9,25,26,29,30,33,34,37,38]:
-    BLKW[i-1][:,:,:] = WSWLQ / UREF
 
 #
-#  gas inlet pipe
+#  pipe filled with water
 #
-for i in [1,2,3,4,5]:
-    BLKW[i-1][:,:,:] = WINGS / UREF
+for i in [25,31,37,43,49,26,32,38,44,50]:
+    BLKDN[i-1][:,:,:] = DNLQ/DENREF
+    BLKFM[i-1][0][:,:,:] = FMLQ[0]
+    BLKFM[i-1][1][:,:,:] = FMLQ[1]
 
-#
-#  recess chamber
-#
-for i in [10,11,12,13,14,15,16,17,18,19,20,21,22]:
-    BLKW[i-1][:,:,:] = WRECESS / UREF
-"""
 #
 #  inlet boundary condition
 #

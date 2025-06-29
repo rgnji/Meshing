@@ -1,0 +1,163 @@
+ nproc=           6  iproc=           3
+ f003.
+ nproc=           6  iproc=           4
+ f004.
+ nproc=           6  iproc=           1
+ f001.
+ nproc=           6  iproc=           5
+ f005.
+ nproc=           6  iproc=           2
+ f002.
+ nproc=           6  iproc=           6
+ f006.
+ ** IPROC =           3 , end of call netinit(1)
+ ** IPROC =           1 , end of call netinit(1)
+ ** IPROC =           5 , end of call netinit(1)
+ ** IPROC =           2 , end of call netinit(1)
+ ** IPROC =           6 , end of call netinit(1)
+ ** IPROC =           4 , end of call netinit(1)
+ Start Dbase, IPROC =           6
+
+ <<< FDNS Real-Fluid/MPI Output File >>>
+
+ TITLE: GCSC INJECTOR A
+
+
+ TIME STEP SIZE,            DTT =  0.5000E-06
+ UPWIND SCHEME OPTION,     IREC =           1
+ UPWIND PARAMETER,          REC =  0.1000E+00
+ EXIT BOUNDARY CONDITION,  IEXX =           1
+ EXIT FLOW CONDITIONS,     PRAT =  0.0000E+00
+ 1.0/(REYNOLDS NO.),       VISC =  0.2286E-03
+ LAMINAR(1)/TURBULENT(2),    IG =           2
+ TURBULENCE MODEL,        ITURB =           1
+ REFERENCE MACH NUMBER,     AMC =  0.2000E+00
+ SPECIFIC HEAT RATIO,      GAMA =  0.1455E+01
+
+ MULTI-SPECIES OPTION SELECTED:
+     NSPM =   11,   NGAS =    2
+FLUID
+ Start Dbase, IPROC =           5
+ Start Dbase, IPROC =           3
+ Start Dbase, IPROC =           4
+ Start Dbase, IPROC =           2
+END READING FLUID
+ Start Dbase, IPROC =           1
+ End of Dbase, IPROC =           2
+ End of Dbase, IPROC =           3
+ End of Dbase, IPROC =           4
+ End of Dbase, IPROC =           5
+ End of Dbase, IPROC =           6
+ End of Dbase, IPROC =           1
+
+  SI UNIT SELECTED:
+          DENREF =   1.154623      KG/M**3
+          UREF   =   69.59000      M/SEC
+          TREF   =   300.0000      DEG-K
+          XREF   =  1.0000000E-03  M
+          QREF   =   5591.572      N/M**2
+          QREF1  =   116.7912      PSF
+ ** IPROC =           3 , end of call netinit(2)
+ ** IPROC =           2 , end of call netinit(2)
+ ** IPROC =           5 , end of call netinit(2)
+ ** IPROC =           1 , end of call netinit(2)
+ ** IPROC =           6 , end of call netinit(2)
+ ** IPROC =           4 , end of call netinit(2)
+
+ DIMENSION AND GRID SIZE FOR PROCESSOR # 1:
+   IIQMAX = 1000000,   IGDMAX =   47775
+
+ DIMENSION AND GRID SIZE FOR PROCESSOR # 2:
+   IIQMAX = 1000000,   IGDMAX =   25935
+
+ DIMENSION AND GRID SIZE FOR PROCESSOR # 3:
+   IIQMAX = 1000000,   IGDMAX =   46830
+
+ DIMENSION AND GRID SIZE FOR PROCESSOR # 4:
+   IIQMAX = 1000000,   IGDMAX =   51030
+
+ DIMENSION AND GRID SIZE FOR PROCESSOR # 5:
+   IIQMAX = 1000000,   IGDMAX =   42830
+
+ DIMENSION AND GRID SIZE FOR PROCESSOR # 6:
+   IIQMAX = 1000000,   IGDMAX =   38840
+ ** P(1)=   18.10868
+ ** IPROC =           2 , ZONCHK IZFACE =          29
+ ** P(1)=   18.10868
+ ** IPROC =           6 , ZONCHK IZFACE =          30
+ ** P(1)=   18.10868
+ ** IPROC =           5 , ZONCHK IZFACE =          31
+ ** P(1)=   18.10868
+ ** IPROC =           3 , ZONCHK IZFACE =          28
+ ** P(1)=   18.10868
+ ** IPROC =           1 , ZONCHK IZFACE =          30
+ ** P(1)=   18.10868
+ ** IPROC =           4 , ZONCHK IZFACE =          29
+ IPROC=  0, IDIM = 3, IIQMAX =     1000000, IGDMAX =       47775
+ IPROC=  1, IDIM = 3, IIQMAX =     1000000, IGDMAX =       25935
+ IPROC=  2, IDIM = 3, IIQMAX =     1000000, IGDMAX =       46830
+ IPROC=  3, IDIM = 3, IIQMAX =     1000000, IGDMAX =       51030
+ IPROC=  4, IDIM = 3, IIQMAX =     1000000, IGDMAX =       42830
+ IPROC=  5, IDIM = 3, IIQMAX =     1000000, IGDMAX =       38840
+
+ WALL FUNCTION POINTS FOR PROCESSOR #: 1
+     IWP =10000,   IITO = 2546
+
+ WALL FUNCTION POINTS FOR PROCESSOR #: 2
+     IWP =10000,   IITO = 2603
+
+ WALL FUNCTION POINTS FOR PROCESSOR #: 3
+     IWP =10000,   IITO = 2888
+
+ WALL FUNCTION POINTS FOR PROCESSOR #: 4
+     IWP =10000,   IITO = 2071
+
+ WALL FUNCTION POINTS FOR PROCESSOR #: 5
+     IWP =10000,   IITO =  114
+
+ WALL FUNCTION POINTS FOR PROCESSOR #: 6
+     IWP =10000,   IITO =  988
+
+ TEM,HHBAR,ALPHA,ALSUM:
+ 3.0000E+02        NaN 0.0000E+00 0.0000E+00-9.7612E+33
+
+ REFERENCE GAMMA = 1.3985E+00
+ REFERENCE R/M   = 2.8859E+02 M2/SEC2-K
+ REFERENCE CP    = 1.0128E+03 M2/SEC2-K
+ SPEED OF SOUND  = 3.4797E+02 M/SEC
+             OR  = 1.1416E+03 FT/SEC
+ REF MACH NUMBER = 1.9999E-01
+ GMC1            = 5.5935E-02
+ GMC2            = 1.5939E-02
+ REF PRESSURE    = 9.8638E-01 ATM
+ ** IPROC =           1 , Inlet mass flow rate for ITYBC = -1:
+   1>  1.787412E-02  1.501194E-04   6>  5.098365E-04  1.613059E-04
+   8>  5.098256E-04  1.613024E-04  10>  5.098255E-04  1.613024E-04
+  12>  5.098370E-04  1.613061E-04  14>  4.220803E-04  1.335409E-04
+ ** IPROC =           2 , Inlet mass flow rate for ITYBC = -1:
+   2>  1.787412E-02  1.501194E-04   7>  5.098365E-04  1.613059E-04
+   9>  5.098256E-04  1.613024E-04  11>  5.098255E-04  1.613024E-04
+  13>  5.098370E-04  1.613061E-04  15>  4.220803E-04  1.335409E-04
+ ** IPROC =           3 , Inlet mass flow rate for ITYBC = -1:
+   3>  1.787412E-02  1.501194E-04
+ ** IPROC =           4 , Inlet mass flow rate for ITYBC = -1:
+   4>  1.787412E-02  1.501194E-04
+ ** IPROC =           5 , Inlet mass flow rate for ITYBC = -1:
+   5>  1.549274E-02  1.301189E-04
+ ** IPROC =           1 , Outlet mass flow rate:
+  19>  0.000000E+00  1.501194E-04  25>  0.000000E+00  1.409141E-05
+ ** IPROC =           2 , Outlet mass flow rate:
+  21>  0.000000E+00  2.680675E-05  26>  0.000000E+00  1.409141E-05
+ ** IPROC =           3 , Outlet mass flow rate:
+  20>  0.000000E+00  1.301189E-04  27>  0.000000E+00  1.409141E-05
+ ** IPROC =           4 , Outlet mass flow rate:
+  16>  0.000000E+00  1.501194E-04  22>  0.000000E+00  2.680675E-05
+  28>  0.000000E+00  1.409141E-05
+ ** IPROC =           5 , Outlet mass flow rate:
+  17>  0.000000E+00  1.501194E-04  23>  0.000000E+00  2.680675E-05
+ ** IPROC =           6 , Outlet mass flow rate:
+  18>  0.000000E+00  1.501194E-04  24>  0.000000E+00  2.680675E-05
+
+ IDATA = 1  FLOWIN = 0.919120E-01  AREAIN = 0.228811E-02
+            FLOWEX = 0.000000E+00  AREAEX = 0.894189E-03
+  ITIME IZN   I   J   K   ERRUVW      ERRM       ERRT       ERRK       UMON
