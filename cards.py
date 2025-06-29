@@ -553,7 +553,7 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     """
     f.write('FLUID\n')
     f.write('c Species(a20) , ideal gas(=0), real fluid(=1)\n')
-    f.write(f"{'H2O':<20}{'0':>5}\n")
+    f.write(f"{'H2O':<20}{'1':>5}\n")
     f.write(f"{'AIR':<20}{'0':>5}\n")
     f.write(f"{'DONE':<20}{'0':>5}\n")
     """
