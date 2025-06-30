@@ -32,19 +32,17 @@ DENNX = 0
 VISWX = 0
 # ===== group 8 =====
 IDATA = 1
-IGEO = 5    # any number > 0 but 1 and 9, which are for special cases
-ITT = 1E4
+IGEO = 2    # any number > 0 but 1 and 9, which are for special cases
+ITT = 1E4 
 ITPNT = 50
 ICOUP = 1   # for unstable flow, ICOUP > 1
 NLIMT = 1
 IAX = 1
 ICYC = 0
 # ===== group 9 =====
-#DTT = 1E-7 # reference time = XREF/UREF = 1.4E-5
-#DTT = 1E-6
+# reference time = XREF/UREF = 1.4E-5
 DTT = 1E-5
-#DTT = 5E-5
-IREC = 1
+IREC = 3
 REC = 0.1
 THETA = 1.0 #
 BETAP = 1   # compressible for real fluid model
@@ -65,7 +63,7 @@ AMC = 1     # compressible for real fluid model
 GAMA = 1.455
 CBE = 0
 CBH = 0 #
-EREXT = 5.0e-8
+EREXT = 5.0e-6
 # ===== group 12 =====
 ISWU = 93
 ISWP = 97
@@ -490,7 +488,7 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     for g13 in group13:
         f.write(f'{g13:>3},')
     f.write('\n')
-    f.write(f'{U:>3},{V:>3},{W:>3},{TM:>3},{DK:>3},{DE:>3},{FL:>3},{"8":>3},{EQ:>3},{VS:>3},{FM:>3},{SP:>3},\n')
+    f.write(f'{U:>3},{V:>3},{W:>3},{TM:>3},{DK:>3},{DE:>3},{FL:>3},{"0":>3},{EQ:>3},{VS:>3},{FM:>3},{SP:>3},\n')
 
     # ================== group 14 ==================
     group14 = ['NGAS','NREACT','IUNIT','DENREF','UREF','TREF','XREF','PREF']
