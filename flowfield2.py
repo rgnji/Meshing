@@ -85,7 +85,7 @@ PIPLEN = np.sqrt(PIPDIRX**2 + PIPDIRY**2)
 #  liquid inlet condition
 #
 DNLQ = 1000        # kg/m3
-FLOLQ = 39.72E-3/4 # kg/s
+FLOLQ = 39.7E-3 # kg/s
 VELINLQ = FLOLQ / (np.pi*RINLQ**2 * DNLQ)
 UINLQ = -VELINLQ * np.sin(ANGIN)
 VINLQ = VELINLQ * np.cos(ANGIN)
@@ -99,7 +99,7 @@ FMLQ = [1, 0]      # 1 -> H2O, 2 -> AIR
 #  gas inlet condition
 #
 DNGS = 1
-FLOGS = 297.9E-3/4
+FLOGS = 298E-3
 VELINGS = FLOGS / (np.pi*RINGS**2 * DNGS)
 UINGS = 0
 VINGS = 0
