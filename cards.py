@@ -33,7 +33,7 @@ VISWX = 0
 # ===== group 8 =====
 IDATA = 1
 IGEO = 2    # any number > 0 but 1 and 9, which are for special cases
-ITT = 1E4 
+ITT = 1E4
 ITPNT = 50
 ICOUP = 1   # for unstable flow, ICOUP > 1
 NLIMT = 1
@@ -41,10 +41,10 @@ IAX = 1
 ICYC = 0
 # ===== group 9 =====
 # reference time = XREF/UREF = 1.4E-5
-DTT = 1E-5
+DTT = 5E-7
 IREC = 3
-REC = 0.1
-THETA = 1.0 #
+REC = 0.9
+THETA = 1   # time marching scheme
 BETAP = 1   # compressible for real fluid model
 IEXX = 1 #
 PRAT = 0 #
@@ -58,11 +58,11 @@ JMN = 1
 # ===== group 11 =====
 VISC = 18.37e-6
 IG = 2
-ITURB = 1   # use low-Re model if calculating viscous boundary layer
+ITURB = 2   # use low-Re model if calculating viscous boundary layer
 AMC = 1     # compressible for real fluid model
 GAMA = 1.455
 CBE = 0
-CBH = 0 #
+CBH = -2 #
 EREXT = 5.0e-6
 # ===== group 12 =====
 ISWU = 93

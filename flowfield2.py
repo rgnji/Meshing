@@ -100,7 +100,8 @@ FMLQ = [1, 0]      # 1 -> H2O, 2 -> AIR
 #
 DNGS = 1
 FLOGS = 298E-3
-VELINGS = FLOGS / (np.pi*RINGS**2 * DNGS)
+#VELINGS = FLOGS / (np.pi*RINGS**2 * DNGS)
+VELINGS = 300.0
 UINGS = 0
 VINGS = 0
 WINGS = -VELINGS
