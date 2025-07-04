@@ -54,7 +54,7 @@ IDBC = [5,5,5,5,5,
 INSO_1 = 1 # U
 INSO_4 = 1 # TM
 INSO_5 = 1 # DK
-INSO_7 = 0 # FL
+INSO_7 = 1 # FL
 NGAS = 2
 
 #
@@ -170,10 +170,73 @@ for i in range(IZON):
 #
 #  pipe filled with water
 #
-for i in [25,31,37,43,49,26,32,38,44,50]:
-    BLKDN[i-1][:,:,:] = DNLQ/DENREF
+for i in [25,31,37,43,49]:
+    BLKDN[i-1][:, :, :] = DNLQ/DENREF
+    BLKU[i-1][:, :, :] = UINLQ/UREF
+    BLKV[i-1][:, :, :] = VINLQ/UREF
+    BLKW[i-1][:, :, :] = WINLQ/UREF
+    BLKDK[i-1][:, :, :] = DKINLQ/UREF**2
+    BLKDE[i-1][:, :, :] = DEINLQ/(UREF**3*XREF)
     BLKFM[i-1][0][:,:,:] = FMLQ[0]
     BLKFM[i-1][1][:,:,:] = FMLQ[1]
+
+for i in [26,32,38,44,50]:
+    BLKDN[i-1][:, :, :] = DNLQ/DENREF
+    BLKU[i-1][:, :, :] = -UINLQ/UREF
+    BLKV[i-1][:, :, :] = -VINLQ/UREF
+    BLKW[i-1][:, :, :] = WINLQ/UREF
+    BLKDK[i-1][:, :, :] = DKINLQ/UREF**2
+    BLKDE[i-1][:, :, :] = DEINLQ/(UREF**3*XREF)
+    BLKFM[i-1][0][:,:,:] = FMLQ[0]
+    BLKFM[i-1][1][:,:,:] = FMLQ[1]
+
+#
+#  liquid domain filled with water
+#
+for i in [23,29,35,41,47,
+          24,30,36,42,48,
+          27,33,39,45,
+          28,34,40,46]:
+    BLKDN[i-1][:,:,:] = DNLQ/DENREF
+    for kk in range(XT[i-1].shape[0]):
+        for jj in range(XT[i-1].shape[1]):
+            for ii in range(XT[i-1].shape[2]):
+                angle = np.arctan2(YT[i-1][kk,jj,ii], XT[i-1][kk,jj,ii])
+                BLKU[i-1][kk,jj,ii] = -VELINLQ * np.sin(angle) / UREF
+                BLKV[i-1][kk,jj,ii] = VELINLQ * np.cos(angle) / UREF
+    BLKW[i-1][:,:,:] = 0
+    BLKDK[i-1][:, :, :] = DKINLQ/UREF**2
+    BLKDE[i-1][:, :, :] = DEINLQ/(UREF**3*XREF)
+    BLKFM[i-1][0][:,:,:] = FMLQ[0]
+    BLKFM[i-1][1][:,:,:] = FMLQ[1]
+
+#
+#  liquid swirl filled with water
+#
+for i in [6,7,8,9]:
+    BLKDN[i-1][:, :, :] = DNLQ/DENREF
+    for kk in range(XT[i-1].shape[0]):
+        for jj in range(XT[i-1].shape[1]):
+            for ii in range(XT[i-1].shape[2]):
+                angle = np.arctan2(YT[i-1][kk,jj,ii], XT[i-1][kk,jj,ii])
+                BLKU[i-1][kk,jj,ii] = -VELINLQ * np.sin(angle) / UREF
+                BLKV[i-1][kk,jj,ii] = VELINLQ * np.cos(angle) / UREF
+    BLKW[i-1][:,:,:] = 0
+    BLKDK[i-1][:, :, :] = DKINLQ/UREF**2
+    BLKDE[i-1][:, :, :] = DEINLQ/(UREF**3*XREF)
+    BLKFM[i-1][0][:,:,:] = FMLQ[0]
+    BLKFM[i-1][1][:,:,:] = FMLQ[1]
+    
+#
+#  gas recess initial velocity
+#
+for i in [1,2,3,4,5,10,11,12,13,14]:
+    BLKU[i-1][:, :, :] = UINGS/UREF
+    BLKV[i-1][:, :, :] = VINGS/UREF
+    BLKW[i-1][:, :, :] = WINGS/UREF
+    BLKDK[i-1][:, :, :] = DKINGS/UREF**2
+    BLKDE[i-1][:, :, :] = DEINGS/(UREF**3*XREF)
+
 
 #
 #  inlet boundary condition
@@ -217,9 +280,48 @@ for i in IBCZON[10:]:
 for i in [1,2,3,4,
           25,31,37,43,
           26,32,38,44]:
-    BLKU[i-1][-1, 0, :] = 0
-    BLKV[i-1][-1, 0, :] = 0
-    BLKW[i-1][-1, 0, :] = 0
+    BLKU[i-1][:, 0, :] = 0
+    BLKV[i-1][:, 0, :] = 0
+    BLKW[i-1][:, 0, :] = 0
+
+#
+#  no-slip condition at liquid domain wall
+#
+for i in [23,29,35,41,47,
+          24,30,36,42,48]:
+    BLKU[i-1][0, :, :] = 0
+    BLKV[i-1][0, :, :] = 0
+    BLKW[i-1][0, :, :] = 0
+
+for i in [27,33,39,45,
+          28,34,40,46]:
+    BLKU[i-1][0, :, :] = 0
+    BLKV[i-1][0, :, :] = 0
+    BLKW[i-1][0, :, :] = 0
+    BLKU[i-1][-1, :, :] = 0
+    BLKV[i-1][-1, :, :] = 0
+    BLKW[i-1][-1, :, :] = 0
+    
+for i in [27,28]:
+    BLKU[i-1][:, :, -1] = 0
+    BLKV[i-1][:, :, -1] = 0
+    BLKW[i-1][:, :, -1] = 0
+
+for i in [33,34]:
+    BLKU[i-1][:, :, 0] = 0
+    BLKV[i-1][:, :, 0] = 0
+    BLKW[i-1][:, :, 0] = 0
+
+#
+#  no-slip condition at liquid swirl wall
+#
+for i in [6,7,8,9]:
+    BLKU[i-1][:, 0, :] = 0
+    BLKV[i-1][:, 0, :] = 0
+    BLKW[i-1][:, 0, :] = 0
+    BLKU[i-1][:, -1, :] = 0
+    BLKV[i-1][:, -1, :] = 0
+    BLKW[i-1][:, -1, :] = 0
 
 #
 #  fort.13

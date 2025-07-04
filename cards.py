@@ -33,7 +33,7 @@ VISWX = 0
 # ===== group 8 =====
 IDATA = 1
 IGEO = 2    # any number > 0 but 1 and 9, which are for special cases
-ITT = 1E4
+ITT = 1E5
 ITPNT = 50
 ICOUP = 1   # for unstable flow, ICOUP > 1
 NLIMT = 1
@@ -63,7 +63,7 @@ AMC = 1     # compressible for real fluid model
 GAMA = 1.455
 CBE = 0
 CBH = -2 #
-EREXT = 5.0e-6
+EREXT = 5E-6
 # ===== group 12 =====
 ISWU = 93
 ISWP = 97
@@ -76,7 +76,7 @@ W = 1
 TM = 1
 DK = 1
 DE = 1
-FL = 0
+FL = 1
 EQ = 0
 VS = 1
 FM = 1
@@ -548,12 +548,12 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     # ================== group 21 ==================
 
     # ================== fluid entry ==================
-    """
+    
     f.write('FLUID\n')
     f.write('c Species(a20) , ideal gas(=0), real fluid(=1)\n')
     f.write(f"{'H2O':<20}{'1':>5}\n")
     f.write(f"{'AIR':<20}{'0':>5}\n")
     f.write(f"{'DONE':<20}{'0':>5}\n")
-    """
+    
     # ================== end ==================
     print('fort.11 established.')
