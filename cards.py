@@ -9,6 +9,7 @@ processor_num = 5
 # zonal index of flow boundary (1-based)
 # information can be obtained from paraview
 # inlet, outlet
+
 IBCZON = [1,2,3,4,5,
           25,26,31,32,37,38,43,44,49,50,
           10,11,12,13,14,
@@ -24,6 +25,20 @@ ITYBC = [-1,-1,-1,-1,-1,
          2,2,2,2,2,
          2,2,2,2,
          2,2,2,2]
+"""
+IBCZON = [25,26,31,32,37,38,43,44,49,50,
+            10,11,12,13,14,
+            15,16,17,18,
+            19,20,21,22]
+IDBC = [5,5,5,5,5,5,5,5,5,5,
+        6,6,6,6,6,
+        6,6,6,6,
+        6,6,6,6]
+ITYBC = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
+        2,2,2,2,2,
+        2,2,2,2,
+        2,2,2,2]
+"""
 # ===== group 6 =====
 IWTM = 1
 HQDOX = 0
@@ -41,7 +56,7 @@ IAX = 1
 ICYC = 0
 # ===== group 9 =====
 # reference time = XREF/UREF = 1.4E-5
-DTT = 5E-7
+DTT = 1E-7
 IREC = 3
 REC = 0.9
 THETA = 1   # time marching scheme
