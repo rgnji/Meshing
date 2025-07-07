@@ -170,30 +170,32 @@ for i in range(IZON):
 #
 #  pipe filled with water
 #
+"""
 for i in [25,31,37,43,49]:
     BLKDN[i-1][:, :, :] = DNLQ/DENREF
-    """
+    
     BLKU[i-1][:, :, :] = UINLQ/UREF
     BLKV[i-1][:, :, :] = VINLQ/UREF
     BLKW[i-1][:, :, :] = WINLQ/UREF
     BLKDK[i-1][:, :, :] = DKINLQ/UREF**2
     BLKDE[i-1][:, :, :] = DEINLQ/(UREF**3*XREF)
-    """
+    
     BLKFM[i-1][0][:,:,:] = FMLQ[0]
     BLKFM[i-1][1][:,:,:] = FMLQ[1]
-
+"""
+"""
 for i in [26,32,38,44,50]:
     BLKDN[i-1][:, :, :] = DNLQ/DENREF
-    """
+    
     BLKU[i-1][:, :, :] = -UINLQ/UREF
     BLKV[i-1][:, :, :] = -VINLQ/UREF
     BLKW[i-1][:, :, :] = WINLQ/UREF
     BLKDK[i-1][:, :, :] = DKINLQ/UREF**2
     BLKDE[i-1][:, :, :] = DEINLQ/(UREF**3*XREF)
-    """
+    
     BLKFM[i-1][0][:,:,:] = FMLQ[0]
     BLKFM[i-1][1][:,:,:] = FMLQ[1]
-
+"""
 #
 #  liquid domain filled with water
 #

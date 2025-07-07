@@ -56,9 +56,9 @@ IAX = 1
 ICYC = 0
 # ===== group 9 =====
 # reference time = XREF/UREF = 1.4E-5
-DTT = 1E-7
+DTT = 1E-6
 IREC = 3
-REC = 0.9
+REC = 0.1
 THETA = 1   # time marching scheme
 BETAP = 1   # compressible for real fluid model
 IEXX = 1 #
@@ -78,11 +78,11 @@ AMC = 1     # compressible for real fluid model
 GAMA = 1.455
 CBE = 0
 CBH = -2 #
-EREXT = 5E-5
+EREXT = 5E-6
 # ===== group 12 =====
 ISWU = 93
 ISWP = 97
-ISWK = 93
+ISWK = 97
 ISKEW = 0
 # ===== group 13 =====
 U = 1
@@ -459,29 +459,29 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     # ================== group 7 ==================
     group7 = ['ISNZON', 'ISNBC', 'ISNAX', 'ISNBS', 'ISNBT']
     for g7 in group7:
-        f.write(f'{g7:>6},')
+        f.write(f'{g7:>9},')
     f.write('\n')
 
     # ================== group 8 ==================
     group8 = ['IDATA', 'IGEO', 'ITT', 'ITPNT', 'ICOUP', 'NLIMT', 'IAX', 'ICYC']
     for g8 in group8:
-        f.write(f'{g8:>6},')
+        f.write(f'{g8:>9},')
     f.write('\n')
-    f.write(f'{IDATA:>6},{IGEO:>6},{ITT:>.3E},{ITPNT:>6},{ICOUP:>6},{NLIMT:>6},{IAX:>6},{ICYC:>6},\n')
+    f.write(f'{IDATA:>9},{IGEO:>9},{ITT:>.3E},{ITPNT:>9},{ICOUP:>9},{NLIMT:>9},{IAX:>9},{ICYC:>9},\n')
 
     # ================== group 9 ==================
     group9 = ['DTT', 'IREC', 'REC', 'THETA', 'BETAP', 'IEXX', 'PRAT']
     for g9 in group9:
-        f.write(f'{g9:>6},')
+        f.write(f'{g9:>9},')
     f.write('\n')
-    f.write(f'{DTT:>.3E},{IREC:>6},{REC:>6},{THETA:>6},{BETAP:>6},{IEXX:>6},{PRAT:>6},\n')
+    f.write(f'{DTT:>.3E},{IREC:>9},{REC:>9},{THETA:>9},{BETAP:>9},{IEXX:>9},{PRAT:>9},\n')
 
     # ================== group 10 ==================
     group10 = ['IPC', 'JPC', 'IPEX', 'JPEX', 'IMN', 'JMN']
     for g10 in group10:
-        f.write(f'{g10:>6},')
+        f.write(f'{g10:>9},')
     f.write('\n')
-    f.write(f'{IPC:>6},{JPC:>6},{IPEX:>6},{JPEX:>6},{IMN:>6},{JMN:>6},\n')
+    f.write(f'{IPC:>9},{JPC:>9},{IPEX:>9},{JPEX:>9},{IMN:>9},{JMN:>9},\n')
 
     # ================== group 11 ==================
     group11 = ['VISC', 'IG', 'ITURB', 'AMC', 'GAMA', 'CBE', 'CBH', 'EREXT']
@@ -493,9 +493,9 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     # ================== group 12 ==================
     group12 = ['ISWU','ISWP','ISWK','ISKEW']
     for g12 in group12:
-        f.write(f'{g12:>6},')
+        f.write(f'{g12:>9},')
     f.write('\n')
-    f.write(f'{ISWU:>6},{ISWP:>6},{ISWK:>6},{ISKEW:>6},\n')
+    f.write(f'{ISWU:>9},{ISWP:>9},{ISWK:>9},{ISKEW:>9},\n')
 
     # ================== group 13 ==================
     group13 = ['U','V','W','TM','DK','DE','FL','8','EQ','VS','FM','SP']

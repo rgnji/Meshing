@@ -20,13 +20,13 @@ RLQINN = 15.11
 ZLQSTR = -1
 LENLQ  = 5
 DARCLQ = DARCGS
-DRADLQ = 3
+DRADLQ = 4
 DAXLLQ = 15
 
 # gas recess
 ZRCSTR = -6
 LENRC  = 28.22
-DRADWL = 3
+DRADWL = 4
 DAXLRC = 60
 
 #========== parameters for liquid domain ==========
