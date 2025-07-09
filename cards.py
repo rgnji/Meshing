@@ -1,6 +1,6 @@
 import numpy as np
 from struct import unpack
-
+# liquid inlet only, laminar, incompressible, ideal gas model, no energy equation
 # =============================================
 # ========== global variables =================
 # =============================================
@@ -9,7 +9,7 @@ processor_num = 5
 # zonal index of flow boundary (1-based)
 # information can be obtained from paraview
 # inlet, outlet
-
+"""
 IBCZON = [1,2,3,4,5,
           25,26,31,32,37,38,43,44,49,50,
           10,11,12,13,14,
@@ -38,7 +38,7 @@ ITYBC = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
         2,2,2,2,2,
         2,2,2,2,
         2,2,2,2]
-"""
+
 # ===== group 6 =====
 IWTM = 1
 HQDOX = 0
@@ -56,11 +56,11 @@ IAX = 1
 ICYC = 0
 # ===== group 9 =====
 # reference time = XREF/UREF = 1.4E-5
-DTT = 1E-6
+DTT = 1E-5
 IREC = 3
-REC = 0.1
+REC = 0.7
 THETA = 1   # time marching scheme
-BETAP = 1   # compressible for real fluid model
+BETAP = 1.01   # compressible for real fluid model
 IEXX = 1 #
 PRAT = 0 #
 # ===== group 10 =====
@@ -72,28 +72,28 @@ IMN = 5793
 JMN = 1
 # ===== group 11 =====
 VISC = 18.37e-6
-IG = 2
+IG = 1      # laminar or turbulent
 ITURB = 2   # use low-Re model if calculating viscous boundary layer
-AMC = 1     # compressible for real fluid model
+AMC = 0     # compressible for real fluid model
 GAMA = 1.455
 CBE = 0
 CBH = -2 #
-EREXT = 5E-6
+EREXT = 1E-3
 # ===== group 12 =====
 ISWU = 93
 ISWP = 97
-ISWK = 97
+ISWK = 93
 ISKEW = 0
 # ===== group 13 =====
 U = 1
 V = 1
 W = 1
-TM = 1
-DK = 1
-DE = 1
-FL = 1
+TM = 0
+DK = 0
+DE = 0
+FL = 0
 EQ = 0
-VS = 1
+VS = 0
 FM = 1
 SP = 1
 # ===== group 14 =====
@@ -563,12 +563,12 @@ with open("fort.11", "w", encoding="UTF-8") as f:
     # ================== group 21 ==================
 
     # ================== fluid entry ==================
-    
+    """
     f.write('FLUID\n')
     f.write('c Species(a20) , ideal gas(=0), real fluid(=1)\n')
     f.write(f"{'H2O':<20}{'1':>5}\n")
     f.write(f"{'AIR':<20}{'0':>5}\n")
     f.write(f"{'DONE':<20}{'0':>5}\n")
-    
+    """
     # ================== end ==================
     print('fort.11 established.')
