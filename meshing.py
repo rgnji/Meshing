@@ -38,7 +38,7 @@ num_s = 4    # cells on orifice arc
 num_r = 5    # cells on orifice radius
 num_rl = DRADLQ   # cells on liquid domain thickness
 num_arc = DARCLQ  # cells on liquid domain arc
-num_pipe = 20 # inlet pipe cells
+num_pipe = 30 # inlet pipe cells
 
 
 

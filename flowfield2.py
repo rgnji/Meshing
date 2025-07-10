@@ -52,9 +52,9 @@ IDBC = [5,5,5,5,5,
 #  governing equation
 #
 INSO_1 = 1 # U
-INSO_4 = 0 # TM
-INSO_5 = 0 # DK
-INSO_7 = 0 # FL
+INSO_4 = 1 # TM
+INSO_5 = 1 # DK
+INSO_7 = 1 # FL
 NGAS = 2
 
 #
@@ -250,7 +250,7 @@ for i in [1,2,3,4,5,10,11,12,13,14]:
 #
 #  inlet boundary condition
 #
-"""
+
 for i in IBCZON[:5]:
     BLKDN[i-1][-1, :, :] = DNGS/DENREF
     BLKU[i-1][-1, :, :] = UINGS/UREF
@@ -261,7 +261,7 @@ for i in IBCZON[:5]:
     BLKDE[i-1][-1, :, :] = DEINGS/(UREF**3*XREF)
     BLKFM[i-1][0][-1, :, :] = FMGS[0]
     BLKFM[i-1][1][-1, :, :] = FMGS[1]
-"""
+
 for i in IBCZON[5:10]:
     BLKDN[i-1][-1, :, :] = DNLQ/DENREF
     BLKU[i-1][-1, :, :] = UINLQ/UREF
