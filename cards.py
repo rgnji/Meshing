@@ -56,7 +56,7 @@ IAX = 1
 ICYC = 0
 # ===== group 9 =====
 # reference time = XREF/UREF = 1.4E-5
-DTT = 1E-5
+DTT = 1E-7
 IREC = 3
 REC = 0.9
 THETA = 1   # time marching scheme
