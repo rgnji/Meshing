@@ -102,6 +102,7 @@ mpiexec -n <number of processors> ./xprep.exe
   4. In initial flow field, flow rate at the inlet is determined from inlet velocity
   5. The velocity at the boundary has to be zero in the initial flow field
   6. Check how much memory one processor uses to avoid out of memory
+  7. Edit fdns01 and tecout.f and renew fmain02 and prep.f (line 1355 commented and line 1356 uncommented)
 # Parameter check:
   1. IIQMAX (fdns01, prep.f)
   2. IWP (fdns01)
