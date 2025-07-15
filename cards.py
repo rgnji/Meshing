@@ -48,7 +48,7 @@ VISWX = 0
 # ===== group 8 =====
 IDATA = 1
 IGEO = 2    # any number > 0 but 1 and 9, which are for special cases
-ITT = 1E5
+ITT = 2E4
 ITPNT = 50
 ICOUP = 1   # for unstable flow, ICOUP > 1
 NLIMT = 1
@@ -56,7 +56,7 @@ IAX = 1
 ICYC = 0
 # ===== group 9 =====
 # reference time = XREF/UREF = 1.4E-5
-DTT = 1E-7
+DTT = 1E-9
 IREC = 3
 REC = 0.9
 THETA = 1   # time marching scheme
@@ -78,7 +78,7 @@ AMC = 1     # compressible for real fluid model
 GAMA = 1.455
 CBE = 0
 CBH = -2 #
-EREXT = 1E-5
+EREXT = 2E-8
 # ===== group 12 =====
 ISWU = 93
 ISWP = 97

@@ -85,29 +85,41 @@ PIPLEN = np.sqrt(PIPDIRX**2 + PIPDIRY**2)
 #  liquid inlet condition
 #
 DNLQ = 1000        # kg/m3
-FLOLQ = 39.7E-3 # kg/s
+FLOLQ = 29.8E-3 # kg/s
 VELINLQ = FLOLQ / (np.pi*RINLQ**2 * DNLQ)
 UINLQ = -VELINLQ * np.sin(ANGIN)
 VINLQ = VELINLQ * np.cos(ANGIN)
 WINLQ = 0
+
 PINLQ = 101300  # Pa
-DKINLQ = 0.015*VELINLQ**2
-DEINLQ = 0.09*DKINLQ**1.5/(2*RINLQ)
+
+VISINLQ = 0.89E-3 # kg/m s
+REINLQ = DNLQ * VELINLQ * RINLQ / VISINLQ
+IINLQ = 0.16 * REINLQ**(-0.125)
+DKINLQ = 3/2 * (VELINLQ * IINLQ)**2
+DEINLQ = 0.09**(3/4) * DKINLQ**(3/2) / IINLQ
+
 FMLQ = [1, 0]      # 1 -> H2O, 2 -> AIR
 
 #
 #  gas inlet condition
 #
 DNGS = 1
-FLOGS = 298E-3
-#VELINGS = FLOGS / (np.pi*RINGS**2 * DNGS)
-VELINGS = 300.0
+FLOGS = 23E-3
+VELINGS = FLOGS / (np.pi*RINGS**2 * DNGS)
+#VELINGS = 300.0
 UINGS = 0
 VINGS = 0
 WINGS = -VELINGS
-PINGS = 101300
-DKINGS = 0.015*VELINGS**2
-DEINGS = 0.09*DKINGS**1.5/(2*RINGS)
+
+PINGS = 101300 * 1.5
+
+VISINGS = 1.849E-5
+REINGS = DNGS * VELINGS * RINGS / VISINGS
+IINGS = 0.16 * REINGS**(-0.125)
+DKINGS = 3/2 * (VELINGS * IINGS)**2
+DEINGS = 0.09**(3/4) * DKINGS**(3/2) / IINGS
+
 FMGS = [0, 1]
 
 #
@@ -155,12 +167,18 @@ for i in range(IZON):
     BLKP.append( np.full((KZT[i], JZT[i], IZT[i]), PIN/PREF) )
     BLKTM.append( np.full((KZT[i], JZT[i], IZT[i]), TM/TREF) )
     
-    DKINUP = 1E-4
-    DKINDW = 1E-6
-    DEINUP = 0.09*DKINUP**1.5/(2*15.61)
-    DEINDW = 0.09*DKINDW**1.5/(2*15.61)
-    BLKDK.append( np.random.uniform(DKINDW/UREF**2, DKINUP/UREF**2, (KZT[i], JZT[i], IZT[i])) )
-    BLKDE.append( np.random.uniform(DEINDW/(UREF**3*XREF), DEINUP/(UREF**3*XREF), (KZT[i], JZT[i], IZT[i])) )
+    UINNUP = 1E-4
+    UINNDW = 1E-6
+    REINNUP = DNGS * UINNUP * RINGS / VISINGS
+    REINNDW = DNGS * UINNDW * RINGS / VISINGS
+    IINNUP = 0.16 * REINNUP**(-0.125)
+    IINNDW = 0.16 * REINNDW**(-0.125)
+    DKINNUP = 3/2 * (VELINGS * IINNUP)**2
+    DKINNDW = 3/2 * (VELINGS * IINNDW)**2
+    DEINNUP = 0.09**(3/4) * DKINNUP**(3/2) / IINNUP
+    DEINNDW = 0.09**(3/4) * DKINNDW**(3/2) / IINNDW
+    BLKDK.append( np.random.uniform(DKINNDW/UREF**2, DKINNUP/UREF**2, (KZT[i], JZT[i], IZT[i])) )
+    BLKDE.append( np.random.uniform(DEINNDW/(UREF**3*XREF), DEINNUP/(UREF**3*XREF), (KZT[i], JZT[i], IZT[i])) )
     
     BLKAM.append( np.full((KZT[i], JZT[i], IZT[i]), AMIN) ) 
     BLKQ.append( np.full((KZT[i], JZT[i], IZT[i]), QIN) )
