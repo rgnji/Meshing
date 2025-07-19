@@ -9,7 +9,7 @@ processor_num = 5
 # zonal index of flow boundary (1-based)
 # information can be obtained from paraview
 # inlet, outlet
-
+"""
 IBCZON = [1,2,3,4,5,
           25,26,31,32,37,38,43,44,49,50,
           10,11,12,13,14,
@@ -26,19 +26,13 @@ ITYBC = [-3,-3,-3,-3,-3,
          2,2,2,2,
          2,2,2,2]
 """
-IBCZON = [25,26,31,32,37,38,43,44,49,50,
-            10,11,12,13,14,
-            15,16,17,18,
-            19,20,21,22]
-IDBC = [5,5,5,5,5,5,5,5,5,5,
-        6,6,6,6,6,
-        6,6,6,6,
-        6,6,6,6]
-ITYBC = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
-        2,2,2,2,2,
-        2,2,2,2,
-        2,2,2,2]
-"""
+IBCZON = [1, 9, 11,
+          4, 5, 6, 7, 8]
+IDBC = [5,5,5,
+        6,6,6,6,6]
+ITYBC = [-1,-1,-1,
+         2,2,2,2,2]
+
 # ===== group 6 =====
 IWTM = 1
 HQDOX = 0
@@ -64,11 +58,19 @@ BETAP = 1   # compressible for real fluid model
 IEXX = 1 #
 PRAT = 0 #
 # ===== group 10 =====
+"""
 IPC = 5793 # (I,J,K,IZ)=(18, 3,14, 1)
 JPC = 1
 IPEX = 199 # (I,J,K,IZ)=(10,10, 1,14)
 JPEX = 14
 IMN = 5793
+JMN = 1
+"""
+IPC = 6416 # (I,J,K,IZ)=(18, 3,14, 1)
+JPC = 1
+IPEX = 242 # (I,J,K,IZ)=(10,10, 1,14)
+JPEX = 4
+IMN = 4211
 JMN = 1
 # ===== group 11 =====
 VISC = 18.37e-6

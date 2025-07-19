@@ -246,3 +246,32 @@ def h_grid(r_square, arc_angle, axi_pos, axial, d1, d3, exprz=1):
                           np.arange(x.shape[1]))
 
     return X, Y, Z
+
+# =============================
+def simplified_o_grid(P, ROUT, RINN, AXLSTR, AXLLEN, D1, D2, D3):
+    if P == 1:
+        ANGUP = np.linspace(0, np.pi, D1+1)
+    else:
+        ANGUP = np.linspace(np.pi, np.pi*2, D1+1)
+    
+    OUTXUP = np.cos(ANGUP) * ROUT
+    OUTYUP = np.sin(ANGUP) * ROUT
+    INNXUP = np.cos(ANGUP) * RINN
+    INNYUP = np.sin(ANGUP) * RINN
+    
+    FCEXUP = np.linspace(OUTXUP, INNXUP, D2+1)
+    FCEYUP = np.linspace(OUTYUP, INNYUP, D2+1)
+    
+    Z1D = np.linspace(AXLSTR - AXLLEN, AXLSTR, D3+1)
+    
+    X = np.broadcast_to(FCEXUP, (D3+1, *FCEXUP.shape))
+    Y = np.broadcast_to(FCEYUP, (D3+1, *FCEYUP.shape))
+    jj, Z, ii = np.meshgrid(np.arange(D2+1),
+                            Z1D,
+                            np.arange(D1+1))
+    
+    return X, Y, Z
+    
+    
+    
+    

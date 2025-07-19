@@ -1,6 +1,6 @@
 import numpy as np
 from struct import unpack
-from lib.plot3dout import unformatted_fort13, binary_fort13, ascii_fort13
+from lib.plot3dout import unformatted_fort13
 
 # 
 #  read fort.12
@@ -42,11 +42,8 @@ with open('fort.12', 'rb') as f:
 # 
 #  inlet blocks
 # 
-IBCZON = [1,2,3,4,5,
-          25,31,37,43,49,
-          26,32,38,44,50]
-IDBC = [5,5,5,5,5,
-        5,5,5,5,5,5,5,5,5,5]
+IBCZON = [1, 9, 11]
+IDBC = [5,5,5]
 
 #
 #  governing equation
@@ -186,89 +183,9 @@ for i in range(IZON):
                    np.full((KZT[i], JZT[i], IZT[i]), FMGS[1])] )
 
 #
-#  pipe filled with water
-#
-"""
-for i in [25,31,37,43,49]:
-    BLKDN[i-1][:, :, :] = DNLQ/DENREF
-    
-    BLKU[i-1][:, :, :] = UINLQ/UREF
-    BLKV[i-1][:, :, :] = VINLQ/UREF
-    BLKW[i-1][:, :, :] = WINLQ/UREF
-    BLKDK[i-1][:, :, :] = DKINLQ/UREF**2
-    BLKDE[i-1][:, :, :] = DEINLQ/(UREF**3*XREF)
-    
-    BLKFM[i-1][0][:,:,:] = FMLQ[0]
-    BLKFM[i-1][1][:,:,:] = FMLQ[1]
-"""
-"""
-for i in [26,32,38,44,50]:
-    BLKDN[i-1][:, :, :] = DNLQ/DENREF
-    
-    BLKU[i-1][:, :, :] = -UINLQ/UREF
-    BLKV[i-1][:, :, :] = -VINLQ/UREF
-    BLKW[i-1][:, :, :] = WINLQ/UREF
-    BLKDK[i-1][:, :, :] = DKINLQ/UREF**2
-    BLKDE[i-1][:, :, :] = DEINLQ/(UREF**3*XREF)
-    
-    BLKFM[i-1][0][:,:,:] = FMLQ[0]
-    BLKFM[i-1][1][:,:,:] = FMLQ[1]
-"""
-#
-#  liquid domain filled with water
-#
-"""
-for i in [23,29,35,41,47,
-          24,30,36,42,48,
-          27,33,39,45,
-          28,34,40,46]:
-    BLKDN[i-1][:,:,:] = DNLQ/DENREF
-    BLKFM[i-1][0][:,:,:] = FMLQ[0]
-    BLKFM[i-1][1][:,:,:] = FMLQ[1]
-    BLKW[i-1][:,:,:] = WSWLQ/UREF
-    BLKDK[i-1][:, :, :] = DKINLQ/UREF**2
-    BLKDE[i-1][:, :, :] = DEINLQ/(UREF**3*XREF)
-"""
-#
-#  liquid swirl filled with water
-#
-"""
-for i in [6,7,8,9]:
-    BLKDN[i-1][:, :, :] = DNLQ/DENREF
-    BLKFM[i-1][0][:,:,:] = FMLQ[0]
-    BLKFM[i-1][1][:,:,:] = FMLQ[1]
-    BLKW[i-1][:,:,:] = WSWLQ/UREF
-    BLKDK[i-1][:, :, :] = DKINLQ/UREF**2
-    BLKDE[i-1][:, :, :] = DEINLQ/(UREF**3*XREF)
-"""    
-#
-#  liquid recess filled with water
-#
-"""
-for i in [19,20,21,22]:
-    BLKDN[i-1][:, :, :] = DNLQ/DENREF
-    BLKFM[i-1][0][:,:,:] = FMLQ[0]
-    BLKFM[i-1][1][:,:,:] = FMLQ[1]
-    BLKW[i-1][:,:,:] = WSWLQ/UREF
-    BLKDK[i-1][:, :, :] = DKINLQ/UREF**2
-    BLKDE[i-1][:, :, :] = DEINLQ/(UREF**3*XREF)
-"""    
-#
-#  gas recess initial velocity
-#
-"""
-for i in [1,2,3,4,5,10,11,12,13,14]:
-    BLKU[i-1][:, :, :] = UINGS/UREF
-    BLKV[i-1][:, :, :] = VINGS/UREF
-    BLKW[i-1][:, :, :] = WINGS/UREF
-    BLKDK[i-1][:, :, :] = DKINGS/UREF**2
-    BLKDE[i-1][:, :, :] = DEINGS/(UREF**3*XREF)
-"""
-
-#
 #  inlet boundary condition
 #
-
+"""
 for i in IBCZON[:5]:
     BLKDN[i-1][-1, :, :] = DNGS/DENREF
     BLKU[i-1][-1, :, :] = UINGS/UREF
@@ -301,55 +218,63 @@ for i in IBCZON[10:]:
     BLKDE[i-1][-1, :, :] = DEINLQ/(UREF**3*XREF)
     BLKFM[i-1][0][-1, :, :] = FMLQ[0]
     BLKFM[i-1][1][-1, :, :] = FMLQ[1]
+"""
+BLKDN[0][-1, :, :] = DNGS/DENREF
+BLKU[0][-1, :, :] = UINGS/UREF
+BLKV[0][-1, :, :] = VINGS/UREF
+BLKW[0][-1, :, :] = WINGS/UREF
+BLKP[0][-1, :, :] = PINGS/PREF
+BLKDK[0][-1, :, :] = DKINGS/UREF**2
+BLKDE[0][-1, :, :] = DEINGS/(UREF**3*XREF)
+BLKFM[0][0][-1, :, :] = FMGS[0]
+BLKFM[0][1][-1, :, :] = FMGS[1]
+
+BLKDN[8][-1, :, :] = DNLQ/DENREF
+BLKU[8][-1, :, :] = UINLQ/UREF
+BLKV[8][-1, :, :] = VINLQ/UREF
+BLKW[8][-1, :, :] = WINLQ/UREF
+BLKP[8][-1, :, :] = PINLQ/PREF
+BLKDK[8][-1, :, :] = DKINLQ/UREF**2
+BLKDE[8][-1, :, :] = DEINLQ/(UREF**3*XREF)
+BLKFM[8][0][-1, :, :] = FMLQ[0]
+BLKFM[8][1][-1, :, :] = FMLQ[1]
+
+BLKDN[10][-1, :, :] = DNLQ/DENREF
+BLKU[10][-1, :, :] = -UINLQ/UREF
+BLKV[10][-1, :, :] = -VINLQ/UREF
+BLKW[10][-1, :, :] = WINLQ/UREF
+BLKP[10][-1, :, :] = PINLQ/PREF
+BLKDK[10][-1, :, :] = DKINLQ/UREF**2
+BLKDE[10][-1, :, :] = DEINLQ/(UREF**3*XREF)
+BLKFM[10][0][-1, :, :] = FMLQ[0]
+BLKFM[10][1][-1, :, :] = FMLQ[1]
 
 #
 #  no-slip condition at inlet
 #
+"""
 for i in [1,2,3,4,
           25,31,37,43,
           26,32,38,44]:
     BLKU[i-1][:, 0, :] = 0
     BLKV[i-1][:, 0, :] = 0
     BLKW[i-1][:, 0, :] = 0
-
-#
-#  no-slip condition at liquid domain wall
-#
-for i in [23,29,35,41,47,
-          24,30,36,42,48]:
-    BLKU[i-1][0, :, :] = 0
-    BLKV[i-1][0, :, :] = 0
-    BLKW[i-1][0, :, :] = 0
-
-for i in [27,33,39,45,
-          28,34,40,46]:
-    BLKU[i-1][0, :, :] = 0
-    BLKV[i-1][0, :, :] = 0
-    BLKW[i-1][0, :, :] = 0
-    BLKU[i-1][-1, :, :] = 0
-    BLKV[i-1][-1, :, :] = 0
-    BLKW[i-1][-1, :, :] = 0
+"""
+for i in IBCZON:
+    BLKU[i-1][-1, 0, :] = 0
+    BLKU[i-1][-1, -1, :] = 0
+    BLKU[i-1][-1, :, 0] = 0
+    BLKU[i-1][-1, :, -1] = 0
     
-for i in [27,28]:
-    BLKU[i-1][:, :, -1] = 0
-    BLKV[i-1][:, :, -1] = 0
-    BLKW[i-1][:, :, -1] = 0
-
-for i in [33,34]:
-    BLKU[i-1][:, :, 0] = 0
-    BLKV[i-1][:, :, 0] = 0
-    BLKW[i-1][:, :, 0] = 0
-
-#
-#  no-slip condition at liquid swirl and recess wall
-#
-for i in [6,7,8,9,19,20,21,22]:
-    BLKU[i-1][:, 0, :] = 0
-    BLKV[i-1][:, 0, :] = 0
-    BLKW[i-1][:, 0, :] = 0
-    BLKU[i-1][:, -1, :] = 0
-    BLKV[i-1][:, -1, :] = 0
-    BLKW[i-1][:, -1, :] = 0
+    BLKV[i-1][-1, 0, :] = 0
+    BLKV[i-1][-1, -1, :] = 0
+    BLKV[i-1][-1, :, 0] = 0
+    BLKV[i-1][-1, :, -1] = 0
+    
+    BLKW[i-1][-1, 0, :] = 0
+    BLKW[i-1][-1, -1, :] = 0
+    BLKW[i-1][-1, :, 0] = 0
+    BLKW[i-1][-1, :, -1] = 0
 
 #
 #  fort.13
