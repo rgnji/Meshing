@@ -1,0 +1,25 @@
+[name, value, children type]
+
+CGNSTree_t 
+  -> [0] CGNSLibraryVersion_t
+  -> [1] CGNSBase_t 
+           -> [0] Descriptor_t
+           -> [1] Zone_t 
+                    -> [0] ZoneType_t
+                    -> [1] FamilyName_t
+                    -> [2] GridCoordinates_t
+                    -> [3] ZoneBC_t
+                    -> [4] ZoneGridConnectivity_t 
+                             -> [0] GridConnectivity1to1_t 
+                                      -> [0] Transform
+                                      -> [1] PointRange 
+                                               -> value [[i_start, i_end],
+                                             		     [j_start, j_end],
+                                                          [k_start, k_end]]
+                                      -> [2] PointRangeDonor 
+                                               -> value [[i_start, i_end],
+                                           			     [j_start, j_end],
+                                           			     [k_start, k_end]]
+           -> [2] Family_t
+           -> [3] Family_t
+           -> [4] Zone_t
