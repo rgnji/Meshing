@@ -66,7 +66,7 @@ def wall(PIPRIN, PIPLEN, CNT, LQROUT, LQRINN, D1, D2, D3):
     XT = []
     YT = []
     ZT = []
-    
+    """
     x, y, z = pipe(PIPRIN, PIPLEN, CNT, LQROUT, D1, D3)
     XT.append(x)
     YT.append(y)
@@ -75,6 +75,12 @@ def wall(PIPRIN, PIPLEN, CNT, LQROUT, LQRINN, D1, D2, D3):
     X2DOUT = XT[0][0, :, :]
     Y2DOUT = YT[0][0, :, :]
     Z2DOUT = ZT[0][0, :, :]
+    """
+    
+    x, y, z = pipe(PIPRIN, PIPLEN, CNT, LQROUT, D1, D3)
+    X2DOUT = x[0, :, :]
+    Y2DOUT = y[0, :, :]
+    Z2DOUT = z[0, :, :]
     
     THETA = np.acos(X2DOUT / LQROUT)
     X2DINN = np.cos(THETA) * LQRINN
@@ -87,7 +93,7 @@ def wall(PIPRIN, PIPLEN, CNT, LQROUT, LQRINN, D1, D2, D3):
     YT.append(Y)
     ZT.append(Z)
     
-    for i in range(2):
+    for i in range(len(XT)):
         xx = XT[i] * -1
         yy = YT[i] * -1
         zz = ZT[i]
@@ -107,14 +113,24 @@ def liquid_inlet(PIPRIN, PIPLEN, CNT, LQROUT, LQRINN, D1, D2, D3, LQD1):
     YT += y
     ZT += z
 
-    # ========================    
+    # ========================   
+    """
+    # pipe
     WALLX1 = XT[1]
     WALLY1 = YT[1]
     WALLZ1 = ZT[1]
     WALLX2 = XT[3]
     WALLY2 = YT[3]
     WALLZ2 = ZT[3]
-        
+    """    
+    # no pipe
+    WALLX1 = XT[0]
+    WALLY1 = YT[0]
+    WALLZ1 = ZT[0]
+    WALLX2 = XT[1]
+    WALLY2 = YT[1]
+    WALLZ2 = ZT[1]
+    
     X1Q1 = WALLX1[:, 0, :]
     Y1Q1 = WALLY1[:, 0, :]
     Z1Q1 = WALLZ1[:, 0, :]

@@ -4,7 +4,7 @@ from struct import unpack
 # =============================================
 # ========== global variables =================
 # =============================================
-processor_num = 5
+processor_num = 8
 # ===== group 5 =====
 # zonal index of flow boundary (1-based)
 # information can be obtained from paraview
@@ -26,11 +26,11 @@ ITYBC = [-3,-3,-3,-3,-3,
          2,2,2,2,
          2,2,2,2]
 """
-IBCZON = [1, 9, 11,
+IBCZON = [8, 9,
           4, 5, 6, 7, 8]
-IDBC = [5,5,5,
+IDBC = [5,5,
         6,6,6,6,6]
-ITYBC = [-1,-1,-1,
+ITYBC = [-1,-1,
          2,2,2,2,2]
 
 # ===== group 6 =====
@@ -66,11 +66,11 @@ JPEX = 14
 IMN = 5793
 JMN = 1
 """
-IPC = 6416 # (I,J,K,IZ)=(18, 3,14, 1)
+IPC = 9788
 JPC = 1
-IPEX = 242 # (I,J,K,IZ)=(10,10, 1,14)
+IPEX = 324 # (I,J,K,IZ)=(10,10, 1,14)
 JPEX = 4
-IMN = 4211
+IMN = 324
 JMN = 1
 # ===== group 11 =====
 VISC = 18.37e-6
@@ -181,7 +181,7 @@ direction = [[3,6,7],
              [1,2,5],
              [6,7,8],
              [1,2,4]]
-decimals = 5
+decimals = 7
 
 for target in range(blocks):
     patch = [] # shared faces, 6 values

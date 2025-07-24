@@ -9,7 +9,7 @@ RGSOUT = 14.11
 RGSHGD = 0.5*RGSOUT
 ZGSSTR = 0
 LENGS  = 6
-DARCGS = 20
+DARCGS = 25
 DRADGS = 10
 DAXLGS = 14
 
@@ -34,7 +34,7 @@ PIPLEN = 5 # inlet pipe length
 LQROUT = 15.61 # liquid domain outer radius
 LQRINN = 15.11  # liquid domain inner radius
 CNTINT = np.array([LQRINN, -PIPLEN, -PIPRIN])
-NARC = 4    # cells on orifice arc
+NARC = 5    # cells on orifice arc
 NRAD = 5    # cells on orifice radius
 NPIP = 30 # inlet pipe cells
 

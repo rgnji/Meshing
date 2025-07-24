@@ -1,14 +1,15 @@
-import numpy as np
+from struct import unpack
 
-XT = np.array([[1,2],[3,4]])
-YT = np.array([[2,4],[6,8]])
-XFLT = XT.flatten()
-YFLT = YT.flatten()
-COOR = np.concatenate(( [XFLT], [YFLT] ))
-VEC = np.transpose(COOR)
-
-ANGCNT = 1
-RTN = np.array( [[np.cos(ANGCNT), np.sin(ANGCNT)], [-np.sin(ANGCNT), np.cos(ANGCNT)]] )
-
-print(COOR)
-print(RTN @ COOR)
+with open('input files/injector A.bin', 'rb') as f:
+    buff=f.read(4*3)
+    blocks=unpack('<3i', buff)[1]
+    print(unpack('<3i', buff))
+    
+    buff=f.read(4)
+    print(unpack('<i', buff))
+    for i in range(blocks):
+        buff=f.read(4*3)
+        print(unpack('<3i', buff))
+    
+    buff=f.read(4)
+    print(unpack('<i', buff))

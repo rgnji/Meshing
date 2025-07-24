@@ -1,0 +1,206 @@
+I/O FILES
+injector A.bin
+dummy.bin
+dummy.bin
+dummy.out
+dummy.res
+dummy.turres
+dummy.blomax
+dummy.out15
+dummy.prout
+dummy.out20
+dummy.bin
+dummy.bin
+dummy.bin
+	(Description of CFL3D Projet here)
+     XMACH     ALPHA      BETA  REUE,MIL   TINF,DR     IALPH    IHSTRY
+       XXX       XXX       XXX       XXX       XXX       XXX         0
+      SREF      CREF      BREF       XMC       YMC       ZMC
+         0         0         0         0         0         0
+        DT     IREST   IFLAGTS      FMAX     IUNST    CFLTAU
+        -5         0         0         0         0         0
+     NGRID   NPLOT3D    NPRINT    NWREST      ICHK       I2D    NTSTEP       ITA
+        -8         8         0         0         0         0         0         0
+       NCG       IEM  IADVANCE    IFORCE  IVISC(I)  IVISC(J)  IVISC(K)
+         0         0         0       333       XXX       XXX       XXX
+         0         0         0       333       XXX       XXX       XXX
+         0         0         0       333       XXX       XXX       XXX
+         0         0         0       333       XXX       XXX       XXX
+         0         0         0       333       XXX       XXX       XXX
+         0         0         0       333       XXX       XXX       XXX
+         0         0         0       333       XXX       XXX       XXX
+         0         0         0       333       XXX       XXX       XXX
+      IDIM      JDIM      KDIM
+        30        30        11
+        59         4        11
+        59         4        11
+        59         4        61
+        59         4        61
+        59         4        61
+        59         4        61
+        30        30        61
+    ILAMLO    ILAMHI    JLAMLO    JLAMHI    KLAMLO    KLAMHI
+         0         0         0         0         0         0
+         0         0         0         0         0         0
+         0         0         0         0         0         0
+         0         0         0         0         0         0
+         0         0         0         0         0         0
+         0         0         0         0         0         0
+         0         0         0         0         0         0
+         0         0         0         0         0         0
+     INEWG    IGRIDC        IS        JS        KS        IE        JE        KE
+         0         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0         0
+         0         0         0         0         0         0         0         0
+  IDIAG(I)  IDIAG(J)  IDIAG(K)  IFLIM(I)  IFLIM(J)  IFLIM(K)
+         1         1         1         0         0         0
+         1         1         1         0         0         0
+         1         1         1         0         0         0
+         1         1         1         0         0         0
+         1         1         1         0         0         0
+         1         1         1         0         0         0
+         1         1         1         0         0         0
+         1         1         1         0         0         0
+   IFDS(I)   IFDS(J)   IFDS(K)  RKAP0(I)  RKAP0(J)  RKAP0(K)
+         1         1         1    0.3333    0.3333    0.3333
+         1         1         1    0.3333    0.3333    0.3333
+         1         1         1    0.3333    0.3333    0.3333
+         1         1         1    0.3333    0.3333    0.3333
+         1         1         1    0.3333    0.3333    0.3333
+         1         1         1    0.3333    0.3333    0.3333
+         1         1         1    0.3333    0.3333    0.3333
+         1         1         1    0.3333    0.3333    0.3333
+      GRID     NBCI0   NBCIDIM     NBCJ0   NBCJDIM     NBCK0   NBCKDIM    IOVRLP
+         1         1         1         1         1         1         1         0
+         2         1         1         1         1         1         1         0
+         3         1         1         1         1         1         1         0
+         4         1         1         2         1         1         1         0
+         5         1         1         2         1         1         1         0
+         6         1         1         1         1         1         1         0
+         7         1         1         1         1         1         1         0
+         8         1         1         1         1         1         1         0
+I0:   GRID   SEGMENT    BCTYPE      JSTA      JEND      KSTA      KEND     NDATA
+         1         1       XXX         1        30         1        11         0
+         2         1         0         1         4         1        11         0
+         3         1         0         1         4         1        11         0
+         4         1         0         1         4         1        61         0
+         5         1         0         1         4         1        61         0
+         6         1         0         1         4         1        61         0
+         7         1         0         1         4         1        61         0
+         8         1         0         1        30         1        61         0
+IDIM: GRID   SEGMENT    BCTYPE      JSTA      JEND      KSTA      KEND     NDATA
+         1         1       XXX         1        30         1        11         0
+         2         1         0         1         4         1        11         0
+         3         1         0         1         4         1        11         0
+         4         1         0         1         4         1        61         0
+         5         1         0         1         4         1        61         0
+         6         1         0         1         4         1        61         0
+         7         1         0         1         4         1        61         0
+         8         1         0         1        30         1        61         0
+J0:   GRID   SEGMENT    BCTYPE      ISTA      IEND      KSTA      KEND     NDATA
+         1         1       XXX         1        30         1        11         0
+         2         1       XXX         1        59         1        11         0
+         3         1       XXX         1        59         1        11         0
+         4         1         0         1        30         1        61         0
+         4         2         0        30        59         1        61         0
+         5         1         0         1        30         1        61         0
+         5         2         0        30        59         1        61         0
+         6         1       XXX         1        59         1        61         0
+         7         1       XXX         1        59         1        61         0
+         8         1         0         1        30         1        61         0
+JDIM: GRID   SEGMENT    BCTYPE      ISTA      IEND      KSTA      KEND     NDATA
+         1         1       XXX         1        30         1        11         0
+         2         1       XXX         1        59         1        11         0
+         3         1       XXX         1        59         1        11         0
+         4         1         0         1        59         1        61         0
+         5         1         0         1        59         1        61         0
+         6         1         0         1        59         1        61         0
+         7         1         0         1        59         1        61         0
+         8         1         0         1        30         1        61         0
+K0:   GRID   SEGMENT    BCTYPE      ISTA      IEND      JSTA      JEND     NDATA
+         1         1       XXX         1        30         1        30         0
+         2         1       XXX         1        59         1         4         0
+         3         1       XXX         1        59         1         4         0
+         4         1       XXX         1        59         1         4         0
+         5         1       XXX         1        59         1         4         0
+         6         1         0         1        59         1         4         0
+         7         1         0         1        59         1         4         0
+         8         1         0         1        30         1        30         0
+KDIM: GRID   SEGMENT    BCTYPE      ISTA      IEND      JSTA      JEND     NDATA
+         1         1         0         1        30         1        30         0
+         2         1         0         1        59         1         4         0
+         3         1         0         1        59         1         4         0
+         4         1       XXX         1        59         1         4         0
+         5         1       XXX         1        59         1         4         0
+         6         1       XXX         1        59         1         4         0
+         7         1       XXX         1        59         1         4         0
+         8         1       XXX         1        30         1        30         0
+      MSEQ    MGFLAG    ICONSF       MTT      NGAM
+         1         0         0         0         1
+      ISSC EPSSSC(1) EPSSSC(2) EPSSSC(3)      ISSR EPSSSR(1) EPSSSR(2) EPSSSR(3)
+         0       0.3       0.3       0.3         0       0.3       0.3       0.3
+      NCYC    MGLEVG     NEMGL     NITFO
+         1         1         0         0
+      MIT1      MIT2      MIT3      MIT4      MIT5
+         1         1         1         1         1
+   1-1 BLOCKING DATA:
+      NBLI
+        15
+   NUMBER   GRID   :   ISTA   JSTA   KSTA   IEND   JEND   KEND  ISVA1  ISVA2
+        1      1          1      1     11     30     30     11      1      2
+        2      2          1      1      1      1      4     11      2      3
+        3      2         59      1      1     59      4     11      2      3
+        4      2          1      1     11     59      4     11      1      2
+        5      3          1      1     11     59      4     11      1      2
+        6      4          1      1      1      1      4     61      2      3
+        7      4          1      1      1     30      1     61      1      3
+        8      4         30      1      1     59      1     61      1      3
+        9      4         59      1      1     59      4     61      2      3
+       10      4          1      4      1     59      4     61      1      3
+       11      5          1      1      1     30      1     61      1      3
+       12      5         30      1      1     59      1     61      1      3
+       13      5          1      4      1     59      4     61      1      3
+       14      6          1      1      1      1      4     61      2      3
+       15      6         59      1      1     59      4     61      2      3
+   NUMBER   GRID   :   ISTA   JSTA   KSTA   IEND   JEND   KEND  ISVA1  ISVA2
+        1      8          1      1      1     30     30      1      1      2
+        2      3         59      1      1     59      4     11      2      3
+        3      3          1      1      1      1      4     11      2      3
+        4      7          1      1      1     59      4      1      1      2
+        5      6          1      1      1     59      4      1      1      2
+        6      5         59      1      1     59      4     61      2      3
+        7      8          1      1      1      1     30     61      2      3
+        8      8          1     30      1     30     30     61      1      3
+        9      5          1      1      1      1      4     61      2      3
+       10      6         59      4      1      1      4     61      1      3
+       11      8         30     30      1     30      1     61      2      3
+       12      8         30      1      1      1      1     61      1      3
+       13      7         59      4      1      1      4     61      1      3
+       14      7         59      1      1     59      4     61      2      3
+       15      7          1      1      1      1      4     61      2      3
+  PATCH SURFACE DATA:
+    NINTER
+         0
+PLOT3D OUTPUT:
+  GRID  IPTYPE  ISTART  IEND  IINC  JSTART  JEND  JINC  KSTART  KEND  KINC
+     1       0       0     0     0       0     0     0       0     0     0
+     2       0       0     0     0       0     0     0       0     0     0
+     3       0       0     0     0       0     0     0       0     0     0
+     4       0       0     0     0       0     0     0       0     0     0
+     5       0       0     0     0       0     0     0       0     0     0
+     6       0       0     0     0       0     0     0       0     0     0
+     7       0       0     0     0       0     0     0       0     0     0
+     8       0       0     0     0       0     0     0       0     0     0
+ MOVIE
+     0
+ PRINT OUT:
+  GRID  IPTYPE  ISTART  IEND  IINC  JSTART  JEND  JINC  KSTART  KEND  KINC
+ CONTROL SURFACE:
+ NCS
+   0
+  GRID  ISTART    IEND  JSTART    JEND  KSTART    KEND   IWALL   INORM

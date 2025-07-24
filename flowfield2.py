@@ -42,8 +42,8 @@ with open('fort.12', 'rb') as f:
 # 
 #  inlet blocks
 # 
-IBCZON = [1, 9, 11]
-IDBC = [5,5,5]
+IBCZON = [8, 9]
+IDBC = [5, 5]
 
 #
 #  governing equation
