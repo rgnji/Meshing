@@ -3,8 +3,8 @@ import struct
 
 #=================== unformatted plot3d format (with record marker) ===================
 # X, Y, Z will be 4D matrices X(IZ, KZT, JZT, IZT)
-def unformatted_fort12(X, Y, Z):
-    filename = 'fort.12'
+def unformatted_fort12(X, Y, Z, path=''):
+    filename = path + 'fort.12'
     decimals = 5
     
     IZON = len(X)

@@ -155,9 +155,65 @@ with open("input files/injector A.bin", 'rb') as f:
 # =============================================
 with open('input files/injector A.inp', 'r') as f:
     lines = f.readlines()
+    
+# =============================================
+# ================ group 3 ====================
+# =============================================
+count_ts = 0
+for line in lines:
+    if line == '      IDIM      JDIM      KDIM\n':
+        break
+    else:
+        count_ts += 1
+count_te = 0
+for line in lines:
+    if line == '    ILAMLO    ILAMHI    JLAMLO    JLAMHI    KLAMLO    KLAMHI\n':
+        break
+    else:
+        count_te += 1
+
+IZON = count_te - count_ts - 1
+
+data_t = lines[count_ts+1: count_te]
+data_tt = [line.stripe().split() for line in data_t]
+
+columns_dim = ['IDIM', 'JDIM', 'KDIM']
+df_dim = pd.DataFrame(data_tt, columns=columns_dim)
 
 # =============================================
+# ================ group 4 ====================
 # =============================================
+count = 0
+face_1 = []
+face_2 = []
+for line in lines:
+    
+    if line == '   1-1 BLOCKING DATA:\n':
+        nbli = int(lines[count+2])
+   
+        sta_1 = count + 4
+        end_1 = sta_1 + nbli
+        face_1 = lines[sta_1: end_1]
+        
+        sta_2 = end_1 + 1
+        end_2 = sta_2 + nbli
+        face_2 = lines[sta_2: end_2]
+        
+    count += 1
+
+face_1 = [line.strip() for line in face_1]
+face_2 = [line.strip() for line in face_2]
+
+data_1 = [line.split() for line in face_1]
+data_2 = [line.split() for line in face_2]
+
+columns = ['NUMBER', 'GRID', 'ISTA', 'JSTA', 'KSTA', 'IEND', 'JEND', 'KEND', 'ISVA1', 'ISVA2']
+
+df_1 = pd.DataFrame(data_1, columns=columns)
+df_2 = pd.DataFrame(data_2, columns=columns)
+
+# =============================================
+# ================ group 6 ====================
 # =============================================
 count_wall = 0
 for line in lines:
@@ -197,38 +253,6 @@ df_bnd_5 = pd.DataFrame(bnd_5, columns=columns_wall_k)
 df_bnd_6 = pd.DataFrame(bnd_6, columns=columns_wall_k)
 
 # =============================================
-# =============================================
-# =============================================
-count = 0
-face_1 = []
-face_2 = []
-for line in lines:
-    
-    if line == '   1-1 BLOCKING DATA:\n':
-        nbli = int(lines[count+2])
-   
-        sta_1 = count + 4
-        end_1 = sta_1 + nbli
-        face_1 = lines[sta_1: end_1]
-        
-        sta_2 = end_1 + 1
-        end_2 = sta_2 + nbli
-        face_2 = lines[sta_2: end_2]
-        
-    count += 1
-
-face_1 = [line.strip() for line in face_1]
-face_2 = [line.strip() for line in face_2]
-
-data_1 = [line.split() for line in face_1]
-data_2 = [line.split() for line in face_2]
-
-columns = ['NUMBER', 'GRID', 'ISTA', 'JSTA', 'KSTA', 'IEND', 'JEND', 'KEND', 'ISVA1', 'ISVA2']
-
-df_1 = pd.DataFrame(data_1, columns=columns)
-df_2 = pd.DataFrame(data_2, columns=columns)
-
-# =============================================
 # ================ fort.11 ====================
 # =============================================
 with open('input files/fort.11', 'w') as f:
@@ -259,7 +283,7 @@ with open('input files/fort.11', 'w') as f:
 
     processor = 0
     for blk3 in range(IZON):
-        f.write(f'{dim[blk3][0]:>6},{dim[blk3][1]:>6},{dim[blk3][2]:>6},')
+        f.write(f'{df_dim.loc[blk3, "IDIM"]:>6},{df_dim.loc[blk3, "JDIM"]:>6},{df_dim.loc[blk3, "KDIM"]:>6},')
 
         f.write(f'{(processor % processor_num) + 1:>6},')
         processor += 1
@@ -347,7 +371,7 @@ with open('input files/fort.11', 'w') as f:
         for item in line_1:
             f.write(f'{item:>6},')
         f.write('\n')
-        f.write(f'{' ':7}')
+        f.write(f'{" ":7}')
         for item in line_2:
             f.write(f'{item:>6},')
         f.write('\n')
