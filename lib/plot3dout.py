@@ -50,8 +50,8 @@ def unformatted_fort12(X, Y, Z, path=''):
     return filename + " established."
 
 #=================== unformatted plot3d format (with record marker) ===================
-def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, tm, dk, de, am, q, fm):
-    filename = 'fort.13'
+def unformatted_fort13(INSO_1, INSO_4, INSO_5, INSO_7, NGAS, IZON, den, u, v, w, p, tm, dk, de, am, q, fm, path=''):
+    filename = path + 'fort.13'
 
     with open(filename, 'wb') as f:
 

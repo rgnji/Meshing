@@ -103,6 +103,8 @@ mpiexec -n <number of processors> ./xprep.exe
   5. The velocity at the boundary has to be zero in the initial flow field
   6. Check how much memory one processor uses to avoid out of memory
   7. Edit fdns01 and tecout.f and renew fmain02 and prep.f (line 1355 commented and line 1356 uncommented)
+  8. Main axis of mesh must be along the z-axis and must be i-axis when using symmetry plane
+  9. When using serial computation, rename f001.11 to fort.11 after using xprep to split original fort.11
 # Parameter check:
   1. IIQMAX (fdns01, prep.f)
   2. IWP (fdns01)

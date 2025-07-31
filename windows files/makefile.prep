@@ -1,0 +1,36 @@
+# Compiler and linker definitions
+F77=mpiifx
+CC=mpiicc
+LD=mpiifx
+
+# Flags
+FFLAGS=/O2
+CFLAGS=
+OS_LIB=
+FC_LIB=
+
+# Libraries
+LIBS=$(OS_LIB) $(FC_LIB)
+
+# Source and object files
+CMDS=xprep.exe
+PREP_O=prep.obj io.obj flib.obj f11.obj
+
+# Default target
+all: $(CMDS)
+
+# Executable target
+xprep.exe: $(PREP_O)
+    $(LD) /exe:xprep.exe $(PREP_O) $(LIBS)
+
+# Fortran file compilation
+.f.obj:
+    $(F77) $(FFLAGS) /c $<
+
+# C++ file compilation
+.cc.obj:
+    $(CC) $(CFLAGS) /c $<
+
+# Clean up
+clean:
+    del /Q $(PREP_O) xprep.exe

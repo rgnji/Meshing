@@ -1,0 +1,1 @@
+nohup /usr/bin/time -v mpirun -n 1 ./xfdns  > log.txt 2>&1 &

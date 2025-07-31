@@ -1,0 +1,99 @@
+C***** PRINT OUT PROFILE DATA ************C
+C-----(USE STATEMENT NUMBER 8000 TO 8900)
+C
+C--------  ARRC test case #1
+C
+      KPOST=1
+      IF(KPOST .EQ. 0) GO TO 9099
+      IF(MOD(ITO,ITPNT) .EQ. 0) THEN
+        TMMAX=0.
+        TMMIN=1.E30
+        FMMAX=0.
+        IJKFMX=1
+        DO IJK=1,IGDMAX
+          IF(TM(IJK) .GT. TMMAX) THEN
+            TMMAX=TM(IJK)
+            HTTMX=HT(IJK)
+            PRTMX=P(IJK)
+            DO KK=1,NGAS
+              FMTMX(KK)=FM(IJK,KK)
+            ENDDO
+            IJKTMX=IJK
+          END IF
+          IF(TM(IJK) .LT. TMMIN) THEN
+            TMMIN=TM(IJK)
+            HTTMN=HT(IJK)
+            PRTMN=P(IJK)
+            DO KK=1,NGAS
+              FMTMN(KK)=FM(IJK,KK)
+            ENDDO
+            IJKTMN=IJK
+          END IF
+        ENDDO
+        IPTMN = 1
+        IPTMX = 1
+        CALL AINDEX(IJKTMN,IJZTMN(1),IJZTMN(2),IJZTMN(3),IJZTMN(4))
+        CALL AINDEX(IJKTMX,IJZTMX(1),IJZTMX(2),IJZTMX(3),IJZTMX(4))
+C-GC1
+        IF(NPROC .GE. 2) THEN
+          IF(IDEBUG .EQ. 1) THEN
+            WRITE(6,*)'** IPROC =',IPROC,', Start Gathering Max. T'
+            CALL FLUSH(6)
+          ENDIF
+          CALL MPI_ALLGATHER(TMMAX,1,MPI_REAL,TMMXG,1,MPI_REAL,
+     &                       MPI_COMM_WORLD,IERR)
+          CALL MPI_ALLGATHER(TMMIN,1,MPI_REAL,TMMNG,1,MPI_REAL,
+     &                       MPI_COMM_WORLD,IERR)
+          IF(IDEBUG .EQ. 1) THEN
+            WRITE(6,*)'** IPROC =',IPROC,', End Gathering Max. T'
+            CALL FLUSH(6)
+          ENDIF
+C
+          TMMAX=0.
+          TMMIN=1.E30
+          FMMAX=0.
+          DO IP=1,NPROC
+            IF(TMMXG(IP) .GE. TMMAX) THEN
+              IPTMX = IP
+              TMMAX = TMMXG(IP)
+            ENDIF
+            IF(TMMNG(IP) .LE. TMMIN) THEN
+              IPTMN = IP
+              TMMIN = TMMNG(IP)
+            ENDIF
+          ENDDO
+          IF(IDEBUG .EQ. 1) THEN
+            WRITE(6,*)'** IPROC =',IPROC,', Start broadcasting Max. loc'
+            CALL FLUSH(6)
+          ENDIF
+          IP = IPTMX-1
+          CALL MPI_BCAST(IJZTMX,4,MPI_INTEGER,IP,MPI_COMM_WORLD,IERR)
+          CALL MPI_BCAST(HTTMX,1,MPI_REAL,IP,MPI_COMM_WORLD,IERR)
+          CALL MPI_BCAST(PRTMX,1,MPI_REAL,IP,MPI_COMM_WORLD,IERR)
+          CALL MPI_BCAST(FMTMX,NGAS,MPI_REAL,IP,MPI_COMM_WORLD,IERR)
+          IP = IPTMN-1
+          CALL MPI_BCAST(IJZTMN,4,MPI_INTEGER,IP,MPI_COMM_WORLD,IERR)
+          CALL MPI_BCAST(HTTMN,1,MPI_REAL,IP,MPI_COMM_WORLD,IERR)
+          CALL MPI_BCAST(PRTMN,1,MPI_REAL,IP,MPI_COMM_WORLD,IERR)
+          CALL MPI_BCAST(FMTMN,NGAS,MPI_REAL,IP,MPI_COMM_WORLD,IERR)
+          IF(IDEBUG .EQ. 1) THEN
+            WRITE(6,*)'** IPROC =',IPROC,', End broadcasting Max. loc'
+            CALL FLUSH(6)
+          ENDIF
+        ENDIF
+C
+        IF(IPROC .LE. 1) THEN
+          TMPMIN=TMMIN*TREF
+          WRITE(6,8440)IPTMN,IJZTMN(1),IJZTMN(2),IJZTMN(3),IJZTMN(4),
+     &      TMPMIN,HTTMN,PRTMN*QREF,(FMTMN(KK),KK=1,NGAS)
+          TMPMAX=TMMAX*TREF
+          WRITE(6,8440)IPTMX,IJZTMX(1),IJZTMX(2),IJZTMX(3),IJZTMX(4),
+     &      TMPMAX,HTTMX,PRTMX*QREF,(FMTMX(KK),KK=1,NGAS)
+        ENDIF
+C-GC2
+ 8440   FORMAT('IP=',I2,', IZ=',I2,', I=',I2,', J=',I2,', K=',I2,
+     &    ', TM =',E11.4,', HT =',E11.4,', P =',E11.4,
+     &    /1X,'FM = ',6(F10.7,1H,,1X),/6X,6(F10.7,1H,,1X))
+      END IF
+C
+ 9099 CONTINUE
